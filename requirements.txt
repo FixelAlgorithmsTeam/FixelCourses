@@ -6,5 +6,6 @@ folium
 matplotlib
 datascience
 ipywidgets>=7.0.0
-bqplot
 nbinteract>=0.2.5
+bqplot==0.11.0
+plotly
