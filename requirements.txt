@@ -1,6 +1,10 @@
 numpy
-ipywidgets
-nbinteract
+pandas
+scipy
+seaborn
+folium
 matplotlib
-matplotlib.pyplot
-plotly
+datascience
+ipywidgets>=7.0.0
+bqplot
+nbinteract>=0.2.5
