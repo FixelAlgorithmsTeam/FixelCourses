@@ -2,4 +2,5 @@ numpy
 ipywidgets
 nbinteract
 matplotlib
+matplotlib.pyplot
 plotly
