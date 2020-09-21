@@ -168,11 +168,8 @@ def TrainModel(oModel, oTrainDL, oValDL, LossFunc, numEpochs, oOptim, oScheduler
         Plot('Loss',          'val',   'epoch', 'r'),
         Plot('Accuracy',      'train', 'epoch', 'b'),
         Plot('Accuracy',      'val',   'epoch', 'r'),
-        Plot('Learning rate', 'lr',    'epoch', 'b'),
     ])
 
-    oRecorder.Append('Learning rate', 'lr', oOptim.param_groups[0]['lr']),
-    
     bestAcc = 0
     for epoch in range(numEpochs):
         
@@ -185,7 +182,6 @@ def TrainModel(oModel, oTrainDL, oValDL, LossFunc, numEpochs, oOptim, oScheduler
         oRecorder.Append('Loss',          'val',   valLoss),
         oRecorder.Append('Accuracy',      'train', trainAcc),
         oRecorder.Append('Accuracy',      'val',   valAcc),
-        oRecorder.Append('Learning rate', 'lr',    oOptim.param_groups[0]['lr']),
         oRecorder.Draw()
 
         endTime = time.time()
