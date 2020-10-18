@@ -1,4 +1,9 @@
 .ipynb_checkpoints*
 
+
 data/*
 *runs/*
+*.pyc
+*.pt
+*.png
+*runs
