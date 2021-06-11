@@ -38,7 +38,8 @@ class LinearLayer:
 #--------------------------------------------------------------------------------#
 class ReLULayer:
     def __init__(self):
-        self.dGrads = {}
+        self.dParams = {}
+        self.dGrads  = {}
 
     def Forward(self, mX):
         self.mX = mX                 #-- store for Backward
