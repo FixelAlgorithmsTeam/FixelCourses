@@ -1,15 +1,17 @@
-import numpy             as np
-import matplotlib.pyplot as plt
+import numpy as np
 
 #--------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------#
 class LinearLayer:
-    def __init__(self, dIn, dOut):
-        mW = np.random.randn(dOut, dIn) * np.sqrt(2 / dIn)
+    def __init__(self, dIn, dOut, init='Kaiming'):
+        if   init == 'Kaiming': mW = np.random.randn(dOut, dIn) * np.sqrt(2 / dIn)
+        elif init == 'Xavier':  mW = np.random.randn(dOut, dIn) * np.sqrt(1 / dIn)
+        else:                   mW = np.random.randn(dOut, dIn) / dIn #-- this is how we initialize previously
+
         vB = np.zeros(dOut)
 
-        self.dParams = {'mW' : mW, 'vB': vB}
-        self.dGrads  = {}
+        self.dParams = {'mW' : mW,   'vB': vB}
+        self.dGrads  = {'mW' : None, 'vB' : None}
 
     def Forward(self, mX):
         mW      = self.dParams['mW']
@@ -21,9 +23,10 @@ class LinearLayer:
 
     def Backward(self, mDz):
         mW  = self.dParams['mW']
+        mX  = self.mX
 
-        vDb = mDz.sum(axis=1)
-        mDw = mDz @ self.mX.T
+        vDb = mDz.sum(1)
+        mDw = mDz  @ mX.T
         mDx = mW.T @ mDz
 
         self.dGrads['vB'] = vDb
@@ -45,8 +48,7 @@ class ReLULayer:
 
     def Backward(self, mDz):
         mX    = self.mX
-        mMask = (mX > 0).astype(float)
-
+        mMask = (mX > 0).astype(np.float32)
         mDx   = mDz * mMask
 
         return mDx
@@ -73,9 +75,9 @@ def CrossEntropyLoss(vY, mZ):
     '''
     Returns both the loss and the gradient w.r.t the input (mZ)
     '''
+    N      = len(vY)
     mHatY  = np.exp(mZ)
     mHatY /= np.sum(mHatY, axis=0)
-    N      = len(vY)
     loss   = -np.log(mHatY[vY,range(N)]).mean()
 
     mDz               = mHatY
@@ -86,7 +88,7 @@ def CrossEntropyLoss(vY, mZ):
 
 #--------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------#
-def Accuracy(mHatY, vY):
-    vHatY    = np.argmax(mHatY, axis=0)
-    accuracy = (vHatY == vY).astype(float).mean()
+def Accuracy(mScore, vY):
+    vHatY    = np.argmax(mScore, axis=0)
+    accuracy = (vHatY == vY).mean()
     return accuracy
