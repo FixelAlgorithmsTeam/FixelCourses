@@ -1,9 +1,24 @@
 .ipynb_checkpoints*
 
 
+*/Exercises - Copy/*
+DeepLearningMethods/OLD/*
+*Web/*
+
 data/*
 *runs/*
 *.pyc
 *.pt
-*.png
 *runs
+
+
+
+BCI_Data.mat
+WISDM_ar_v1.1_raw.txt
+labeledTrainData.tsv
+face_data.mat
+bank-additional-full.csv
+Train.csv
+data.mat
+MercedesBenzTrain.csv
+TIMIT_Train.mat

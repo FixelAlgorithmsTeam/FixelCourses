@@ -73,7 +73,7 @@ def TrainClassficationModel(oModel, oTrainData, oValData, Loss, nEpochs, oOptim)
         print(' | Val loss: '       f'{valLoss  :.5f}' ,   end='')
         print(' | Train Accuracy: ' f'{trainAcc :2.4f}',   end='')
         print(' | Val Accuracy: '   f'{valAcc   :2.4f}',   end='')
-        print(' | epoch time: '     f'{epochTime:3.3f} |', end='')
+        print(' | epoch time: '     f'{epochTime:6.3f} |', end='')
 
         vTrainLoss[epoch] = trainLoss
         vTrainAcc [epoch] = trainAcc
@@ -118,7 +118,7 @@ def TrainRegressionModel(oModel, oTrainData, oValData, Loss, nEpochs, oOptim):
         print(' | Val loss: '   f'{valLoss  :.5f}' ,   end='')
         print(' | Train R2: '   f'{trainR2 :+2.4f}',   end='')
         print(' | Val R2: '     f'{valR2   :+2.4f}',   end='')
-        print(' | epoch time: ' f'{epochTime:3.3f} |', end='')
+        print(' | epoch time: ' f'{epochTime:6.3f} |', end='')
 
         vTrainLoss[epoch] = trainLoss
         vTrainR2  [epoch] = trainR2

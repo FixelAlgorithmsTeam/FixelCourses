@@ -69,8 +69,8 @@ def TrainClassficationModel(oModel, oTrainData, oValData, Loss, nEpochs, oOptim,
 
     for epoch in range(nEpochs):
         startTime                 = time.time()
-        trainLoss, trainAcc, vLRi = Epoch(oModel, oTrainData, Loss, Accuracy, oOptim, bTrain=True ) #-- train
-        valLoss,   valAcc,   _    = Epoch(oModel, oValData,   Loss, Accuracy,         bTrain=False) #-- validate
+        trainLoss, trainAcc, vLRi = Epoch(oModel, oTrainData, Loss, Accuracy, oOptim, oScheduler, bTrain=True ) #-- train
+        valLoss,   valAcc,   _    = Epoch(oModel, oValData,   Loss, Accuracy,                     bTrain=False) #-- validate
         epochTime                 = time.time() - startTime
 
         #-- Display:
