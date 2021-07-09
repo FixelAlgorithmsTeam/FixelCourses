@@ -16,3 +16,9 @@ def R2Score(vHatY, vY):
     vY    = vY   .detach().cpu().view(-1)
     vHatY = vHatY.detach().cpu().view(-1)
     return r2_score(vY, vHatY)
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
+def BinaryAcuuracy(vZ, vY):
+    vZ = vZ.detach().cpu()
+    vY = vY.detach().cpu()
+    return torch.mean( ((vZ > 0) == vY).float() )
