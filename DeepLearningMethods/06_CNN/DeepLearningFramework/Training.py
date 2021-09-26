@@ -69,10 +69,10 @@ def TrainClassficationModel(oModel, oTrainData, oValData, Loss, nEpochs, oOptim)
 
         #-- Display:
         print('Epoch '              f'{epoch    :03d}:',   end='')
-        print(' | Train loss: '     f'{trainLoss:.5f}' ,   end='')
-        print(' | Val loss: '       f'{valLoss  :.5f}' ,   end='')
-        print(' | Train Accuracy: ' f'{trainAcc :2.4f}',   end='')
-        print(' | Val Accuracy: '   f'{valAcc   :2.4f}',   end='')
+        print(' | Train loss: '     f'{trainLoss:6.3f}',   end='')
+        print(' | Val loss: '       f'{valLoss  :6.3f}',   end='')
+        print(' | Train Accuracy: ' f'{trainAcc :6.3f}',   end='')
+        print(' | Val Accuracy: '   f'{valAcc   :6.3f}',   end='')
         print(' | epoch time: '     f'{epochTime:6.3f} |', end='')
 
         vTrainLoss[epoch] = trainLoss
@@ -113,12 +113,12 @@ def TrainRegressionModel(oModel, oTrainData, oValData, Loss, nEpochs, oOptim):
         epochTime = time.time() - startTime
 
         #-- Display:
-        print('Epoch '          f'{epoch    :03d}:',   end='')
-        print(' | Train loss: ' f'{trainLoss:.5f}' ,   end='')
-        print(' | Val loss: '   f'{valLoss  :.5f}' ,   end='')
-        print(' | Train R2: '   f'{trainR2 :+2.4f}',   end='')
-        print(' | Val R2: '     f'{valR2   :+2.4f}',   end='')
-        print(' | epoch time: ' f'{epochTime:6.3f} |', end='')
+        print('Epoch '          f'{epoch     :03d}:',   end='')
+        print(' | Train loss: ' f'{trainLoss :6.3f}',   end='')
+        print(' | Val loss: '   f'{valLoss   :6.3f}',   end='')
+        print(' | Train R2: '   f'{trainR2  :+6.3f}',   end='')
+        print(' | Val R2: '     f'{valR2    :+6.3f}',   end='')
+        print(' | epoch time: ' f'{epochTime :6.3f} |', end='')
 
         vTrainLoss[epoch] = trainLoss
         vTrainR2  [epoch] = trainR2
