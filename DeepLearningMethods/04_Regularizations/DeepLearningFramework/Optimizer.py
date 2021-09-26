@@ -41,13 +41,13 @@ class SGD:
 #--------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------#
 class SGDM:
-    def __init__(self, lr=1e-3, beta=0.9):
-        self.lr   = lr
-        self.beta = beta
+    def __init__(self, lr=1e-3, β=0.9):
+        self.lr = lr
+        self.β  = β
 
     def Step(self, mP, mDp, dState={}):
         mV            = dState.get('mV', np.zeros(mP.shape))
-        mV            = self.beta * mV - self.lr * mDp
+        mV            = self.β * mV - self.lr * mDp
         mP           += mV
         dState['mV']  = mV
 
@@ -56,24 +56,24 @@ class SGDM:
 #--------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------#
 class Adam:
-    def __init__(self, lr=1e-3, beta1=0.9, beta2=0.99, eps=1e-8):
+    def __init__(self, lr=1e-3, β1=0.9, β2=0.99, ϵ=1e-8):
         self.lr    = lr
-        self.beta1 = beta1
-        self.beta2 = beta2
-        self.eps   = eps
+        self.β1 = β1
+        self.β2 = β2
+        self.ϵ  = ϵ
 
     def Step(self, mP, mDp, dState={}):
         mV            = dState.get('mV', np.zeros(mP.shape))
         mS            = dState.get('mS', np.zeros(mP.shape))
         ii            = dState.get('ii', 0) + 1
 
-        mV            = self.beta1 * mV + (1 - self.beta1) * mDp
-        mS            = self.beta2 * mS + (1 - self.beta2) * mDp * mDp
+        mV            = self.β1 * mV + (1 - self.β1) * mDp
+        mS            = self.β2 * mS + (1 - self.β2) * mDp * mDp
 
-        mTildeV       = mV / (1 - self.beta1**ii)
-        mTildeS       = mS / (1 - self.beta2**ii)
+        mTildeV       = mV / (1 - self.β1**ii)
+        mTildeS       = mS / (1 - self.β2**ii)
 
-        mP           -= self.lr * mTildeV / (np.sqrt(mTildeS) + self.eps)
+        mP           -= self.lr * mTildeV / (np.sqrt(mTildeS) + self.ϵ)
         dState['mV']  = mV
         dState['mS']  = mS
         dState['ii']  = ii
@@ -83,11 +83,11 @@ class Adam:
 #--------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------#
 class AdamW:
-    def __init__(self, lr=1e-3, beta1=0.9, beta2=0.99, eps=1e-8, wd=0):
+    def __init__(self, lr=1e-3, β1=0.9, β2=0.99, ϵ=1e-8, wd=0):
         self.lr    = lr
-        self.beta1 = beta1
-        self.beta2 = beta2
-        self.eps   = eps
+        self.β1 = β1
+        self.β2 = β2
+        self.ϵ   = ϵ
         self.wd    = wd #-- weight decay
 
     def Step(self, mW, mDw, dState={}):
@@ -95,13 +95,13 @@ class AdamW:
         mS            = dState.get('mS', np.zeros(mW.shape))
         ii            = dState.get('ii', 0) + 1
 
-        mV            = self.beta1 * mV + (1 - self.beta1) * mDw
-        mS            = self.beta2 * mS + (1 - self.beta2) * mDw * mDw
+        mV            = self.β1 * mV + (1 - self.β1) * mDw
+        mS            = self.β2 * mS + (1 - self.β2) * mDw * mDw
 
-        mTildeV       = mV / (1 - self.beta1**ii)
-        mTildeS       = mS / (1 - self.beta2**ii)
+        mTildeV       = mV / (1 - self.β1**ii)
+        mTildeS       = mS / (1 - self.β2**ii)
 
-        mW           -= self.lr * mTildeV / (np.sqrt(mTildeS) + self.eps) + self.wd * mW
+        mW           -= self.lr * mTildeV / (np.sqrt(mTildeS) + self.ϵ) + self.wd * mW
         dState['mV']  = mV
         dState['mS']  = mS
         dState['ii']  = ii
