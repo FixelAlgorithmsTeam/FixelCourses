@@ -9,6 +9,7 @@ data/*
 *runs/*
 *.pyc
 *.pt
+*.vscode
 *runs
 
 
