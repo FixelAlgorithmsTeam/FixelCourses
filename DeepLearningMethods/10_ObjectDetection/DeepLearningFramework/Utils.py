@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 import torch
 
 from matplotlib.patches import Rectangle
-
-from .ObjectDetectionUtils import ComputeIoU
 #----------------------------------------------------------------------------#
 #----------------------------------------------------------------------------#
 def PlotImage(mX, mBBox=None, vLabels=None, lColors=None):
@@ -42,60 +40,6 @@ def PlotImage(mX, mBBox=None, vLabels=None, lColors=None):
     return fig
 #----------------------------------------------------------------------------#
 #----------------------------------------------------------------------------#
-def PlotPredictions(mX, vBBox, vBBoxPred):
-
-    IoU = ComputeIoU(vBBox[None,1:], vBBoxPred[None,1:])[0]
-
-    def PlotBBox(ax, vBBox, color, sText=None, ls='-'):
-        cIdx, xCenter, yCenter, W, H = vBBox
-        xLeft = xCenter - W / 2
-        yUp   = yCenter - H / 2
-        oBbox = Rectangle((xLeft, yUp), W, H, linewidth=2, ls=ls, edgecolor=color, facecolor='none')
-        ax.add_patch(oBbox)
-        ax.text(xLeft, yUp, s=sText, color='w', verticalalignment='bottom', bbox={'color':color}, fontdict={'size':14})
-
-        return ax
-
-    mI      = mX.permute(1,2,0).numpy()
-    fig, ax = plt.subplots(figsize=(4, 4))
-    ax.imshow(mI, extent=[0, 1, 1, 0])
-    # ax.axis(False)
-    
-    color = 'g' if vBBox[0] == vBBoxPred[0] else 'r'
-    ax    = PlotBBox(ax, vBBox,     'g',                   ls='--')
-    ax    = PlotBBox(ax, vBBoxPred, color, f'IoU = {IoU}')
-    
-    return fig
-
-def PlotPredictions2(mX, mTarget, mTargetPred):
-    #-- mTarget.shape       = (N, 6, 5, 5)
-    #-- mTarget[ii,:,jj,kk] = [p | x, y, W, H | cIdx]
-    #-- TODO...
-    IoU = ComputeIoU(vBBox[None,1:], vBBoxPred[None,1:])[0]
-
-    def PlotBBox(ax, vBBox, color, sText=None, ls='-'):
-        cIdx, xCenter, yCenter, W, H = vBBox
-        xLeft = xCenter - W / 2
-        yUp   = yCenter - H / 2
-        oBbox = Rectangle((xLeft, yUp), W, H, linewidth=2, ls=ls, edgecolor=color, facecolor='none')
-        ax.add_patch(oBbox)
-        ax.text(xLeft, yUp, s=sText, color='w', verticalalignment='bottom', bbox={'color':color}, fontdict={'size':14})
-
-        return ax
-
-    mI      = mX.permute(1,2,0).numpy()
-    fig, ax = plt.subplots(figsize=(6, 6))
-    ax.imshow(mI, extent=[0, 1, 1, 0])
-    # ax.axis(False)
-    
-    color = 'g' if vBBox[0] == vBBoxPred[0] else 'r'
-    ax    = PlotBBox(ax, vBBox,     'g',                   ls='--')
-    ax    = PlotBBox(ax, vBBoxPred, color, f'IoU = {IoU}')
-    
-    return fig
-
-#----------------------------------------------------------------------------#
-#----------------------------------------------------------------------------#
 def CreateImage(imageSize, vX, vY, vW, vH, vIdx):
     mColor   = torch.eye(3)
     nObjects = vX.shape[0]
@@ -129,7 +73,8 @@ def CreateImage(imageSize, vX, vY, vW, vH, vIdx):
     mI                      = torch.clamp(mI, 0, 1)
     mI[:,mI.max(0)[0] == 0] = 1
     return mI, mBBox
-        
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#      
 def RandImage(imageSize, nObjects):
     vX, vY = np.random.rand   (2, nObjects)
     vW, vH = np.random.rand   (2, nObjects) / 2
@@ -141,7 +86,6 @@ def RandImage(imageSize, nObjects):
     
 import numpy             as np
 import matplotlib.pyplot as plt
-
 #--------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------#
 def PlotHistory(lHistory):
@@ -170,3 +114,5 @@ def PlotHistory(lHistory):
     vAx[2].set_title ('Learning rate')
     vAx[2].set_xlabel('iteration')
     vAx[2].grid      ()
+#--------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------#
