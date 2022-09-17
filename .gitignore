@@ -1,4 +1,52 @@
+# Folders
+__pycache__*
+.vscode*
+**/Figures/*
+**/CSV/*
+*_files/*
+**/Data/*
+**/Drops/*
+Archive/*
+**/*logs*/*
+
+# Media Files
+# *.png
+*.jpg
+*.bmp
+*.tif
+*.avi
+*.mp4
+
+# Documnets
+*.docx
+*.doc
+*.html
+*.ppt
+*.pptx
+*.pdf
+*.xls
+*.xlsx
+
+# MATLAB Compiler / Coder
+*App/
+#*.prj
+*.fig
+
+# MATLAB Files
+# https://www.mathworks.com/company/newsletters/articles/automatically-save-backup-m-files-with-the-matlab-editor.html
+*.asv
+*.m~
+*.mat
+*.mex*
+
+# Python
+*.ckpt
+*.pth
 .ipynb_checkpoints*
+
+# Misc
+Report*.html
+
 
 
 */Exercises - Copy/*
