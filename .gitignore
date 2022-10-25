@@ -60,6 +60,8 @@ data/*
 *.vscode
 *runs
 
+creditcard.csv
+
 
 
 BCI_Data.mat
