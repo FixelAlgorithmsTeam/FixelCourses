@@ -43,6 +43,7 @@ Archive/*
 *.ckpt
 *.pth
 .ipynb_checkpoints*
+*.npz
 
 # Misc
 Report*.html
