@@ -1,0 +1,26 @@
+name: IAIMLMethods
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - blas=*=mkl
+  - libblas=*=*mkl
+  - numpy
+  - scipy
+  - pandas
+  - scikit-learn
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - matplotlib
+  - seaborn
+  - bokeh
+  - plotly
+  - graphviz
+  - xgboost
+  - lightgbm
+  - catboost
+  - scikit-image
+  - opencv
+  - pydot
+  - rich
