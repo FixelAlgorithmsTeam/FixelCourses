@@ -9,6 +9,9 @@ __pycache__*
 Archive/*
 **/*logs*/*
 
+# Archives
+*.zip
+
 # Media Files
 # *.png
 *.jpg
@@ -17,7 +20,7 @@ Archive/*
 *.avi
 *.mp4
 
-# Documnets
+# Documents
 *.docx
 *.doc
 *.html
@@ -45,7 +48,7 @@ Archive/*
 .ipynb_checkpoints*
 *.npz
 
-# Misc
+# Miscellaneous 
 Report*.html
 
 
