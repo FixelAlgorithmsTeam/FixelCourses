@@ -1,4 +1,9 @@
-# Data Sete
+# Data Sets
+
+## Kaggle What's Cooking
+
+ - Taken from [Kaggle - What's Cooking](https://www.kaggle.com/competitions/whats-cooking).
+ - Changed the `train.json` into `KaggleWhatsCooking.json`.
 
 
 ## Fashion MNIST
