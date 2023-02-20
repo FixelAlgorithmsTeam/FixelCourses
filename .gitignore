@@ -8,6 +8,7 @@ __pycache__*
 **/Drops/*
 Archive/*
 **/*logs*/*
+**/catboost_*/*
 
 # Archives
 *.zip
