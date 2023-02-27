@@ -15,3 +15,7 @@ Originally on GitHub; [Zalando Research - Fashion MNIST](https://github.com/zala
 ## Insurance Costs
 
 Taken from [Kaggle - Medical Cost Personal Dataset](https://www.kaggle.com/datasets/mirichoi0218/insurance).
+
+## New York Taxi Drives  
+
+Taken from Kaggle Local Outlier Factor by Gaurav Dutta.
