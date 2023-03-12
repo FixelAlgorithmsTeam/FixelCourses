@@ -1,0 +1,30 @@
+name: UnSupervisedLearningMethods
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.10
+  - numpy
+  - scipy
+  - pandas
+  - scikit-learn
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - matplotlib
+  - seaborn
+  - bokeh
+  - plotly
+  - graphviz
+  - xgboost
+  - lightgbm
+  - catboost
+  - scikit-image
+  - opencv
+  - pydot
+  - rich
+  - autograd
+  - pytorch
+  - torchvision
+  - torchaudio
