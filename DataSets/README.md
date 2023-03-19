@@ -19,3 +19,8 @@ Taken from [Kaggle - Medical Cost Personal Dataset](https://www.kaggle.com/datas
 ## New York Taxi Drives  
 
 Taken from Kaggle Local Outlier Factor by Gaurav Dutta.
+
+## Detect Ships
+
+ - [Kaggle - Ships in Satellite Imagery](https://www.kaggle.com/datasets/rhammell/ships-in-satellite-imagery).
+ - 
