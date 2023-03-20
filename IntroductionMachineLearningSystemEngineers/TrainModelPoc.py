@@ -4,6 +4,7 @@
 # 
 # # Test Case - Train a Model
 # This notebooks follows the test case of object detection.
+# This notebook trains a small PoC.
 #
 # > Notebook by:
 # > - Royi Avital RoyiAvital@fixelalgorithms.com
@@ -165,7 +166,8 @@ modelGraph = draw_graph(NnImageCls(numOutputs), input_size = (batchSize, 3, 80, 
 modelGraph.visual_graph
 
 # modelGraph = draw_graph(NnImageCls(numOutputs), input_size = (batchSize, 3, 80, 80), 
-#                         graph_name = 'PoC', device = 'meta', graph_dir = 'LR', save_graph = True)
+#                         graph_name = 'PoC', depth = 7, device = 'cuda', strict = False, expand_nested = True, 
+#                         hide_inner_tensors = False, save_graph = True)
 # modelGraph.visual_graph
 
 # %% Model

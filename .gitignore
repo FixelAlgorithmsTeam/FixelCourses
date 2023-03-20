@@ -16,12 +16,13 @@ Archive/*
 *.zip
 
 # Media Files
-# *.png
-*.jpg
-*.bmp
-*.tif
 *.avi
+*.bmp
+*.jpg
 *.mp4
+# *.png
+*.svg
+*.tif
 
 # Documents
 *.docx

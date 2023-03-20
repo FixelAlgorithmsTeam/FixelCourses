@@ -8,6 +8,7 @@ from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.metrics import confusion_matrix
 
 # Visualization
+from matplotlib.patches import Rectangle
 import matplotlib.pyplot as plt
 
 # Miscellaneous
@@ -17,6 +18,7 @@ from enum import auto, Enum, unique
 # import requests
 # import string
 # import time
+import xml.etree.ElementTree as ET
 
 # Typing
 from typing import Dict, List, Tuple
@@ -71,6 +73,60 @@ def PlotImages(mX: np.ndarray, vY: np.ndarray = None, numRows: int = 1, numCols:
     
     return hF
 
+def PlotImagesBBox(lX: List, lBBox: List, numRows: int = 1, numCols: int = 1, randomChoice = True, hF = None) -> plt.Figure:
+
+    numSamples  = len(lX)
+
+    numImg = min(numRows * numCols, numSamples)
+
+    # tFigSize = (numRows * 3, numCols * 3)
+    tFigSize = (numCols * 3, numRows * 3)
+
+    if hF is None:
+        hF, hA = plt.subplots(numRows, numCols, figsize = tFigSize)
+    else:
+        hA = hF.axis
+    
+    hA = np.atleast_1d(hA) #<! To support numImg = 1
+    hA = hA.flat
+
+    if randomChoice:
+        vIdx = np.random.choice(numSamples, numImg, replace = False)
+    else:
+        vIdx = range(numImg)
+
+    
+    for kk in range(numImg):
+        
+        idx     = vIdx[kk]
+        mI      = lX[idx]
+        
+        lImgBBox = lBBox[idx]
+        
+
+        if np.ndim(mI) > 2:
+            numChannels = mI.shape[2]
+        else:
+            numChannels = 1
+    
+        if numChannels == 1:
+            hA[kk].imshow(mI, cmap = 'gray')
+        else:
+            hA[kk].imshow(mI)
+        hA[kk].tick_params(axis = 'both', left = False, top = False, right = False, bottom = False, labelleft = False, labeltop = False, labelright = False, labelbottom = False)
+
+        # Draw rectangle
+        for lItemBBox in lImgBBox:
+            xMin, yMin, xMax, yMax = lItemBBox[:4]
+            boxWidth    = xMax - xMin
+            boxHeight   = yMax - yMin
+            
+            rectPatch = Rectangle((xMin, yMin), boxWidth, boxHeight, linewidth = 2, edgecolor = 'r', facecolor = (0, 0, 0, 0))
+            hA[kk].add_patch(rectPatch)
+        hA[kk].set_title(f'Index = {idx}')
+    
+    return hF
+
 def PlotLabelsHistogram(vY: np.ndarray, hA = None, lClass = None, xLabelRot: int = None) -> plt.Axes:
 
     if hA is None:
@@ -111,3 +167,22 @@ def PlotConfusionMatrix(vY: np.ndarray, vYPred: np.ndarray, normMethod: str = No
             xLabel.set_rotation(xLabelRot)
 
     return hA, mConfMat
+
+# Data
+
+def ExtractBoxXml( filePath: str ) -> List:
+
+    xmlTree = ET.parse(filePath)
+    xmlRoot = xmlTree.getroot()
+
+    lBBox = []
+
+    for treeNode in xmlRoot.iter('bndbox'):
+        xMin = int(treeNode.find('xmin').text)
+        yMin = int(treeNode.find('ymin').text)
+        xMax = int(treeNode.find('xmax').text)
+        yMax = int(treeNode.find('ymax').text)
+
+        lBBox.append([xMin, yMin, xMax, yMax])
+    
+    return lBBox
