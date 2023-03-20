@@ -186,3 +186,18 @@ def ExtractBoxXml( filePath: str ) -> List:
         lBBox.append([xMin, yMin, xMax, yMax])
     
     return lBBox
+
+def GenTrainTesIdx(numSamples: int, trainSize: float = 0.8, seedNum: int = 123):
+    
+    vAllIdx         = np.arange(numSamples)
+    numTainsSamples = int(trainSize * numSamples)
+    
+    rng = np.random.default_rng(seedNum) #<! Stable Random Number Generator
+    
+    vTrainIdx   = rng.choice(numSamples, numTainsSamples, replace = False) 
+    vTestIdx    = np.setdiff1d(vAllIdx, vTrainIdx)
+
+    vTrainIdx   = np.sort(vTrainIdx)
+    vTestIdx    = np.sort(vTestIdx)
+
+    return vTrainIdx, vTestIdx

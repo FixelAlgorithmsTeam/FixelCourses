@@ -89,8 +89,12 @@ CSV_FILE_NAME       = 'ImgData.csv'
 # MODEL_FOLDER_NAME   = 'Model'
 # FIG_FOLDER_NAME     = 'Figures'
 
-MODEL_TYPE_RESNET_50 = 1 #<! Better performance
-MODEL_TYPE_MOBILENET = 2 #<! Much Faster
+MODEL_TYPE_RESNET_50        = 1 #<! 1400 Sec, 255 Cases
+MODEL_TYPE_MOBILENET        = 2 #<! 60 Sec, 67 Cases
+MODEL_TYPE_FCOS_RESNET50    = 3 #<! 1000 Sec, 304 Cases (Missed some small ones)
+MODEL_TYPE_RETINANET        = 4 #<! 919 Sec, 271 Cases (Missed some small ones)
+MODEL_TYPE_SSD_LITE         = 5 #<! 76 Sec, 223 Cases (Some false alarms)
+
 
 	
 COCO_INSTANCE_CATEGORY_NAMES = ['__background__', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 
@@ -175,11 +179,20 @@ hF = PlotImagesBBox(lImg, lBox, numRows = numRows, numCols = numCols)
 # %% Base Model
 
 if modelType == MODEL_TYPE_RESNET_50:
-    fasterRCNNResNetv2Weights       = models.detection.FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT
-    modelDetector = models.detection.fasterrcnn_resnet50_fpn_v2(weights = fasterRCNNResNetv2Weights)
+    modelWeights  = models.detection.FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT
+    modelDetector = models.detection.fasterrcnn_resnet50_fpn_v2(weights = modelWeights)
 elif modelType == MODEL_TYPE_MOBILENET:
-    fasterRCNNMobileNetv3Weights    = models.detection.FasterRCNN_MobileNet_V3_Large_320_FPN_Weights.DEFAULT
-    modelDetector = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(weights = fasterRCNNMobileNetv3Weights)
+    modelWeights  = models.detection.FasterRCNN_MobileNet_V3_Large_320_FPN_Weights.DEFAULT
+    modelDetector = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(weights = modelWeights)
+elif modelType == MODEL_TYPE_FCOS_RESNET50:
+    modelWeights  = models.detection.FCOS_ResNet50_FPN_Weights.DEFAULT
+    modelDetector = models.detection.fcos_resnet50_fpn(weights = modelWeights)
+elif modelType == MODEL_TYPE_RETINANET:
+    modelWeights  = models.detection.RetinaNet_ResNet50_FPN_V2_Weights.DEFAULT
+    modelDetector = models.detection.retinanet_resnet50_fpn_v2(weights = modelWeights)
+elif modelType == MODEL_TYPE_SSD_LITE:
+    modelWeights  = models.detection.SSDLite320_MobileNet_V3_Large_Weights.DEFAULT
+    modelDetector = models.detection.ssdlite320_mobilenet_v3_large(weights = modelWeights)
 
 # 
 modelDetector.eval() #<! Inference mode
@@ -213,6 +226,8 @@ for ii, itemBox in enumerate(lBoxPred):
     if len(itemBox) > 0:
         lPredImg.append(lImg[ii])
         lPredBox.append(itemBox)
+
+print(f'Number of detected cases: {len(lPredImg)}')
 
 hF = PlotImagesBBox(lImg, lBoxPred, numRows = 4, numCols = 4)
 

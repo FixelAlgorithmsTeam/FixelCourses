@@ -10,8 +10,16 @@ from torch import nn
 from torch.utils.data import Dataset
 from torchvision import datasets, models, transforms
 
+# Computer Vision
+from skimage.io import imread
+
 # Miscellaneous
-from typing import Any, Callable, List, Optional, Union, Tuple
+import os
+from typing import Any, Callable, Dict, List, Optional, Union, Tuple
+
+from AuxFun import *
+
+DEFAULT_IMG_FORMAT = ['.png']
 
 # Model
 
@@ -114,3 +122,68 @@ class ShipsImgLoader(Dataset):
             return self.imgTransform(tI)
         else:
             return transforms.functional.to_tensor(tI) #<! Assuming data is UInt8 or properly scaled
+
+
+class PascalVocLoader(Dataset):
+    def __init__(self, imgFolderPath: str, annFolderPath: str, dataTransform: Callable = None, lImgFormat: List = DEFAULT_IMG_FORMAT):
+        
+        lImgFolder = os.listdir(imgFolderPath)
+        lImg = []
+        for imgFileName in lImgFolder:
+            fileFullPath = os.path.join(imgFolderPath, imgFileName)
+            if os.path.isfile(fileFullPath):
+                fileName, fileExt = os.path.splitext(imgFileName)
+                if fileExt in lImgFormat:
+                    mI = imread(fileFullPath)
+                    lImg.append(mI[:, :, :3]) #<! Remove Alpha channel (Some images have it)
+
+        lAnnFolder = os.listdir(annFolderPath)
+        lBox = []
+
+        for imgFileName in lAnnFolder:
+            fileFullPath = os.path.join(annFolderPath, imgFileName)
+            if os.path.isfile(fileFullPath):
+                fileName, fileExt = os.path.splitext(imgFileName)
+                if fileExt == '.xml':
+                    lBox.append(ExtractBoxXml(fileFullPath))
+        
+        self.lImg           = lImg
+        self.lBox           = lBox
+        self.dataTransform  = dataTransform
+
+    def __len__(self) -> int:
+        return len(self.lImg)
+    
+    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor]:
+
+        mI      = self.lImg[idx]
+        lBox    = self.lBox[idx]
+
+        return self.__transform__(mI, lBox)
+    
+    def __transform__(self, mI: np.ndarray, lBox: List) -> Tuple[torch.Tensor, List]:
+        
+        if self.dataTransform is not None:
+            return self.dataTransform(mI, lBox)
+        else:
+            return transforms.functional.to_tensor(mI), torch.tensor(lBox)
+
+
+class TorchObjDetectionCollateFn():
+    # Supports a single class of bounding boxes
+    def __init__(self, classId: int = 1):
+        
+        self.classId = classId
+    
+    def __call__(self, batchData: List[Tuple]) -> Tuple[List[torch.Tensor], List[Dict]]:
+        
+        lTarget = []
+        lImg    = []
+        for tI, tBox in batchData:
+            dTarget = {}
+            dTarget['boxes']  = tBox
+            dTarget['labels'] = torch.tensor(self.classId).repeat(tBox.shape[0])
+            lTarget.append(dTarget)
+            lImg.append(tI)
+
+        return lImg, lTarget
