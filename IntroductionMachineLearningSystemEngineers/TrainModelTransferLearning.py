@@ -57,7 +57,7 @@ import random
 import time
 import xml.etree.ElementTree as ET
 # import warnings
-# import yaml
+import yaml
 
 
 # Visualization
@@ -125,7 +125,7 @@ modelName       = 'FAShipDetector'
 modelVersion    = '0.1.000'
 confFileName    = 'ShipDetectorConf.yaml'
 
-debugMode = False
+debugMode = True
 
 # Data
 imgFolder = 'Images'
@@ -146,13 +146,13 @@ modelType = MODEL_TYPE_MOBILENET
 numClass  = 2 #<! Background + Ship
 
 # Trainer
-numEpochs           = 175
+numEpochs           = 20
 accelMode           = 'auto'
 accumulateBatches   = 10
 
 dOptConf = {
     'optimizer_type': OptimizerType.ADAM,
-    'lr': 0.0075
+    'lr': 0.00075
 }
 
 dSchedConf = {
@@ -169,9 +169,9 @@ dSchedConf = {
 }
 
 # Debug Mode
-debugModeTrainNumSamples    = 500
-debugModeValNumSamples      = 50
-debugModeNumEpochs          = 2
+debugModeTrainNumSamples    = 50
+debugModeValNumSamples      = 5
+debugModeNumEpochs          = 20
 
 displayValBatches = 3
 
@@ -225,20 +225,20 @@ hF = PlotImagesBBox(lImg, lBox, numRows = numRows, numCols = numCols)
 # %% Model
 
 if modelType == MODEL_TYPE_RESNET_50:
-    modelWeights  = models.detection.FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT
-    modelDetector = models.detection.fasterrcnn_resnet50_fpn_v2(weights = modelWeights, num_classes = numClass)
+    backBoneWeights = models.ResNet50_Weights.DEFAULT
+    modelDetector   = models.detection.fasterrcnn_resnet50_fpn_v2(weights = None, num_classes = numClass, weights_backbone = backBoneWeights)
 elif modelType == MODEL_TYPE_MOBILENET:
-    modelWeights  = models.detection.FasterRCNN_MobileNet_V3_Large_320_FPN_Weights.DEFAULT
-    modelDetector = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(weights = modelWeights, num_classes = numClass)
+    backBoneWeights = models.MobileNet_V3_Large_Weights.DEFAULT
+    modelDetector   = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(weights = None, num_classes = numClass, weights_backbone = backBoneWeights)
 elif modelType == MODEL_TYPE_FCOS_RESNET50:
-    modelWeights  = models.detection.FCOS_ResNet50_FPN_Weights.DEFAULT
-    modelDetector = models.detection.fcos_resnet50_fpn(weights = modelWeights, num_classes = numClass)
+    backBoneWeights = models.ResNet50_Weights.DEFAULT
+    modelDetector   = models.detection.fcos_resnet50_fpn(weights = None, num_classes = numClass, weights_backbone = backBoneWeights)
 elif modelType == MODEL_TYPE_RETINANET:
-    modelWeights  = models.detection.RetinaNet_ResNet50_FPN_V2_Weights.DEFAULT
-    modelDetector = models.detection.retinanet_resnet50_fpn_v2(weights = modelWeights, num_classes = numClass)
+    backBoneWeights = models.ResNet50_Weights.DEFAULT
+    modelDetector   = models.detection.retinanet_resnet50_fpn_v2(weights = None, num_classes = numClass, weights_backbone = backBoneWeights)
 elif modelType == MODEL_TYPE_SSD_LITE:
-    modelWeights  = models.detection.SSDLite320_MobileNet_V3_Large_Weights.DEFAULT
-    modelDetector = models.detection.ssdlite320_mobilenet_v3_large(weights = modelWeights, num_classes = numClass)
+    backBoneWeights = models.MobileNet_V3_Large_Weights.DEFAULT
+    modelDetector   = models.detection.ssdlite320_mobilenet_v3_large(weights = None, num_classes = numClass, weights_backbone = backBoneWeights)
 
 
 
@@ -262,14 +262,13 @@ dModelYaml = {}
 dModelYaml['modelName']     = modelName
 dModelYaml['modelVersion']  = modelVersion
 dModelYaml['modelFile']     = chkPtFileName
-dModelYaml['numChannel']    = numChannel
-dModelYaml['numClass']      = numClassNet
-dModelYaml['filterSize']    = [val.item() for val in filterSize] #<! Convert NumPy values to Python values
+dModelYaml['modelType'] = modelType
+dModelYaml['backBoneWeights'] = str(backBoneWeights)
+dModelYaml['numClass']      = numClass
 if dataAug is None:
-    dModelYaml['transform']     = 'None'
+    dModelYaml['transform'] = 'None'
 else:
-    dModelYaml['transform']     = {'ClassName': dataAug.name, 'Version': dataAug.version}
-dModelYaml['segThr']        = segThr
+    dModelYaml['transform'] = {'ClassName': dataAug.name, 'Version': dataAug.version}
 dModelYaml['runDevice']     = 'cpu'
 dModelYaml['optConf']       = dOptConf
 dModelYaml['schedConf']     = dSchedConf
@@ -283,21 +282,21 @@ hFile = open(os.path.join(modelTrainer.log_dir, confFileName), 'w', encoding = '
 yaml.safe_dump(dModelYaml, hFile)
 hFile.close()
 
-# %% Display Predictions
+# %% Display Predictions (Validation Data)
 
-for ii, (imgFeaturesBatch, imgLabelsBatch) in enumerate(dlVal):
+# for ii, (lImg, lTarget) in enumerate(dlVal):
     
-    numSamples = imgFeaturesBatch.shape[0]
-    imgOutBatch = modelTrainer.model.forward(imgFeaturesBatch)
+#     numSamples = len(lImg)
+#     lPred = modelTrainer.model.forward(lImg)
     
-    for jj in range(numSamples):
-        inputImg    = imgFeaturesBatch[jj].clone().detach().cpu().numpy()
-        lablesImg   = imgLabelsBatch[jj].clone().detach().cpu().numpy()
-        outImg      = imgOutBatch[jj].clone().detach().cpu().numpy()
-        hF = PlotNetPred(inputImg, lablesImg, outImg, binClassThr = segThr)
+#     for jj in range(numSamples):
+#         inputImg    = lImg[jj].clone().detach().cpu().numpy()
+#         lBox        = lTarget[jj]['boxes'].tolist()
+#         lBoxPred    = lPred[jj]['boxes'].tolist()
+#         hF = PlotNetPred(inputImg, lablesImg, outImg, binClassThr = segThr)
     
-    if (ii + 1) == displayValBatches:
-        break
+#     if (ii + 1) == displayValBatches:
+#         break
 
 
 # %%

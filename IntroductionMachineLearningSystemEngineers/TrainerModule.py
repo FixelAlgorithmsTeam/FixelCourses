@@ -37,7 +37,8 @@ class LitModel(pl.LightningModule):
 
         # self.save_hyperparameters() #<! Cause issues with loading the data
 
-        self.example_input_array = [torch.rand(3, 100, 100), torch.rand(3, 200, 200)]
+        # self.example_input_array = [torch.rand(3, 100, 100), torch.rand(3, 200, 200)]
+        self.example_input_array = [[torch.rand(3, 100, 100)]] #<! List in a list since a list is splatted
         
         trainMapScore = MeanAveragePrecision(box_format = 'xyxy', iou_type = 'bbox')
         valMapScore   = MeanAveragePrecision(box_format = 'xyxy', iou_type = 'bbox')
@@ -58,13 +59,13 @@ class LitModel(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         lImg, lTarget = batch
         
-        dLoss   = self(lImg, lTarget) #<! Loss is built in the model
+        dLoss   = self.modelNet(lImg, lTarget) #<! Loss is built in the model
         lossVal = sum(loss for loss in dLoss.values())
         
-        lossCls         = dLoss['loss_classifier'].detach().numpy()
-        lossBoxReg      = dLoss['loss_box_reg'].detach().numpy()
-        # lossObj         = dLoss['loss_objectness'].detach().numpy()
-        # lossRpnBoxReg   = dLoss['loss_rpn_box_reg'].detach().numpy()
+        lossCls         = dLoss['loss_classifier'].detach()
+        lossBoxReg      = dLoss['loss_box_reg'].detach()
+        # lossObj         = dLoss['loss_objectness'].detach()
+        # lossRpnBoxReg   = dLoss['loss_rpn_box_reg'].detach()
 
         self.log('train_loss', lossVal, prog_bar = True, on_epoch = True)
         # self.log_dict(dLoss, prog_bar = True, on_epoch = True)
@@ -78,7 +79,7 @@ class LitModel(pl.LightningModule):
         lImg, lTarget = batch
         lPred = self(lImg)
 
-        self.valMapScore.update(lImg, lTarget)
+        self.valMapScore.update(lPred, lTarget)
         dMapScore = self.valMapScore.compute()
 
         # https://scribe.rip/3f330efe697b
