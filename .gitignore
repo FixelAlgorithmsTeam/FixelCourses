@@ -51,6 +51,7 @@ Archive/*
 *.pth
 .ipynb_checkpoints*
 *.npz
+*.npy
 
 # Miscellaneous 
 Report*.html
