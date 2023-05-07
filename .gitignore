@@ -11,6 +11,7 @@ Archive/*
 **/catboost_*/*
 **/TensorBoardLog/*
 **/DetectShips/*
+**/HW*/*
 
 # Archives
 *.zip
