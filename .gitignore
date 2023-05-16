@@ -53,6 +53,10 @@ Archive/*
 .ipynb_checkpoints*
 *.npz
 *.npy
+*TMP*.ipynb
+*TMP*.py
+*TEMP*.ipynb
+*TEMP*.py
 
 # Miscellaneous 
 Report*.html
