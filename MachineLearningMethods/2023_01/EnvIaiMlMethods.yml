@@ -9,6 +9,7 @@ dependencies:
   - scipy
   - pandas
   - scikit-learn
+  - umap-learn
   - jupyter
   - ipykernel
   - ipywidgets
