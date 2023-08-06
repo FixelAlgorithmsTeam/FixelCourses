@@ -1,0 +1,100 @@
+/*
+Fixel Algorithms - Report Template
+
+Designed for MarkDown Preview for Sublime Text (https://github.com/facelessuser/MarkdownPreview).
+
+
+Release Notes:
+ -  0.1.000     08/01/2022  Royi Avital     RoyiAvital@fixelalgorithms.com
+    *   First release version.
+*/
+
+body {
+    counter-reset: h1counter;
+}
+
+h1 {
+    counter-reset: h2counter;
+}
+
+h2 {
+    counter-reset: h3counter;
+}
+
+h3 {
+    counter-reset: h4counter;
+}
+
+h2:before {
+    counter-increment: h2counter;
+    content: counter(h2counter) ".\0000a0\0000a0";
+}
+
+h3:before {
+    content: counter(h2counter) "." counter(h3counter) ".\0000a0\0000a0"; /* \0000a0 Space in CSS */
+    counter-increment: h3counter;
+}
+
+h4:before {
+    content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) ".\0000a0\0000a0"; /* \0000a0 Space in CSS */
+    counter-increment: h4counter;
+}
+
+.toctitle {
+	font-size: 1.75em;
+	line-height: 1.75;
+	font-weight: bold;
+}
+
+/*
+https://stackoverflow.com/a/67650372
+https://stackoverflow.com/a/35567073
+*/
+
+.toc ul { counter-reset: outItem; list-style: none }
+.toc ul > li{ counter-reset: nestedItem }
+.toc ul > li:before { content: counters(outItem, ".") ". "; counter-increment: outItem; margin-left: -2em; }
+
+/* https://github.com/Python-Markdown/markdown/issues/1037 */
+/*
+.toc ul {
+  counter-reset: item;
+}
+.toc li {
+  display: block;
+}
+.toc li:before {
+  content: counters(item, ".") " ";
+  counter-increment: item;
+}
+*/
+
+/* Figure Counters */
+
+.markdown-body {
+	counter-reset: FiguresCounter;
+}
+
+figure {
+	counter-increment: FiguresCounter;
+	margin: 0 0 2em 0;
+	background-color: lightgrey;
+	color: grey;
+}
+
+figure figcaption h4 {
+	margin: 0px;
+	text-align: center;
+	color: grey;
+}
+
+figure figcaption h4:before {
+	content: 'Fig. ' counter(FiguresCounter, decimal-leading-zero) ' - ';
+}
+
+figure figcaption p {
+	margin: 0px;
+	text-align: center;
+}
+
+/* Figure Counters */
