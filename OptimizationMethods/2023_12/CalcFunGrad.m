@@ -79,8 +79,8 @@ DIFF_MODE_COMPLEX   = 4;
 numElements = size(vX, 1);
 
 objFunRef   = hObjFun(vX);
-vG          = zeros([numElements, 1]);
-vPertVal    = zeros([numElements, 1]); %<! Perturbation
+vG          = zeros(numElements, 1);
+vPertVal    = zeros(numElements, 1); %<! Perturbation
 
 switch(diffMode)
     case(DIFF_MODE_FORWARD)

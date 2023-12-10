@@ -8,5 +8,5 @@
 
 [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=FixelAlgorithmsTeam/FixelCourses)
 
-This folder is dedicated to the `Optimization Methods` which took place on December 2023.  
+This folder is dedicated to the course [`Optimization Methods`](https://fixelalgorithms.gitlab.io/courses/optimizationmethods) which took place on December 2023.  
 The course was conducted in MATLAB.
