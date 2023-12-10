@@ -110,7 +110,7 @@ for ii = 1:numIterations
     vObjVal(ii) = hObjFun(mX(:, ii));
 end
 
-mObjVal = 20 * log10(abs(vObjVal - objValRef) / max(abs(objValRef), sqrt(eps())));
+vObjVal = 20 * log10(abs(vObjVal - objValRef) / max(abs(objValRef), sqrt(eps())));
 
 
 %% Display Results
@@ -120,7 +120,7 @@ figureIdx = figureIdx + 1;
 hFigure = figure('Position', figPosLarge);
 hAxes   = axes(hFigure);
 set(hAxes, 'NextPlot', 'add');
-hLineObj = plot(1:numIterations, mObjVal, 'DisplayName', 'Adaptive Step Size');
+hLineObj = plot(1:numIterations, vObjVal, 'DisplayName', 'Adaptive Step Size');
 set(hLineObj, 'LineWidth', lineWidthNormal);
 
 set(get(hAxes, 'Title'), 'String', {['Objective Function Convergence with Adaptive Step Size']}, 'FontSize', fontSizeTitle);
