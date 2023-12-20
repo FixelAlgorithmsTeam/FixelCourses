@@ -1,6 +1,6 @@
 % Optimization Methods
-% Convex Optimization - Consytained Optimization - DCP
-% Calculating the minimum aread circle.
+% Convex Optimization - Constraint Optimization - DCP
+% Calculating the minimum area circle.
 % The model is given by:
 % $$ \arg \min_{c, r} r $$
 % $$ subject to || xi - c ||_2 <= r
@@ -97,8 +97,6 @@ disp(['CVX Solution Summary']);
 disp(['The CVX Solver Status - ', cvx_status]);
 disp(['The Run Time Is Given By - ', num2str(runTime), ' [Sec]']);
 disp([' ']);
-
-
 
 
 %% Display Results

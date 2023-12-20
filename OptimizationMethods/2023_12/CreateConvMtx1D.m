@@ -104,7 +104,7 @@ vV = zeros(numElements * kernelLength, 1);
 for jj = 1:jjMax
     for ii = 1:iiMax
         if((ii + jj - 1 >= rowIdxFirst) && (ii + jj - 1 <= rowIdxLast))
-            % Valid otuput matrix row index
+            % Valid output matrix row index
             mtxIdx = mtxIdx + 1;
             vI(mtxIdx) = ii + jj - rowIdxFirst;
             vJ(mtxIdx) = jj;
