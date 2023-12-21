@@ -21,7 +21,7 @@ figureCounterSpec   = '%04d';
 generateFigures = ON;
 
 
-%% Question 004 Part I
+%% Drawing
 
 numPts          = 1000;
 circleRadius    = 1;
