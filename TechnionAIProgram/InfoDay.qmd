@@ -1,0 +1,119 @@
+---
+title: "Technion AI Program"
+subtitle: "Online Info Session"
+author: "Royi Avital"
+editor:
+  render-on-save: false
+execute:
+  freeze: true
+format: 
+  revealjs:
+    width: 1200
+    height: 800
+    footer: "[Fixel Algorithms](https://fixelalgorithms.gitlab.io)"
+    logo: "https://i.imgur.com/04DUiXq.png"
+    toc: true
+    toc-title: Agenda
+    toc-depth: 2
+    margin: 0.05
+    navigation-mode: vertical
+revealjs-plugins:
+  - attribution
+filters:
+  - roughnotation
+---
+
+# The AI Program
+
+## Royi Avital
+
+ - MSc in EE from the Technion.
+ - Founder of [_Fixel Algorithms_](https://fixelalgorithms.gitlab.io/)  
+   Consulting, Outsourcing and Training for Algorithms.
+ - Algorithm team leader for many years in the defense industry.
+ - Specializations: Signal Processing, Image Processing, Computer Vision, Machine Learning (Deep Learning), Optimization, Estimation...
+ - Teaching: Technion, Reichman Univeristy, IAI, etc...
+ - Contact: `royia@technion.ac.il`.
+
+## Leading the AI Program
+
+:::{.incremental}
+ * {{< iconify uil image-edit >}} Jointly .
+ * {{< iconify uil image-edit >}} Building the Syllabus.  
+ * {{< iconify devicon scikitlearn >}} Building the tutoring team.
+ * {{< iconify devicon scikitlearn >}} Building the .
+:::
+
+# The Program
+
+## Syllabus {auto-animate=true}
+
+:::{.incremental style="font-size: 70%;"}
+ * Essentials
+   * Linear Algebra.
+   * Probability.
+   * Optimization.
+   * Estimation.
+   * _Scientific_ Python.
+   * Development Environment.
+ * Classic Machine Learning
+   * Concepts.
+   * Supervised
+     * Classification
+     * Regression
+   * Unsupervised
+     * Clustering
+     * Dimensionality Reduction
+     * Anomaly Detection
+:::
+
+## Syllabus {.unlisted auto-animate=true}
+
+:::{.incremental style="font-size: 70%;"}
+ * Deep Learning - Neural Networks
+   * Motivation & Concept.
+   * components of Deep Learning Framework.
+   * Feed Forward Networks.
+   * Regularization.
+   * Auto Encoders.
+ * Deep Learning - Computer Vision
+   * Architectures.
+   * Augmentation.
+   * Transfer Learning.
+   * Detection, Segmentation, Labeling.
+   * Production: ONNX, Lightning.
+ * Deep Learning - Language Models
+   * Intro to NLP.
+   * RNN Model.
+   * Attention Models.
+   * Hugging Face Workshop.
+:::
+
+## Projects
+
+ - There are 2 projects:
+   - Classic Machine Learning.
+   - Deep Learning (Computer Vision / LLM).
+ - The projects should be about _real world problem_.
+ - The projects should imitata, in a _small time scale_, a project in the industry.
+ - Projects in doubles / triplets.
+
+## Pre
+
+## The Learning Material
+
+ - _Self Contained_ slides.
+ - Exercises in class based on _Jupyter Notebooks_.
+ - Home exercises based on _Jupyter Notebooks_.
+ - Learning Session / Exercise Session.
+
+# Prerequisites
+
+## What Is Different?
+
+ - The people.
+ - The background alignment.
+ - The scale.
+
+
+
