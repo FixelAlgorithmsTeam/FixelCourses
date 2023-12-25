@@ -10,8 +10,8 @@ format:
   revealjs:
     width: 1200
     height: 800
-    footer: "[Fixel Algorithms](https://fixelalgorithms.gitlab.io)"
-    logo: "https://i.imgur.com/04DUiXq.png"
+    footer: "[Technion - The School of Continuing Education](https://cont-edu.technion.ac.il)"
+    logo: "https://i.imgur.com/8Eg8S2J.png"
     toc: true
     toc-title: Agenda
     toc-depth: 2
@@ -23,26 +23,39 @@ filters:
   - roughnotation
 ---
 
-# The AI Program
+# Building The AI Program
+
+## Building the AI Program
+
+:::{.incremental}
+ * {{< iconify pajamas issue-type-objective >}} Setting the _objective_ - Capable _real world_ AI practitioners.
+ * {{< iconify fluent people-audience-20-filled >}} Defining the target _audience_.  
+ * {{< iconify game-icons team-idea >}} Building the tutoring _team_.
+ * {{< iconify clarity list-solid >}} Building the _syllabus_.
+:::
+
+. . . 
+
+:::{.callout-tip title="The Initiative"}
+
+The AI Program was initiative by the industry, asking for a program to counter the shortage in highly capable AI practitioners.
+
+:::
 
 ## Royi Avital
 
  - MSc in EE from the Technion.
- - Founder of [_Fixel Algorithms_](https://fixelalgorithms.gitlab.io/)  
+ - Owner of [_Fixel Algorithms_](https://fixelalgorithms.gitlab.io)  
    Consulting, Outsourcing and Training for Algorithms.
  - Algorithm team leader for many years in the defense industry.
  - Specializations: Signal Processing, Image Processing, Computer Vision, Machine Learning (Deep Learning), Optimization, Estimation...
+ - AI Director of [ValidIt AI](https://validit.ai).
  - Teaching: Technion, Reichman Univeristy, IAI, etc...
  - Contact: `royia@technion.ac.il`.
 
-## Leading the AI Program
+## Eilam Shapira
 
-:::{.incremental}
- * {{< iconify uil image-edit >}} Jointly .
- * {{< iconify uil image-edit >}} Building the Syllabus.  
- * {{< iconify devicon scikitlearn >}} Building the tutoring team.
- * {{< iconify devicon scikitlearn >}} Building the .
-:::
+ - 
 
 # The Program
 
@@ -95,10 +108,18 @@ filters:
    - Classic Machine Learning.
    - Deep Learning (Computer Vision / LLM).
  - The projects should be about _real world problem_.
- - The projects should imitata, in a _small time scale_, a project in the industry.
+ - The projects should imitate, in a _small time scale_, a project in the industry.
+ - During the time dedicated for projects the tutors will be available for guidance.
+ - The task can be either initiative of the team or proposed by the tutors.
  - Projects in doubles / triplets.
 
-## Pre
+. . . 
+
+:::{.callout-note title="The Objective"}
+
+Gaining experience in solving _real world_ problems using AI.
+
+:::
 
 ## The Learning Material
 
@@ -107,13 +128,62 @@ filters:
  - Home exercises based on _Jupyter Notebooks_.
  - Learning Session / Exercise Session.
 
-# Prerequisites
+## Prerequisites
+
+:::{.incremental}
+ * {{< iconify ic twotone-science >}} Some _science_ or a like background.
+ * {{< iconify solar programming-bold >}} Some knowledge in _programming_ (Python is recommended).  
+ * {{< iconify arcticons math-wiki >}} No fear of _Math_.
+ * {{< iconify fluent-mdl2 work-flow >}} Willing to work _hard_.
+ * {{< iconify fluent quiz-new-20-filled >}} Above 60 in the [entrance quiz](https://hackmd.io/@Fixel/HyJT6urya).
+:::
+
+. . . 
+
+:::{.callout-note title="Expectations"}
+
+The motivation behind the quiz is about aligning expectations.
+
+:::
+
+# Why the Technion AI Program?
+
+## The Background Mini Courses
+
+:::{.incremental}
+ * {{< iconify arcticons deepstash >}} We want to go deeper in the understanding level.
+ * {{< iconify arcticons algorithms >}} We want to understand the algorithms.  
+ * {{< iconify clarity language-solid >}} We need a language for that: Programming & Mathematics.
+ * {{< iconify carbon scis-transparent-supply >}} No shortcuts, we'll supply it.
+ * {{< iconify arcticons best-connect >}} It will make the class homogenous in its capabilities.
+:::
+
+. . .
+
+:::{.callout-note title="Intuition"}
+
+The deeper understanding is the source of intuition and problem solving capabilities.
+
+:::
 
 ## What Is Different?
 
- - The people.
- - The background alignment.
- - The scale.
+:::{.incremental}
+ * {{< iconify ph student-fill >}} The students.
+ * {{< iconify game-icons flag-objective >}} The objective  
+ * {{< iconify codicon symbol-method >}} The method.
+ * {{< iconify ic sharp-scale >}} The scale.
+:::
+
+. . .
+
+
+:::{.callout-important title="Why?"}
+
+ - We start high.
+ - We aim higher.
+
+:::
 
 
 
