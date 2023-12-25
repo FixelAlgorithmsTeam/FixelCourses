@@ -1,6 +1,6 @@
 % Optimization Methods
 % Convex Optimization - Constraint Optimization - DCP
-% Calculating the minimum aread circle.
+% Calculating the minimum area circle.
 % The model is given by:
 % $$ \arg \min_{c, r} r $$
 % $$ subject to || xi - c ||_2 <= r
