@@ -28,7 +28,7 @@ filters:
 ## Building the AI Program
 
 :::{.incremental}
- * {{< iconify pajamas issue-type-objective >}} Setting the _objective_ - Capable _real world_ AI practitioners.
+ * {{< iconify pajamas issue-type-objective >}} Setting the _objective_ - Capable _real world_ AI developers / practitioners.
  * {{< iconify fluent people-audience-20-filled >}} Defining the target _audience_.  
  * {{< iconify game-icons team-idea >}} Building the tutoring _team_.
  * {{< iconify clarity list-solid >}} Building the _syllabus_.
@@ -38,7 +38,7 @@ filters:
 
 :::{.callout-tip title="The Initiative"}
 
-The AI Program was initiative by the industry, asking for a program to counter the shortage in highly capable AI practitioners.
+The AI Program was initiative by the industry, asking for a program to counter the shortage in highly capable AI developers / practitioners.
 
 :::
 
@@ -48,14 +48,17 @@ The AI Program was initiative by the industry, asking for a program to counter t
  - Owner of [_Fixel Algorithms_](https://fixelalgorithms.gitlab.io)  
    Consulting, Outsourcing and Training for Algorithms.
  - Algorithm team leader for many years in the defense industry.
- - Specializations: Signal Processing, Image Processing, Computer Vision, Machine Learning (Deep Learning), Optimization, Estimation...
+ - Specializations: Signal and Image Processing, Computer Vision, Machine Learning (Deep Learning), Optimization, Estimation...
  - AI Director of [ValidIt AI](https://validit.ai).
  - Teaching: Technion, Reichman Univeristy, IAI, etc...
  - Contact: `royia@technion.ac.il`.
 
 ## Eilam Shapira
 
- - 
+ - PhD Student in Data Science and Engineering.
+ - Specialization in _Generalization Methods for Training Large Language Model Based Agents in Non Cooperative Games_.
+ - Previously Data Scientist at [Augury](https://www.augury.com).
+ - Contact `eilamshapira@campus.technion.ac.il`.
 
 # The Program
 
@@ -63,10 +66,8 @@ The AI Program was initiative by the industry, asking for a program to counter t
 
 :::{.incremental style="font-size: 70%;"}
  * Essentials
-   * Linear Algebra.
-   * Probability.
-   * Optimization.
-   * Estimation.
+   * Linear Algebra & Optimization.
+   * Probability & Estimation.
    * _Scientific_ Python.
    * Development Environment.
  * Classic Machine Learning
@@ -85,20 +86,18 @@ The AI Program was initiative by the industry, asking for a program to counter t
 :::{.incremental style="font-size: 70%;"}
  * Deep Learning - Neural Networks
    * Motivation & Concept.
-   * components of Deep Learning Framework.
+   * Components and Architecture of Deep Learning Framework.
    * Feed Forward Networks.
-   * Regularization.
-   * Auto Encoders.
+   * Training & Regularization.
  * Deep Learning - Computer Vision
    * Architectures.
-   * Augmentation.
-   * Transfer Learning.
-   * Detection, Segmentation, Labeling.
-   * Production: ONNX, Lightning.
+   * Training Phase & Augmentation.
+   * Transfer Learning & Active Learning.
+   * Detection, Segmentation, Labeling, Generative.
+   * Production.
  * Deep Learning - Language Models
-   * Intro to NLP.
-   * RNN Model.
-   * Attention Models.
+   * Intro to Natural Language Processing (NLP).
+   * RNN & Attention Models.
    * Hugging Face Workshop.
 :::
 
@@ -170,7 +169,7 @@ The deeper understanding is the source of intuition and problem solving capabili
 
 :::{.incremental}
  * {{< iconify ph student-fill >}} The students.
- * {{< iconify game-icons flag-objective >}} The objective  
+ * {{< iconify game-icons flag-objective >}} The objective.  
  * {{< iconify codicon symbol-method >}} The method.
  * {{< iconify ic sharp-scale >}} The scale.
 :::
