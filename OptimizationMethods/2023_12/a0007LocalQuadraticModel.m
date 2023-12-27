@@ -25,6 +25,7 @@ figureCounterSpec   = '%04d';
 
 generateFigures = OFF;
 
+
 %% Constants
 
 DIFF_MODE_FORWARD   = 1;
@@ -71,58 +72,88 @@ set(get(hA, 'ZLabel'), 'String', {['y_i']}, 'FontSize', fontSizeAxis);
 %% Build Linear Model & Estimate Parameters
 % if mA was known then the model is:
 % y_i = vX_i.' * mA * vX_i * vB.' * vX_i + c
-% Think of calculating vY in a vectorized way vs. in a loop.
 
-% Build the model as:
-% mH * vW = vZ
+% 1. Build the linear model matrix:
+%    mH * vW = mY(:)
+% 2. Solve the Least Squares model for the parameters.
 
 %----------------------------<Fill This>----------------------------%
 gridLength = length(vX);
 numGridPts = gridLength * gridLength;
 vX1 = repmat(vX, gridLength, 1);
 vX2 = repelem(vX, gridLength);
-mS = [ones(numGridPts, 1), vX1, vX2, vX1 .^ 2, vX2 .^ 2];
-vW = mS \ mY(:);
+mH = [ones(numGridPts, 1), vX1, vX2, vX1 .^ 2, vX2 .^ 2, vX1 .* vX2];
+vW = mH \ mY(:);
 %-------------------------------------------------------------------%
 
 
 
 %% Find Extrema
 % 1. Extract `mA`, `vB` and `valC` from the parameters.
-% 2. 
 
+%----------------------------<Fill This>----------------------------%
+mA      = [2 * vW(4), vW(6); vW(6), 2 * vW(5)];
+vB      = [vW(2); vW(3)];
+valC    = vW(1);
+%-------------------------------------------------------------------%
 
-%% Analysis
+% Calculating the Estimated Values
+% Vectorized
+mX = [vX1, vX2];
+vYEst = 0.5 * diag(mX * mA * mX.') + mX * vB + valC;
 
-% Reference Solution
-vXRef       = mA \ vB;
-objValRef   = hObjFun(vXRef);
-
-for ii = 1:numIterations
-    vObjVal(ii) = hObjFun(mX(:, ii));
+% Loop
+vYEst = zeros(numGridPts, 1);
+for ii = 1:numGridPts
+    vYEst(ii) = 0.5 * mX(ii, :) * mA * mX(ii, :).' + mX(ii, :) * vB + valC;
 end
 
-vObjVal = 20 * log10(abs(vObjVal - objValRef) / max(abs(objValRef), sqrt(eps())));
+% Linear Model
+% vYEst = mH * vW;
+
+mYEst = reshape(vYEst, gridLength, gridLength);
+
+% Find Arg Max
+
+%----------------------------<Fill This>----------------------------%
+vXMax = -mA \ vB;
+%-------------------------------------------------------------------%
 
 
 %% Display Results
 
 figureIdx = figureIdx + 1;
 
-hFigure = figure('Position', figPosLarge);
-hAxes   = axes(hFigure);
-set(hAxes, 'NextPlot', 'add');
-hLineObj = plot(1:numIterations, vObjVal, 'DisplayName', 'Adaptive Step Size');
-set(hLineObj, 'LineWidth', lineWidthNormal);
+hF = figure('Position', figPosLarge);
+hA = axes(hF);
+set(hA, 'NextPlot', 'add');
+hSurfObj = surf(vX, vX, mY);
+set(hSurfObj, 'EdgeColor', 'none', 'FaceAlpha', 0.35);
+hSurfObj = surf(vX, vX, mYEst);
+set(hA, 'View', [-37.5, 30]);
+set(hSurfObj, 'EdgeColor', 'none', 'FaceAlpha', 0.85, 'FaceColor', 'r');
+set(get(hA, 'Title'), 'String', {['Local Quadratic Approximation']}, 'FontSize', fontSizeTitle);
+set(get(hA, 'XLabel'), 'String', {['x_1']}, 'FontSize', fontSizeAxis);
+set(get(hA, 'YLabel'), 'String', {['x_2']}, 'FontSize', fontSizeAxis);
+set(get(hA, 'ZLabel'), 'String', {['y_i']}, 'FontSize', fontSizeAxis);
 
-set(get(hAxes, 'Title'), 'String', {['Objective Function Convergence with Adaptive Step Size']}, 'FontSize', fontSizeTitle);
-set(get(hAxes, 'XLabel'), 'String', {['Iteration Index']}, 'FontSize', fontSizeAxis);
-set(get(hAxes, 'YLabel'), 'String', {['Relative Error [dB]']}, 'FontSize', fontSizeAxis, 'Interpreter', 'latex');
-
-hLegend = ClickableLegend();
+% hLegend = ClickableLegend();
 
 if(generateFigures == ON)
-    print(hFigure, ['Figure', num2str(figureIdx, figureCounterSpec), '.png'], '-dpng', '-r0'); %<! Saves as Screen Resolution
+    print(hF, ['Figure', num2str(figureIdx, figureCounterSpec), '.png'], '-dpng', '-r0'); %<! Saves as Screen Resolution
+end
+
+if(generateFigures == ON)
+    set(hF, 'Color', 'none');
+    set(hA, 'Color', 'none');
+    % set(hLegend, 'Color', 'none');
+    % set(hLegend, 'TextColor', 'white');
+    % set(hLegend, 'LineWidth', 3);
+    set(get(hA, 'Title'), 'Color', 'white');
+    set(hA, 'GridColor', 'white', 'MinorGridColor', 'white');
+    % saveas(hFigure,['Figure', num2str(figureIdx, figureCounterSpec), '.eps'], 'epsc');
+    % print(hFigure, ['Figure', num2str(figureIdx, figureCounterSpec), '.svg'], '-vector', '-dsvg');
+    exportgraphics(hF, ['Figure', num2str(figureIdx, figureCounterSpec), '.emf'], 'BackgroundColor', 'none');
 end
 
 
