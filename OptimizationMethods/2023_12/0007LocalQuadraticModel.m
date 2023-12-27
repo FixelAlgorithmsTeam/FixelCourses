@@ -1,8 +1,6 @@
 % Optimization Methods
 % Convex Optimization - Smooth Optimization - Local Quadratic Model
-% Findnig the max and arg max of the model.
-% The model is given by:
-% $$ 0.5 * || A x - y ||_2^2 $$
+% Interpolating sampled by a Quadratic Model.
 % References:
 %   1.  
 % Remarks:
@@ -10,7 +8,7 @@
 % TODO:
 % 	1.  C
 % Release Notes Royi Avital RoyiAvital@yahoo.com
-% - 1.0.000     10/12/2023
+% - 1.0.000     27/12/2023
 %   *   First release.
 
 
@@ -127,6 +125,7 @@ figureIdx = figureIdx + 1;
 hF = figure('Position', figPosLarge);
 hA = axes(hF);
 set(hA, 'NextPlot', 'add');
+plot(1:10);
 hSurfObj = surf(vX, vX, mY);
 set(hSurfObj, 'EdgeColor', 'none', 'FaceAlpha', 0.35);
 hSurfObj = surf(vX, vX, mYEst);
@@ -149,8 +148,8 @@ if(generateFigures == ON)
     % set(hLegend, 'Color', 'none');
     % set(hLegend, 'TextColor', 'white');
     % set(hLegend, 'LineWidth', 3);
-    set(get(hA, 'Title'), 'Color', 'white');
-    set(hA, 'GridColor', 'white', 'MinorGridColor', 'white');
+    % set(get(hA, 'Title'), 'Color', 'white');
+    % set(hA, 'GridColor', 'white', 'MinorGridColor', 'white');
     % saveas(hFigure,['Figure', num2str(figureIdx, figureCounterSpec), '.eps'], 'epsc');
     % print(hFigure, ['Figure', num2str(figureIdx, figureCounterSpec), '.svg'], '-vector', '-dsvg');
     exportgraphics(hF, ['Figure', num2str(figureIdx, figureCounterSpec), '.emf'], 'BackgroundColor', 'none');
