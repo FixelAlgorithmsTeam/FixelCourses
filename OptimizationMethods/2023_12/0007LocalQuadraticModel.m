@@ -69,7 +69,7 @@ set(get(hA, 'ZLabel'), 'String', {['y_i']}, 'FontSize', fontSizeAxis);
 
 %% Build Linear Model & Estimate Parameters
 % if mA was known then the model is:
-% y_i = vX_i.' * mA * vX_i * vB.' * vX_i + c
+% y_i = 0.5 * vX_i.' * mA * vX_i + vB.' * vX_i + c
 
 % 1. Build the linear model matrix:
 %    mH * vW = mY(:)
