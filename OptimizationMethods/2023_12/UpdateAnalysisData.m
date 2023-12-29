@@ -1,4 +1,4 @@
-function [ mObjFunValMse, mSolMse ] = UpdateAnalysisData( mObjFunValMse, mSolMse, mX, hObjFun, sCvxSol, solverIdx )
+function [ mObjFunValMse, mSolSe ] = UpdateAnalysisData( mObjFunValMse, mSolSe, mX, hObjFun, sCvxSol, solverIdx )
 % ----------------------------------------------------------------------------------------------- %
 % Remarks:
 %   1.  T
@@ -16,12 +16,13 @@ function [ mObjFunValMse, mSolMse ] = UpdateAnalysisData( mObjFunValMse, mSolMse
 cvxOptVal   = sCvxSol.cvxOptVal;
 vXCvx       = sCvxSol.vXCvx;
 
-numIterations = size(mSolMse, 1);
+numIterations = size(mSolSe, 1);
 
 for ii = 1:numIterations
 
     mObjFunValMse(ii, solverIdx)    = (hObjFun(mX(:, ii)) - cvxOptVal) ^ 2;
-    mSolMse(ii, solverIdx)          = sum((mX(:, ii) - vXCvx) .^ 2);
+    mSolSe(ii, solverIdx)           = sum((mX(:, ii) - vXCvx) .^ 2);
+    % mSolSe(ii, solverIdx)          = norm(mX(:, ii) - vXCvx, 'inf') ^ 2;
 
 end
 

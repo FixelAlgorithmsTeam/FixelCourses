@@ -32,13 +32,15 @@ STEP_SIZE_MODE_LINE_SEARCH  = 3;
 %% Parameters
 
 % Data
-numRows = 10;
-numCols = 3;
+numRows = 100;
+numCols = 30;
+
+paramLambda = 0.5;
 
 % Solver
 stepSizeMode    = STEP_SIZE_MODE_CONSTANT;
-stepSize        = 0.00075;
-numIterations   = 5000;
+stepSize        = 0.00035;
+numIterations   = 1500;
 
 % Visualization
 
@@ -49,9 +51,9 @@ numIterations   = 5000;
 mA = randn(numRows, numCols);
 vB = randn(numRows, 1);
 
-hObjFun     = @(vX) 0.5 * sum((mA * vX - vB) .^ 2);
+hObjFun     = @(vX) 0.5 * sum((mA * vX - vB) .^ 2) + paramLambda * norm(vX, 1);
 hGradFun    = @(vX) mA.' * (mA * vX - vB);
-hProxFun    = @(vX, paramLambda) vX; %<! Identity -> Gradient Descent
+hProxFun    = @(vY, paramLambda) max(abs(vY) - paramLambda, 0) .* sign(vY);
 
 mX = zeros(numCols, numIterations);
 
@@ -77,7 +79,7 @@ cvx_begin('quiet')
 % cvx_begin()
     % cvx_precision('best');
     variable vX(numCols, 1);
-    minimize( 0.5 * sum_square(mA * vX - vB));
+    minimize( 0.5 * sum_square(mA * vX - vB) + paramLambda * norm(vX, 1));
 cvx_end
 
 runTime = toc(hRunTime);
@@ -91,11 +93,11 @@ sCvxSol.cvxOptVal = hObjFun(vX);
 %% Solution by Gradient Descent
 
 solverIdx                   = solverIdx + 1;
-cLegendString{solverIdx}    = ['Solution by GD'];
+cLegendString{solverIdx}    = ['Solution by PGD'];
 
 hRunTime = tic();
 
-mX = GradientDescent(mX, hGradFun, stepSizeMode, stepSize);
+mX = ProxGradientDescent(mX, hGradFun, hProxFun, stepSize);
 
 runTime = toc(hRunTime);
 
@@ -106,7 +108,7 @@ DisplayRunSummary(cLegendString{solverIdx}, hObjFun, mX(:, end), runTime);
 %% Solution by Accelerated Gradient Descent
 
 solverIdx                   = solverIdx + 1;
-cLegendString{solverIdx}    = ['Solution by Accelerated GD'];
+cLegendString{solverIdx}    = ['Solution by Accelerated PGD'];
 
 hRunTime = tic();
 
@@ -141,18 +143,30 @@ hF = DisplayComparisonSummary(numIterations, mObjFunValMse, mSolMse, cLegendStri
 % hLegend = ClickableLegend();
 % set(hA, 'LooseInset', [0.05, 0.05, 0.05, 0.05]);
 
-% if(generateFigures == ON)
-%     set(hF, 'Color', 'none');
-%     set(hA, 'Color', 'none');
-%     set(hLegend, 'Color', 'none');
-%     set(hLegend, 'TextColor', 'white');
-%     set(hLegend, 'LineWidth', 3);
-%     set(get(hA, 'Title'), 'Color', 'white');
-%     set(hA, 'GridColor', 'white', 'MinorGridColor', 'white');
-%     % saveas(hFigure,['Figure', num2str(figureIdx, figureCounterSpec), '.eps'], 'epsc');
-%     % print(hFigure, ['Figure', num2str(figureIdx, figureCounterSpec), '.svg'], '-vector', '-dsvg');
-%     exportgraphics(hF, ['Figure', num2str(figureIdx, figureCounterSpec), '.emf'], 'BackgroundColor', 'none');
-% end
+if(generateFigures == ON)
+    set(hF, 'Color', 'none');
+    vHA = findobj(hF, '-depth', 1, 'type', 'axes');
+    for ii = 1:length(vHA)
+        hA = vHA(ii);
+        set(hA, 'Color', 'none');
+        set(get(hA, 'Title'), 'Color', 'white');
+        set(hA, 'GridColor', 'white', 'MinorGridColor', 'white');  
+        set(hA, 'XColor', [0.75, 0.75, 0.75]);
+        set(hA, 'YColor', [0.75, 0.75, 0.75]);
+        set(get(hA, 'XLabel'), 'Color', [0.75, 0.75, 0.75]);
+        set(get(hA, 'YLabel'), 'Color', [0.75, 0.75, 0.75]);
+    end
+    vHL = findobj(hF, '-depth', 1, 'type', 'legend');
+    for ii = 1:length(vHL)
+        hL = vHL(ii);
+        set(hL, 'Color', 'none');
+        set(hL, 'TextColor', 'white');
+        set(hL, 'LineWidth', 3);
+    end
+    % saveas(hFigure,['Figure', num2str(figureIdx, figureCounterSpec), '.eps'], 'epsc');
+    % print(hFigure, ['Figure', num2str(figureIdx, figureCounterSpec), '.svg'], '-vector', '-dsvg');
+    exportgraphics(hF, ['Figure', num2str(figureIdx, figureCounterSpec), '.emf'], 'BackgroundColor', 'none');
+end
 
 
 %% Auxiliary Functions
