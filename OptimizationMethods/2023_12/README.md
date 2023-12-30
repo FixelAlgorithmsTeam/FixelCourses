@@ -10,3 +10,15 @@
 
 This folder is dedicated to the course [`Optimization Methods`](https://fixelalgorithms.gitlab.io/courses/optimizationmethods) which took place on December 2023.  
 The course was conducted in MATLAB.
+
+### Final Project
+
+Solve the problem:
+
+$$ \arg \min_{\boldsymbol{x}} \frac{1}{2} {\left\| \boldsymbol{x} - \boldsymbol{y} \right\|}_{2}^{2} \quad \text{subject to} \quad {\left\| \boldsymbol{D} \boldsymbol{x} \right\|}_{1} \leq \lambda $$
+
+Where $\boldsymbol{D}$ is the _forward_ finite differences operator.
+
+## Acknowledgment / References
+
+ - The file `MakeFile.m` is sourced from [Ivan W. Selesnick - Total Variation Denoising (An MM Algorithm)](https://eeweb.engineering.nyu.edu/iselesni/lecture_notes/TVDmm).
