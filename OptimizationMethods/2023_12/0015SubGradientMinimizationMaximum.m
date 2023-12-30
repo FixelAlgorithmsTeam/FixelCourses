@@ -67,7 +67,9 @@ hObjFun = @(vX) max(mA * vX + vB);
 % 2. Immplement the Sub Gradient as `hSubGradFun(vX)`.
 % 2. Implement the Sub Gradient Method. Choose the step size correctly.
 
+%----------------------------<Fill This>----------------------------%
 hSubGradFun = @(vX) mean(mA((mA * vX + vB) == max(mA * vX + vB), :), 1).';
+%-------------------------------------------------------------------%
 
 vX = zeros(numCols, 1);
 vG = zeros(numCols, 1);
@@ -75,9 +77,11 @@ vG = zeros(numCols, 1);
 vObjVal(1) = hObjFun(vX);
 
 for ii = 2:numIterations
+%----------------------------<Fill This>----------------------------%
     vG(:) = hSubGradFun(vX);
     stepSize = 1 / ii;
     vX(:) = vX - stepSize * vG;
+%-------------------------------------------------------------------%
     vObjVal(ii) = hObjFun(vX);
 end
 
@@ -92,9 +96,10 @@ cvx_solver('SeDuMi'); %<! Faster than 'SDPT3', yet less accurate
 hRunTime = tic();
 
 cvx_begin('quiet')
-    % cvx_precision('best');
+%----------------------------<Fill This>----------------------------%
     variables vXRef(numCols) t
     minimize(max(mA * vXRef + vB));
+%-------------------------------------------------------------------%
     % minimize(t);
     % subject to
     %     max(mA * vXRef + vB) <= t;
@@ -136,8 +141,8 @@ if(generateFigures == ON)
 end
 
 %?%?%?
-% Why is the objective not monotonic decreasing?
-% What will happen if we set numRows ~= numCols? Think about the random directions.
+% - Why is the objective not monotonic decreasing?
+% - What will happen if we set numRows ~= numCols? Think about the random directions.
 
 
 

@@ -1,5 +1,5 @@
 % Optimization Methods
-% Convex Optimization - Constraint Optimization - Linear Fir with L1 Norm
+% Convex Optimization - Constraint Optimization - Linear Fit with L1 Norm
 % Using Linear Programming formulation to find the optimal linear fit with
 % regard to L1 norm.
 % The model is given by:
@@ -71,7 +71,7 @@ vY(vI) = vY(vI) + (outlierStd * randn(numOutliers, 1));
 mA = cat(2, ones(length(vG), 1), vG);
 
 
-%% Linea Least Squares Solution
+%% Linear Least Squares Solution
 % 1. Solve the problem using Least Squares.
 % 2. Save the result as `vXLs`.
 
