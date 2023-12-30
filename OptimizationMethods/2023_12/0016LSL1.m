@@ -1,8 +1,10 @@
 % Optimization Methods
 % Convex Optimization - Non Smooth Optimization - Sub Gradient Method
-% Calculating the minimum aread circle.
+% Using the LASSO model for selection of features.
 % The model is given by:
-% $$ \arg \min_{x} \max_{i} a_i^x + b $$
+% $$ arg min_x || A * x - y ||_2^2 + λ || x ||_1 $$
+% Since the objective promotes sparsity, we can use it for feature
+% selection.
 % References:
 %   1.  
 % Remarks:
@@ -41,93 +43,127 @@ STEP_SIZE_MODE_LINE_SEARCH  = 3;
 %% Parameters
 
 % Data
-numRows = 30; %<! Num functions
-numCols = 5; %<! Data Dimensions
+csvUrl = 'https://raw.githubusercontent.com/FixelAlgorithmsTeam/FixelCourses/master/DataSets/mtcars.csv';
+
+% Solution Path
+vParamLambda = linspace(0, 7, 100);
 
 % Solver
-numIterations = 10000;
+stepSize        = 0.0005;
+numIterations   = 50000;
+
+% Verification
+diffMode    = DIFF_MODE_CENTRAL;
+errTol      = 1e-5;
 
 % Visualization
-vLim = [-2; 2];
 
 
 %% Generate / Load Data
 
-mA = randn(numRows, numCols);
-vB = randn(numRows, 1);
+% Data from https://gist.github.com/seankross/a412dfbd88b3db70b74b
+% mpg - Miles per Gallon
+% cyl - # of cylinders
+% disp - displacement, in cubic inches
+% hp - horsepower
+% drat - driveshaft ratio
+% wt - weight
+% qsec - 1/4 mile time; a measure of acceleration
+% vs - 'V' or straight - engine shape
+% am - transmission; auto or manual
+% gear - # of gears
+% carb - # of carburetors
+taData = readtable(csvUrl);
+mA = table2array(taData(:, 3:end)); %<! Removing model and mpg
+mA = (mA - mean(mA)) ./ std(mA); %<! Normalize
+vY = taData{:, 2}; %<! Extracting mpg
 
-% Analysis
-vObjVal = zeros(numIterations, 1);
+cFeatureName = taData.Properties.VariableNames(3:end);
 
-hObjFun = @(vX) max(mA * vX + vB);
+numSamples      = size(vY, 1);
+numFeatures     = size(mA, 2);
+numParamLambda  = length(vParamLambda);
 
+mX          = zeros(numFeatures, numIterations);
+mXLambda    = zeros(numFeatures, numParamLambda);
 
-%% Sub Gradient Method
-% 1. Derive the subgradient of the function.
-% 2. Immplement the Sub Gradient as `hSubGradFun(vX)`.
-% 2. Implement the Sub Gradient Method. Choose the step size correctly.
-
-hSubGradFun = @(vX) mean(mA((mA * vX + vB) == max(mA * vX + vB), :), 1).';
-
-vX = zeros(numCols, 1);
-vG = zeros(numCols, 1);
-
-vObjVal(1) = hObjFun(vX);
-
-for ii = 2:numIterations
-    vG(:) = hSubGradFun(vX);
-    stepSize = 1 / ii;
-    vX(:) = vX - stepSize * vG;
-    vObjVal(ii) = hObjFun(vX);
-end
+hObjFun = @(vX, paramLambda) 0.5 * sum((mA * vX - vY) .^ 2) + paramLambda * norm(vX, 1);
 
 
-%% DCP Optimization
-% 1. Formulate the problem in CVX.
-%    Use vXRef for the optimal argument.
+%% Proximal Gradient Descent
+% 1. Create a function called `ProxGradientDescent(mX, hGradFun, hProxFun, stepSize, paramLambda)`.
+% 2. Implement the proximal gradient descent in the function.
+% 3. Run this section to verify your implementation.
 
-% cvx_solver('SDPT3'); %<! Default
-cvx_solver('SeDuMi'); %<! Faster than 'SDPT3', yet less accurate
+hGradFun = @(vX) vX - vY(1:numFeatures);
+hProxFun = @(vY, paramLambda) max(0, 1 - (paramLambda / norm(vY))) * vY; %<! L2 Prox
 
-hRunTime = tic();
+mX(:, 1) = vY(1:numFeatures);
+mX = ProxGradientDescent(mX, hGradFun, hProxFun, stepSize, vParamLambda(end));
 
 cvx_begin('quiet')
-    % cvx_precision('best');
-    variables vXRef(numCols) t
-    minimize(max(mA * vXRef + vB));
-    % minimize(t);
-    % subject to
-    %     max(mA * vXRef + vB) <= t;
+    cvx_precision('best');
+    variables vXRef(numFeatures)
+    minimize(0.5 * sum_square(vXRef - vY(1:numFeatures)) + vParamLambda(end) * norm(vXRef));
 cvx_end
 
-runTime = toc(hRunTime);
+assertCond = norm(mX(:, end) - vXRef, 'inf') <= errTol;
+assert(assertCond, 'The PGD solution deviation exceeds the threshold %f', errTol);
+disp(['The PGD implementation is verified']);
 
-disp([' ']);
-disp(['CVX Solution Summary']);
-disp(['The CVX Solver Status - ', cvx_status]);
-disp(['The Run Time Is Given By - ', num2str(runTime), ' [Sec]']);
-disp([' ']);
+
+%% Set Auxiliary Functions
+% 1. Set `hGradFun = @(vX) ...` to calculate the gradient.
+% 2. Set `hProxFun = @(vY, paramLambda) ...` to calculate the proximal operator.
+% 3. Run this section to verify your implementation.
+
+%----------------------------<Fill This>----------------------------%
+hGradFun = @(vX) mA.' * (mA * vX - vY);
+hProxFun = @(vY, paramLambda) max(abs(vY) - paramLambda, 0) .* sign(vY); %<! L1 Prox
+%-------------------------------------------------------------------%
+
+vX = randn(numFeatures, 1);
+
+vG = CalcFunGrad(vX, @(vX) 0.5 * sum((mA * vX - vY) .^ 2), diffMode);
+assertCond = norm(hGradFun(vX) - vG, 'inf') <= (errTol * norm(vG));
+assert(assertCond, 'The Gradient Operator calculation deviation exceeds the threshold %f', errTol);
+
+disp(['The Gradient Operator implementation is verified']);
+
+cvx_begin('quiet')
+    cvx_precision('best');
+    variables vXRef(numSamples)
+    minimize(0.5 * sum_square(vXRef - vY) + vParamLambda(end) * norm(vXRef, 1)); %<! Prox
+cvx_end
+
+assertCond = norm(hProxFun(vY, vParamLambda(end)) - vXRef, 'inf') <= errTol;
+assert(assertCond, 'The Proximal Operator calculation deviation exceeds the threshold %f', errTol);
+disp(['The Proximal Operator implementation is verified']);
 
 
 %% Analysis
 
-objValRef   = hObjFun(vXRef);
-vObjVal = 20 * log10(abs(vObjVal - objValRef) / max(abs(objValRef), sqrt(eps())));
+% Calculating the feature significance per λ.
+for ii = 1:numParamLambda
+    mX = ProxGradientDescent(mX, hGradFun, hProxFun, stepSize, numSamples * vParamLambda(ii));
+    mXLambda(:, ii) = abs(mX(:, end)); %<! Significance is in absolute value
+end
 
 
 %% Display Results
 
 figureIdx = figureIdx + 1;
 
-hFigure = figure('Position', figPosLarge);
+hFigure = figure('Position', [50, 50, 1500, 700]);
 hAxes   = axes(hFigure);
 set(hAxes, 'NextPlot', 'add');
-hLineObj = plot(1:numIterations, vObjVal, 'DisplayName', 'Sub Gradient Method');
-set(hLineObj, 'LineWidth', lineWidthNormal);
-
-set(get(hAxes, 'Title'), 'String', {['Objective Function Convergence']}, 'FontSize', fontSizeTitle);
-set(get(hAxes, 'XLabel'), 'String', {['Iteration Index']}, 'FontSize', fontSizeAxis);
-set(get(hAxes, 'YLabel'), 'String', {['Relative Error [dB]']}, 'FontSize', fontSizeAxis, 'Interpreter', 'latex');
+for ii = 1:numFeatures
+    hLineObj = line(vParamLambda, mXLambda(ii, :), 'DisplayName', cFeatureName{ii});
+    set(hLineObj, 'LineWidth', lineWidthNormal);
+end
+set(get(hAxes, 'Title'), 'String', {['Feature Significance to Estimate MPG']}, 'FontSize', fontSizeTitle);
+set(get(hAxes, 'XLabel'), 'String', {['λ']}, 'FontSize', fontSizeAxis);
+set(get(hAxes, 'YLabel'), 'String', {['Significance']}, 'FontSize', fontSizeAxis, 'Interpreter', 'latex');
 
 hLegend = ClickableLegend();
 
@@ -136,8 +172,7 @@ if(generateFigures == ON)
 end
 
 %?%?%?
-% Why is the objective not monotonic decreasing?
-% What will happen if we set numRows ~= numCols?
+% Why is the significance not monotonic?
 
 
 

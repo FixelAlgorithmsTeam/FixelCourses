@@ -124,7 +124,7 @@ disp(['The analytic implementation is verified']);
 
 
 %% Gradient Descent
-% 1. Update `'GradientDescent()` with adaptive step size logic (Backtracking like).
+% 1. Update `GradientDescent()` with adaptive step size logic (Backtracking like).
 
 mW = GradientDescent(mW, hObjFunGrad, stepSizeMode, stepSize, hObjFun);
 

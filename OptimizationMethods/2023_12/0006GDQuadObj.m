@@ -90,7 +90,7 @@ disp(['The analytic implementation is verified']);
 
 
 %% Gradient Descent
-% 1. Create a function called 'GradientDescent()` according to the template.
+% 1. Create a function called `GradientDescent()` according to the template.
 
 for kk = 1:numStepSize
     stepSize = vStepSize(kk);
