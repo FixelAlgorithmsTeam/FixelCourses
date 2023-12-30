@@ -27,11 +27,11 @@ generateFigures = ON;
 
 %% Parameters
 
-minVal = -2;
-maxVal = 2;
+minVal = -5;
+maxVal = 5;
 numPts = 1000;
 
-vParamLambda = [0; 1; 3; 5; 10];
+vParamLambda = [0; 1; 2; 3; 4];
 
 ballRadius = 1;
 
@@ -45,10 +45,9 @@ vX = linspace(minVal, maxVal, numPts);
 vX = vX(:);
 
 
-%% Shrinkage Operator
+%% L∞ Prox Operator
 
-hLInfProx = @(vY, paramLambda) vY - paramLambda * ProjectL1Ball(vY, ballRadius);
-
+hLInfProx = @(vY, paramLambda) vY - paramLambda * ProjectL1Ball(vY / paramLambda, ballRadius);
 
 
 %% Display Data

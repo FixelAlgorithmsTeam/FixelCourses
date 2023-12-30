@@ -1,5 +1,5 @@
 % Optimization Methods
-% Convex Optimization - Non Smooth Optimization - Sub Gradient Method
+% Convex Optimization - Non Smooth Optimization - Proximal Gradient Method
 % Using the LASSO model for selection of features.
 % The model is given by:
 % $$ arg min_x || A * x - y ||_2^2 + λ || x ||_1 $$
@@ -12,7 +12,7 @@
 % TODO:
 % 	1.  C
 % Release Notes Royi Avital RoyiAvital@yahoo.com
-% - 1.0.000     13/12/2023
+% - 1.0.000     30/12/2023
 %   *   First release.
 
 
@@ -113,8 +113,8 @@ disp(['The PGD implementation is verified']);
 
 
 %% Set Auxiliary Functions
-% 1. Set `hGradFun = @(vX) ...` to calculate the gradient.
-% 2. Set `hProxFun = @(vY, paramLambda) ...` to calculate the proximal operator.
+% 1. Set `hGradFun = @(vX) ...` to calculate the gradient of f(x).
+% 2. Set `hProxFun = @(vY, paramLambda) ...` to calculate the proximal operator of g(x).
 % 3. Run this section to verify your implementation.
 
 %----------------------------<Fill This>----------------------------%
@@ -163,7 +163,7 @@ for ii = 1:numFeatures
 end
 set(get(hAxes, 'Title'), 'String', {['Feature Significance to Estimate MPG']}, 'FontSize', fontSizeTitle);
 set(get(hAxes, 'XLabel'), 'String', {['λ']}, 'FontSize', fontSizeAxis);
-set(get(hAxes, 'YLabel'), 'String', {['Significance']}, 'FontSize', fontSizeAxis, 'Interpreter', 'latex');
+set(get(hAxes, 'YLabel'), 'String', {['Significance']}, 'FontSize', fontSizeAxis);
 
 hLegend = ClickableLegend();
 
