@@ -1,5 +1,5 @@
 function [ vG ] = CalcGradLogRegFun( vX, mA, vY )
-% Calculates the Gaussian Distribution PDF
+% Calculates the Logistic Regression Objective Function Gradient
 arguments(Input)
     vX (:, 1) {mustBeNumeric, mustBeFinite}
     mA (:, :) {mustBeNumeric, mustBeFinite, mustBeReal}

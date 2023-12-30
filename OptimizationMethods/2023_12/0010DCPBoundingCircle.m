@@ -49,8 +49,10 @@ vLim = [-2; 2];
 
 
 %% Generate / Load Data
+% The data is 2D with each row being the coordinate of a sample:
+% [x1, x2]
 
-mX = 2 * (rand(dataDim, numSamples) - 0.5);
+mX = 2 * (rand(dataDim, numSamples) - 0.5); %<! Generate a random coordinates for the samples
 
 
 %% Display Data
@@ -72,8 +74,17 @@ set(get(hA, 'YLabel'), 'String', {['x_2']}, 'FontSize', fontSizeAxis);
 
 
 %% DCP Optimization
+% The model is given by:
+% $$ \arg \min_{c, r} r $$
+% $$ subject to || xi - c ||_2 <= r
+
+%?%?%?
+% Is the model convex?
 % 1. Formulate the problem in CVX.
 %    Use `valRadius` for the radius and `vC` for the center.
+% *  You may use loops to define constraints.
+% *  You may find CVX's rule set useful (http://cvxr.com/cvx/doc/dcp.html).
+% *  You may find Disciplined Convex Programming useful (https://fenchel.stanford.edu).
 
 cvx_solver('SDPT3'); %<! Default
 % cvx_solver('SeDuMi'); %<! Faster than 'SDPT3', yet less accurate
@@ -82,12 +93,14 @@ hRunTime = tic();
 
 cvx_begin('quiet')
     % cvx_precision('best');
+%----------------------------<Fill This>----------------------------%
     variables valRadius vC(dataDim)
     minimize(valRadius);
     subject to
       for ii = 1:numSamples
           norm(mX(:, ii) - vC) <= valRadius;
       end
+%-------------------------------------------------------------------%
 cvx_end
 
 runTime = toc(hRunTime);

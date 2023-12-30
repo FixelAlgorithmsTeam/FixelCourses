@@ -1,7 +1,7 @@
 % Optimization Methods
 % Convex Optimization - Constraint Optimization - LS with Unit Simple Constraints
 % Estimating a Low Pass Filter (HPF) using Projected Gradient Descent
-% for a Least Squares problem with a unit simplex.
+% for a Least Squares problem with a unit simplex constraint.
 % The model is given by:
 % $$ 0.5 * || A * x - y ||_2^2     $$
 % $$ subject to sum(x) = 1, x >= 0 $$
@@ -48,7 +48,7 @@ STEP_SIZE_MODE_LINE_SEARCH  = 3;
 % Data
 numCoeff    = 11;
 numSamples  = 110;
-noiseStd    = 0.005;
+noiseStd    = 0.075; %<! Try higher values to compare to LS
 convShape   = CONVOLUTION_SHAPE_VALID;
 
 % Numerical Differntiation
@@ -194,6 +194,10 @@ end
 
 vObjVal = 20 * log10(abs(vObjVal - objValRef) / max(abs(objValRef), sqrt(eps())));
 
+% Least Squares Solution
+vLsSol = mX \ vY;
+lsObjVal = 20 * log10(abs(hObjFun(vLsSol) - objValRef) / max(abs(objValRef), sqrt(eps())));
+
 
 %% Display Results
 
@@ -205,7 +209,8 @@ hAxes   = axes(hFigure);
 set(hAxes, 'NextPlot', 'add');
 hLineObj = plot(1:numIterations, vObjVal, 'DisplayName', 'Projected Gradient Descent');
 set(hLineObj, 'LineWidth', lineWidthNormal);
-
+hLineObj = yline(lsObjVal, 'DisplayName', 'Least Squares Solution');
+set(hLineObj, 'LineWidth', lineWidthNormal);
 set(get(hAxes, 'Title'), 'String', {['Objective Function Convergence']}, 'FontSize', fontSizeTitle);
 set(get(hAxes, 'XLabel'), 'String', {['Iteration Index']}, 'FontSize', fontSizeAxis);
 set(get(hAxes, 'YLabel'), 'String', {['Relative Error [dB]']}, 'FontSize', fontSizeAxis, 'Interpreter', 'latex');

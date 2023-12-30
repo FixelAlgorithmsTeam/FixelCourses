@@ -1,9 +1,9 @@
 % Optimization Methods
-% Convex Optimization - Constraint Optimization - Linear Fir with L Inf Norm
+% Convex Optimization - Constraint Optimization - Linear Fir with L∞ Norm
 % Using Linear Programming formulation to find the optimal linear fit with
-% regard to L1 norm.
+% regard to L∞ norm.
 % The model is given by:
-% $$ || A * x - y ||_Inf $$
+% $$ || A * x - y ||_∞ $$
 % References:
 %   1.  
 % Remarks:
@@ -98,19 +98,20 @@ ClickableLegend();
 
 
 %% Linear Programming Solution
-% 1. Formulate the L1 problem as a Linear Programming problem.
+% 1. Formulate the L∞ problem as a Linear Programming problem.
 % 2. Solve the problem using DCP (CVX). 
 %    Save the output as `vXLInf`.
 
 hRunTime = tic();
 
 cvx_begin('quiet')
-    % cvx_precision('best');
+%----------------------------<Fill This>----------------------------%
     variables valT vXLInf(2)
     minimize( valT );
     subject to
       mA * vXLInf - vY <= valT;
       vY - mA * vXLInf <= valT;
+%-------------------------------------------------------------------%
 cvx_end
 
 runTime = toc(hRunTime);
@@ -149,7 +150,7 @@ disp(['The LP solution implementation is verified']);
 %% Display Results
 
 
-hLineObj = plot(vG, ((vXLInf(2) * vG) + vXLInf(1)), 'DisplayName', 'L Inf Model');
+hLineObj = plot(vG, ((vXLInf(2) * vG) + vXLInf(1)), 'DisplayName', 'L_∞ Model');
 set(hLineObj, 'LineWidth', lineWidthNormal);
 
 %?%?%?

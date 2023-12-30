@@ -2,7 +2,9 @@
 % Convex Optimization - Smooth Optimization - Logistic Regression
 % Optimizing a classifier using the Logistic Regression model.
 % The model is given by:
-% $$ 0.5 * || sigam(A * x) - y ||_2^2 $$
+% $$ arg min_w 0.5 * || sigma(X * w) - y ||_2^2 $$
+% Where sigma(x) is a scales and translated version of the Sigmoid
+% function.
 % References:
 %   1.  
 % Remarks:
@@ -49,7 +51,7 @@ errTol      = 1e-6;
 % Solver
 stepSizeMode    = STEP_SIZE_MODE_ADAPTIVE;
 stepSize        = 0.01;
-numIterations   = 150;
+numIterations   = 100;
 
 % Visualization
 numGridPts = 501;
@@ -57,6 +59,9 @@ vLim = [-2, 2]; %<! Boundaries for Xlim / Ylim
 
 
 %% Generate / Load Data
+% The data is:
+% - mX: The coordinates of the samples in a 2D grid.
+% - vY: The labels of the samples in the range {-1, 1}.
 
 % Symmetric Matrix
 sData = load(dataFileName);
@@ -68,7 +73,7 @@ vY(vY == 0) = -1;
 numSamples = size(mX, 1);
 
 % Analysis
-mW = zeros(size(mX, 2) + 1, numIterations); %<! Initialization is the zero vector
+mW      = zeros(size(mX, 2) + 1, numIterations); %<! Initialization is the zero vector
 vObjVal = zeros(numIterations, 1);
 
 % Visualization
@@ -92,6 +97,9 @@ set(get(hA, 'YLabel'), 'String', {['x_2']}, 'FontSize', fontSizeAxis);
 
 
 %% Arrange Data
+% The data model is linear function of the coordinates.  
+% Hence the model matrix, per row (Sample) is built as:
+% [1, x1, x2]
 
 mX = cat(2, -ones(numSamples, 1), mX);
 hObjFun = @(vW) 0.5 * sum((CalcSigmoidFun(mX * vW) - vY) .^ 2);
@@ -144,7 +152,7 @@ for ii = 1:numIterations
     set(get(hA, 'Title'), 'String', {['Logistic Regression: Iteration ', num2str(ii, '%04d'), ', Accuracy ', num2str(100 * clsAcc, '%0.2f'), '%']}, 'FontSize', fontSizeTitle);
 
     drawnow();
-    pause(0.001);
+    pause(0.002);
 end
 
 

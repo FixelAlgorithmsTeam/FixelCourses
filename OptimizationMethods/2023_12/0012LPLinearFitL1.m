@@ -105,12 +105,13 @@ ClickableLegend();
 hRunTime = tic();
 
 cvx_begin('quiet')
-    % cvx_precision('best');
+%----------------------------<Fill This>----------------------------%
     variables vT(numSamples + numOutliers) vXL1(2)
     minimize( sum(vT) );
     subject to
       mA * vXL1 - vY <= vT;
       vY - mA * vXL1 <= vT;
+%-------------------------------------------------------------------%      
 cvx_end
 
 runTime = toc(hRunTime);
@@ -124,13 +125,15 @@ disp([' ']);
 
 %% Direct Solution
 % Solving the model using DCP.
+% 1. Formulate the L1 problem using DCP (CVX).
 
 hRunTime = tic();
 
 cvx_begin('quiet')
-    % cvx_precision('best');
+%----------------------------<Fill This>----------------------------%
     variables vXL1Ref(2)
     minimize( norm(mA * vXL1Ref - vY, 1) );
+%-------------------------------------------------------------------%  
 cvx_end
 
 runTime = toc(hRunTime);

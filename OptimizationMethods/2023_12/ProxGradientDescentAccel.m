@@ -82,7 +82,7 @@ mX(:, 2) = vX;
 
 for ii = 3:numIterations
     vV(:) = vX + ((ii - 1) / (ii + 2)) * (vX - mX(:, ii - 2));
-    vG(:) = hGradFun(vX);
+    vG(:) = hGradFun(vV);
     vX(:) = vV - paramMu * vG;
     vX(:) = hProxFun(vX, paramMu * paramLambda);
 
