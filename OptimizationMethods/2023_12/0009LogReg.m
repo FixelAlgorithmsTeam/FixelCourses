@@ -3,7 +3,7 @@
 % Optimizing a classifier using the Logistic Regression model.
 % The model is given by:
 % $$ arg min_w 0.5 * || sigma(X * w) - y ||_2^2 $$
-% Where sigma(x) is a scales and translated version of the Sigmoid
+% Where sigma(x) is a scaled and translated version of the Sigmoid
 % function.
 % References:
 %   1.  
