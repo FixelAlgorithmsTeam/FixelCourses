@@ -1,7 +1,7 @@
 % Optimization Methods
-% Convex Optimization - Algorithms & Solvers - ADMM for TV Deblurring
+% Convex Optimization - Algorithms & Solvers - Consensus Trick
 % Using ADMM to solve:
-% $$ arg min_x 0.5 * || A x - y ||_2^2 + λ || D * x ||_1 $$
+% $$ arg min_x 0.5 * || x - y ||_2^2 subject to sum(x) = 1, x >= 0 $$
 % References:
 %   1.  
 % Remarks:
@@ -35,9 +35,6 @@ STEP_SIZE_MODE_LINE_SEARCH  = 3;
 
 % Data
 numSamples  = 200;
-noiseStd    = 0.25;
-
-paramLambda = 0.5;
 
 % Solver
 stepSize        = 0.0025;

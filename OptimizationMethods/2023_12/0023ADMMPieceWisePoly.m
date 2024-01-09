@@ -1,7 +1,7 @@
 % Optimization Methods
-% Convex Optimization - Algorithms & Solvers - ADMM for TV Deblurring
+% Convex Optimization - Algorithms & Solvers - ADMM for Piece Wise Linear Fit
 % Using ADMM to solve:
-% $$ arg min_x 0.5 * || A x - y ||_2^2 + λ || D * x ||_1 $$
+% $$ arg min_x 0.5 * || x - y ||_2^2 + λ || D^k * x ||_1 $$
 % References:
 %   1.  
 % Remarks:
@@ -9,7 +9,7 @@
 % TODO:
 % 	1.  C
 % Release Notes Royi Avital RoyiAvital@yahoo.com
-% - 1.0.000     30/12/2023
+% - 1.0.000     09/01/2024
 %   *   First release.
 
 
@@ -34,9 +34,15 @@ STEP_SIZE_MODE_LINE_SEARCH  = 3;
 %% Parameters
 
 % Data
-numSamples  = 200;
+numSamples  = 300;
 noiseStd    = 0.25;
 
+vNumValues  = [-3; 2; -1; 4; 1; -4; 5; 2.5; -3; -1.5];
+vKnotIdx    = [40; 95; 150; 205; 265];
+vKnotIdx    = [1; vKnotIdx; numSamples];
+
+% Model
+polyDeg     = 1;
 paramLambda = 0.5;
 
 % Solver
@@ -50,10 +56,26 @@ numIterations   = 2500;
 
 %% Generate / Load Data
 
-vS = MakeSignal('Blocks', numSamples);
-vS = vS(:);
+numKnots = length(vKnotIdx);
+
+% Piece Wise Linear signal
+vS = zeros(numSamples, 1);
+for ii = 1:(numKnots - 1)
+    vS(vKnotIdx(ii):vKnotIdx(ii + 1)) = vNumValues(ii);
+end
+
+vS = cumsum(vS);
+vS = 5 * (vS / max(abs(vS)));
+
 vY = vS + (noiseStd * randn(numSamples, 1));
-mD = spdiags([-ones(numSamples - 1, 1), ones(numSamples - 1, 1)], [0, 1], numSamples - 1, numSamples);
+
+% Model
+% Calculate mD ^ k
+mD = spdiags([-ones(numSamples, 1), ones(numSamples, 1)], [-1, 0], numSamples, numSamples);
+for kk = 1:polyDeg
+    mD = mD * mD;
+end
+mD = mD(polyDeg + 2:end, :);
 
 % Solvers
 mX = zeros(numSamples, numIterations);
@@ -242,8 +264,9 @@ if(generateFigures == ON)
 end
 
 %?%?%?
-% - How can we imporve the results?
-%   Think of the step size of the PGD vs. what's needed for Sub Gradient method.
+% - How will increasing λ will affect the result?
+%   Think of whta will beome more sparse.
+% - Can we achieve higher order polynomial? How?
 
 
 %% Auxiliary Functions
