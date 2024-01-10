@@ -1,7 +1,7 @@
 % Optimization Methods
 % Convex Optimization - Algorithms & Solvers - ADMM for TV Deblurring
 % Using ADMM to solve:
-% $$ arg min_x 0.5 * || A x - y ||_2^2 + λ || D * x ||_1 $$
+% $$ arg min_x 0.5 * || H x - y ||_2^2 + λ || D * x ||_1 $$
 % References:
 %   1.  
 % Remarks:
@@ -30,19 +30,27 @@ STEP_SIZE_MODE_CONSTANT     = 1;
 STEP_SIZE_MODE_ADAPTIVE     = 2;
 STEP_SIZE_MODE_LINE_SEARCH  = 3;
 
+CONVOLUTION_SHAPE_FULL  = 1;
+CONVOLUTION_SHAPE_SAME  = 2;
+CONVOLUTION_SHAPE_VALID = 3;
+
 
 %% Parameters
 
 % Data
-numSamples  = 200;
-noiseStd    = 0.25;
+numSamples  = 250;
+noiseStd    = 0.075;
 
-paramLambda = 0.5;
+filterRadius = 7;
+
+% Model
+convType    = CONVOLUTION_SHAPE_VALID;
+paramLambda = 0.075;
 
 % Solver
-stepSize        = 0.0025;
+stepSize        = 0.015;
 paramRho        = 2;
-numIterations   = 2500;
+numIterations   = 10000;
 
 % Visualization
 
@@ -50,13 +58,27 @@ numIterations   = 2500;
 
 %% Generate / Load Data
 
-vS = MakeSignal('Blocks', numSamples);
+%?%?%?
+% - What is the dimensions of vX by the model?
+
+numSamplesFilter = 2 * filterRadius + 1;
+numSamplesX = numSamples + numSamplesFilter - 1;
+
+% Filter
+vH = ones(numSamplesFilter, 1) / numSamplesFilter;
+
+% Data
+vS = MakeSignal('Blocks', numSamplesX);
 vS = vS(:);
-vY = vS + (noiseStd * randn(numSamples, 1));
-mD = spdiags([-ones(numSamples - 1, 1), ones(numSamples - 1, 1)], [0, 1], numSamples - 1, numSamples);
+vZ = vS + (noiseStd * randn(size(vS, 1), 1));
+vY = conv2(vZ, vH, 'valid'); %<! `conv()` is a wrapper of `conv2()`
+
+% Model
+mD = spdiags([-ones(numSamplesX - 1, 1), ones(numSamplesX - 1, 1)], [0, 1], numSamplesX - 1, numSamplesX);
+mH = CreateConvMtx1D(vH, numSamplesX, convType);
 
 % Solvers
-mX = zeros(numSamples, numIterations);
+mX = zeros(numSamplesX, numIterations);
 
 solverIdx       = 0;
 cMethodString   = {};
@@ -64,7 +86,7 @@ cMethodString   = {};
 mObjFunValMse   = zeros([numIterations, 1]);
 mSolMse         = zeros([numIterations, 1]);
 
-hObjFun = @(vX) 0.5 * sum((vX - vY) .^ 2) + paramLambda * norm(mD * vX, 1);
+hObjFun = @(vX) 0.5 * sum((conv(vX, vH, 'valid') - vY) .^ 2) + paramLambda * norm(mD * vX, 1);
 
 
 %% Display the Data
@@ -74,9 +96,9 @@ figureIdx = figureIdx + 1;
 hF = figure('Position', figPosLarge);
 hA = axes(hF);
 set(hA, 'NextPlot', 'add');
-hLineObj = line(1:numSamples, vS, 'DisplayName', 'Model Data');
+hLineObj = line(1:size(vS, 1), vS, 'DisplayName', 'Model Data');
 set(hLineObj, 'LineWidth', lineWidthNormal);
-hLineObj = line(1:numSamples, vY, 'DisplayName', 'Data Samples');
+hLineObj = line(1:size(vZ, 1), vZ, 'DisplayName', 'Data Samples');
 set(hLineObj, 'LineStyle', 'none', 'Marker', '*');
 
 set(get(hA, 'Title'), 'String', {['Model Data and Noisy Samples']}, 'FontSize', fontSizeTitle);
@@ -88,9 +110,6 @@ hLegend = ClickableLegend();
 if(generateFigures == ON)
     print(hF, ['Figure', num2str(figureIdx, figureCounterSpec), '.png'], '-dpng', '-r0'); %<! Saves as Screen Resolution
 end
-
-%?%?%?
-% - How would the least squares (With no regularization) solution look like?
 
 
 %% Solution by DCP (CVX)
@@ -107,8 +126,8 @@ hRunTime = tic();
 
 cvx_begin('quiet')
 %----------------------------<Fill This>----------------------------%
-    variable vX(numSamples, 1);
-    minimize( 0.5 * sum_square(vX - vY) + paramLambda * norm(mD * vX, 1));
+    variable vX(numSamplesX);
+    minimize( 0.5 * sum_square(mH * vX - vY) + paramLambda * norm(mD * vX, 1));
 %-------------------------------------------------------------------%
 cvx_end
 
@@ -120,29 +139,15 @@ sCvxSol.vXCvx     = vX;
 sCvxSol.cvxOptVal = hObjFun(vX);
 
 
-%% Implement ADMM Function
-% This section implements the ADMM function and its auxiliary function.
-% 1. Implement `ADMM( mX, hMinFun, hProxFun, mP, paramRho, paramLambda, vZ, vW )`.
-% 2. Set `hMinFun = @(vZ, vW, paramRho) ...`.  
-%    It minizes the term with regard to x.
-%    You may assume `paramRho` is constant.
-% 3. Set `hProxFun = @(vY, paramLambda) ...`.
-%    It applies the Proximal Operator with reagrd to g().
-
-% You may find this useful
-mDD = speye(numSamples) + paramRho * (mD.' * mD); %<! In practive, much better use operators
-mDC = decomposition(mDD, 'chol');
+%% Solution by Accelerated Gradient Descent
+% 1. Calculate the Sub Gradient step.
 
 %----------------------------<Fill This>----------------------------%
-hMinFun     = @(vZ, vW, paramRho) mDC \ (vY + paramRho * mD.' * (vZ - vW));
-hProxFun    = @(vY, paramLambda) max(abs(vY) - paramLambda, 0) .* sign(vY); %<! Prox L1
+hGradFun = @(vX) mH.' * (conv(vX, vH, 'valid') - vY) + paramLambda * mD.' * sign(mD * vX);
 %-------------------------------------------------------------------%
 
-% For the FISTA Sub Gradient
-hGradFun = @(vX) (vX - vY) + paramLambda * mD.' * sign(mD * vX);
-
-
-%% Solution by Accelerated Gradient Descent
+%?%?%?
+% - How could it be implemented without a matrix multiplication?
 
 solverIdx                   = solverIdx + 1;
 cLegendString{solverIdx}    = ['Solution by Accelerated Sub Gradient'];
@@ -158,6 +163,22 @@ DisplayRunSummary(cLegendString{solverIdx}, hObjFun, mX(:, end), runTime);
 
 
 %% Solution by ADMM
+% 1. Set `hMinFun = @(vZ, vW, paramRho) ...`.  
+%    It minizes the term with regard to x.
+%    You may assume `paramRho` is constant.
+% 2. Set `hProxFun = @(vY, paramLambda) ...`.
+%    It applies the Proximal Operator with reagrd to g().
+
+% You may find this useful
+mDD = paramRho * (mD.' * mD); %<! In prctice, much better use operators
+mHH = mH.' * mH;
+vHy = mH.' * vY;
+mHDC = decomposition(mHH + mDD, 'chol'); %!< Assuming their null space is exclusive
+
+%----------------------------<Fill This>----------------------------%
+hMinFun     = @(vZ, vW, paramRho) mHDC \ (vHy + paramRho * mD.' * (vZ - vW));
+hProxFun    = @(vY, paramLambda) max(abs(vY) - paramLambda, 0) .* sign(vY); %<! Prox L1
+%-------------------------------------------------------------------%
 
 solverIdx                   = solverIdx + 1;
 cLegendString{solverIdx}    = ['Solution by ADMM'];
@@ -205,11 +226,11 @@ figureIdx = figureIdx + 1;
 hF = figure('Position', figPosLarge);
 hA = axes(hF);
 set(hA, 'NextPlot', 'add');
-hLineObj = line(1:numSamples, vS, 'DisplayName', 'Model Data');
+hLineObj = line(1:size(vS, 1), vS, 'DisplayName', 'Model Data');
 set(hLineObj, 'LineWidth', lineWidthNormal);
-hLineObj = line(1:numSamples, vY, 'DisplayName', 'Data Samples');
+hLineObj = line((filterRadius + 1):(size(vY, 1) + filterRadius), vY, 'DisplayName', 'Data Samples');
 set(hLineObj, 'LineStyle', 'none', 'Marker', '*');
-hLineObj = line(1:numSamples, mX(:, end), 'DisplayName', 'TV Denoising');
+hLineObj = line(1:size(mX, 1), mX(:, end), 'DisplayName', 'TV Deblurring');
 set(hLineObj, 'LineWidth', lineWidthNormal);
 
 set(get(hA, 'Title'), 'String', {['Model Data and Noisy Samples']}, 'FontSize', fontSizeTitle);
