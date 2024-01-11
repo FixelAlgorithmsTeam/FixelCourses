@@ -2,7 +2,7 @@
 % Convex Optimization - Non Smooth Optimization - Proximal Gradient Method
 % Regularization of LS solution with the L0 **pseudo** norm.
 % The model is given by:
-% $$ arg min_x || A * x - y ||_2^2 + λ || x ||_∞ $$
+% $$ arg min_x || A * x - y ||_2^2 + λ || x ||_0 $$
 % References:
 %   1.  
 % Remarks:
