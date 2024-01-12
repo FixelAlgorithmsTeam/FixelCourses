@@ -154,8 +154,10 @@ for ii = 1:length(vSR)
     tR(:, :, ii) = col2im(mRecPatches, [paramK, paramK], [numRows, numCols], 'distinct');
 end
 
-% Display Results
+
+%% Display Analysis
 % Assumes the images are 320 x 320
+
 figureIdx = figureIdx + 1;
 
 hF = figure('Position', [50, 50, 1060, 1060]);
@@ -202,10 +204,6 @@ if(generateFigures == ON)
     end
     exportgraphics(hF, ['Figure', num2str(figureIdx, figureCounterSpec), '.emf'], 'BackgroundColor', 'none');
 end
-
-
-
-%% Display Analysis
 
 
 %% Auxiliary Functions
