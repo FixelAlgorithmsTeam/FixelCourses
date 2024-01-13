@@ -1,7 +1,7 @@
 % Optimization Methods
 % SVD & Linear Least Squares - Sequential Least Squares.
 % Solving:
-% $$ \arg \min_{x} 0.5 * || A * x - y ||_2^2 $$
+% $$ \arg \min_{x} 0.5 * || A * x - y ||_2^2 + α ||x||_2^2 $$
 % Given new samples, solve the problem sequentially.
 % References:
 %   1.  
@@ -37,6 +37,7 @@ numSamplesBatch = 5;
 noiseStd        = 2;
 
 % Model
+paramAlpha = 1;
 
 
 % Visualization
@@ -94,7 +95,8 @@ end
 %% Least Squares Solution
 % The reference for the sequential results.
 
-vXLS = mA \ vB;
+% Regularized LS
+vXLS = (mA.' * mA + paramAlpha * eye(modelOrder + 1)) \ (mA.' * vB);
 
 figureIdx = figureIdx + 1;
 
@@ -138,7 +140,7 @@ end
 
 mXSLS = zeros(size(vX, 1), numSamples - numSamplesBatch + 1);
 
-mR = pinv(mA(1:numSamplesBatch, :).' *  mA(1:numSamplesBatch, :));
+mR = pinv(mA(1:numSamplesBatch, :).' *  mA(1:numSamplesBatch, :) + paramAlpha * eye(modelOrder + 1));
 vXSLS = mR * (mA(1:numSamplesBatch, :).' * vB(1:numSamplesBatch));
 
 jj = 1;
@@ -171,6 +173,7 @@ set(hLineObj, 'LineWidth', lineWidthNormal, 'LineStyle', ':');
 hLineObj = plot(vA, mA * mXSLS(:, 1), 'DisplayName', 'Sequential LS Solution');
 set(hLineObj, 'LineWidth', lineWidthNormal, 'LineStyle', ':');
 set(hA, 'YLim', [10 * floor(minVal / 10), 10 * ceil(maxVal / 10)]);
+set(hA, 'XLim', [min(vA), max(vA)]);
 set(get(hA, 'Title'), 'String', {['Sequential Least Squares Estimation vs. Batch Least Squares Estimation'], ['Sequential Estimation Based on Batch Mode of ', num2str(numSamplesBatch), ' First Samples and ', num2str(0) ' Sequential Samples']}, ...
     'FontSize', fontSizeTitle);
 set(get(hA, 'XLabel'), 'String', {['Sample Index']}, ...
