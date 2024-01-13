@@ -70,6 +70,8 @@ vB = vA + vN; %<! Data Samples
 
 %% Display Data
 
+figureIdx = figureIdx + 1;
+
 hF = figure();
 hA = axes(hF, 'NextPlot', 'add');
 hLineObj = plot(1:numSamples, vA, 'DisplayName', 'Model Data');
@@ -79,6 +81,29 @@ set(get(hA, 'Title'), 'String', {['Model and Noisy Samples']}, 'FontSize', fontS
 set(get(hA, 'XLabel'), 'String', {['Sample Index']}, 'FontSize', fontSizeAxis);
 set(get(hA, 'YLabel'), 'String', {['Value']}, 'FontSize', fontSizeAxis);
 ClickableLegend();
+
+if(generateFigures == ON)
+    set(hF, 'Color', 'none');
+    vHA = findobj(hF, '-depth', 1, 'type', 'axes');
+    for ii = 1:length(vHA)
+        hA = vHA(ii);
+        set(hA, 'Color', 'none');
+        set(get(hA, 'Title'), 'Color', 'white');
+        set(hA, 'GridColor', 'white', 'MinorGridColor', 'white');  
+        set(hA, 'XColor', [0.75, 0.75, 0.75]);
+        set(hA, 'YColor', [0.75, 0.75, 0.75]);
+        set(get(hA, 'XLabel'), 'Color', [0.75, 0.75, 0.75]);
+        set(get(hA, 'YLabel'), 'Color', [0.75, 0.75, 0.75]);
+    end
+    vHL = findobj(hF, '-depth', 1, 'type', 'legend');
+    for ii = 1:length(vHL)
+        hL = vHL(ii);
+        set(hL, 'Color', 'none');
+        set(hL, 'TextColor', 'white');
+        set(hL, 'LineWidth', 3);
+    end
+    exportgraphics(hF, ['Figure', num2str(figureIdx, figureCounterSpec), '.emf'], 'BackgroundColor', 'none');
+end
 
 %% Least Squares Solution
 % 1. Calculate the least squares solution to estimate the amplitude of the
@@ -107,6 +132,8 @@ vXWLS = (mA.' * mW * mA) \ (mA.' * mW * vB);
 
 %% Display Analysis
 
+figureIdx = figureIdx + 1;
+
 hF = figure();
 hA = axes(hF, 'NextPlot', 'add');
 hLineObj = plot(1:numSamples, vA, 'DisplayName', 'Model Data');
@@ -121,8 +148,30 @@ set(get(hA, 'XLabel'), 'String', {['Sample Index']}, 'FontSize', fontSizeAxis);
 set(get(hA, 'YLabel'), 'String', {['Value']}, 'FontSize', fontSizeAxis);
 ClickableLegend();
 
+if(generateFigures == ON)
+    set(hF, 'Color', 'none');
+    vHA = findobj(hF, '-depth', 1, 'type', 'axes');
+    for ii = 1:length(vHA)
+        hA = vHA(ii);
+        set(hA, 'Color', 'none');
+        set(get(hA, 'Title'), 'Color', 'white');
+        set(hA, 'GridColor', 'white', 'MinorGridColor', 'white');  
+        set(hA, 'XColor', [0.75, 0.75, 0.75]);
+        set(hA, 'YColor', [0.75, 0.75, 0.75]);
+        set(get(hA, 'XLabel'), 'Color', [0.75, 0.75, 0.75]);
+        set(get(hA, 'YLabel'), 'Color', [0.75, 0.75, 0.75]);
+    end
+    vHL = findobj(hF, '-depth', 1, 'type', 'legend');
+    for ii = 1:length(vHL)
+        hL = vHL(ii);
+        set(hL, 'Color', 'none');
+        set(hL, 'TextColor', 'white');
+        set(hL, 'LineWidth', 3);
+    end
+    exportgraphics(hF, ['Figure', num2str(figureIdx, figureCounterSpec), '.emf'], 'BackgroundColor', 'none');
+end
 
-disp(['LS Estimatior L2 Norm Error: ', num2str(norm(vXLS - vX))]);
+disp(['LS  Estimatior L2 Norm Error: ', num2str(norm(vXLS - vX))]);
 disp(['WLS Estimatior L2 Norm Error: ', num2str(norm(vXWLS - vX))]);
 
 

@@ -21,4 +21,4 @@ Where $\boldsymbol{D}$ is the _forward_ finite differences operator.
 
 ## Acknowledgment / References
 
- - The file `MakeFile.m` is sourced from [Ivan W. Selesnick - Total Variation Denoising (An MM Algorithm)](https://eeweb.engineering.nyu.edu/iselesni/lecture_notes/TVDmm).
+ - The file `MakeSignal.m` is sourced from [Ivan W. Selesnick - Total Variation Denoising (An MM Algorithm)](https://eeweb.engineering.nyu.edu/iselesni/lecture_notes/TVDmm).
