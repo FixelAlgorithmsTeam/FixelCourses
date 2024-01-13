@@ -45,12 +45,14 @@ function [ mX ] = ProxGradientDescentAccel( mX, hGradFun, hProxFun, stepSize, pa
 % TODO:
 %   1.  C
 % Release Notes:
+%   -   1.0.000     28/12/2023  Royi Avital RopyiAvital@yahoo.com
+%       *   Updated to support complex numbers.
 %   -   1.0.000     28/12/2023  Royi Avital
 %       *   First release version.
 % ----------------------------------------------------------------------------------------------- %
 
 arguments(Input)
-    mX (:, :) {mustBeNumeric, mustBeFinite, mustBeReal}
+    mX (:, :) {mustBeNumeric, mustBeFinite}
     hGradFun (1, 1) {mustBeA(hGradFun, 'function_handle')}
     hProxFun (1, 1) {mustBeA(hProxFun, 'function_handle')}
     stepSize (1, 1) {mustBeNumeric, mustBeFinite, mustBeReal, mustBePositive} = 1e-5
@@ -58,7 +60,7 @@ arguments(Input)
 end
 
 arguments(Output)
-    mX (:, :) {mustBeNumeric, mustBeFinite, mustBeReal}
+    mX (:, :) {mustBeNumeric, mustBeFinite}
 end
 
 FALSE   = 0;
