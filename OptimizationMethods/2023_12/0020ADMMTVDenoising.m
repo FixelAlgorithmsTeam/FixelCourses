@@ -22,7 +22,7 @@ run('InitScript.m');
 figureIdx           = 0;
 figureCounterSpec   = '%04d';
 
-generateFigures = ON;
+generateFigures = OFF;
 
 %% Constants
 
@@ -89,9 +89,6 @@ if(generateFigures == ON)
     print(hF, ['Figure', num2str(figureIdx, figureCounterSpec), '.png'], '-dpng', '-r0'); %<! Saves as Screen Resolution
 end
 
-%?%?%?
-% - How would the least squares (With no regularization) solution look like?
-
 
 %% Solution by DCP (CVX)
 % 1. Formulate the TV Denoising problem as a DCP problem.
@@ -124,13 +121,13 @@ sCvxSol.cvxOptVal = hObjFun(vX);
 % This section implements the ADMM function and its auxiliary function.
 % 1. Implement `ADMM( mX, hMinFun, hProxFun, mP, paramRho, paramLambda, vZ, vW )`.
 % 2. Set `hMinFun = @(vZ, vW, paramRho) ...`.  
-%    It minizes the term with regard to x.
+%    It minimizes the term with regard to x.
 %    You may assume `paramRho` is constant.
 % 3. Set `hProxFun = @(vY, paramLambda) ...`.
 %    It applies the Proximal Operator with reagrd to g().
 
 % You may find this useful
-mDD = speye(numSamples) + paramRho * (mD.' * mD); %<! In practive, much better use operators
+mDD = speye(numSamples) + paramRho * (mD.' * mD); %<! In practice, much better use operators
 mDC = decomposition(mDD, 'chol');
 
 %----------------------------<Fill This>----------------------------%

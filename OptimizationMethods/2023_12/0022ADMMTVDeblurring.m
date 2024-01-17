@@ -22,7 +22,7 @@ run('InitScript.m');
 figureIdx           = 0;
 figureCounterSpec   = '%04d';
 
-generateFigures = ON;
+generateFigures = OFF;
 
 %% Constants
 
@@ -147,7 +147,7 @@ hGradFun = @(vX) mH.' * (conv(vX, vH, 'valid') - vY) + paramLambda * mD.' * sign
 %-------------------------------------------------------------------%
 
 %?%?%?
-% - How could it be implemented without a matrix multiplication?
+% - How could it be implemented without a matrix multiplication? Think operators.
 
 solverIdx                   = solverIdx + 1;
 cLegendString{solverIdx}    = ['Solution by Accelerated Sub Gradient'];
@@ -164,13 +164,13 @@ DisplayRunSummary(cLegendString{solverIdx}, hObjFun, mX(:, end), runTime);
 
 %% Solution by ADMM
 % 1. Set `hMinFun = @(vZ, vW, paramRho) ...`.  
-%    It minizes the term with regard to x.
+%    It minimizes the term with regard to x.
 %    You may assume `paramRho` is constant.
 % 2. Set `hProxFun = @(vY, paramLambda) ...`.
 %    It applies the Proximal Operator with reagrd to g().
 
 % You may find this useful
-mDD = paramRho * (mD.' * mD); %<! In prctice, much better use operators
+mDD = paramRho * (mD.' * mD); %<! In practice, much better use operators
 mHH = mH.' * mH;
 vHy = mH.' * vY;
 mHDC = decomposition(mHH + mDD, 'chol'); %!< Assuming their null space is exclusive

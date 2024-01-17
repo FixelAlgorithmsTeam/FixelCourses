@@ -22,7 +22,7 @@ run('InitScript.m');
 figureIdx           = 0;
 figureCounterSpec   = '%04d';
 
-generateFigures = ON;
+generateFigures = OFF;
 
 %% Constants
 

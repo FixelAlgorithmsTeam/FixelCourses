@@ -22,7 +22,7 @@ run('InitScript.m');
 figureIdx           = 0;
 figureCounterSpec   = '%04d';
 
-generateFigures = ON;
+generateFigures = OFF;
 
 %% Constants
 
@@ -51,7 +51,6 @@ paramRho        = 2;
 numIterations   = 2500;
 
 % Visualization
-
 
 
 %% Generate / Load Data
@@ -146,13 +145,13 @@ sCvxSol.cvxOptVal = hObjFun(vX);
 % This section implements the ADMM function and its auxiliary function.
 % 1. Implement `ADMM( mX, hMinFun, hProxFun, mP, paramRho, paramLambda, vZ, vW )`.
 % 2. Set `hMinFun = @(vZ, vW, paramRho) ...`.  
-%    It minizes the term with regard to x.
+%    It minimizes the term with regard to x.
 %    You may assume `paramRho` is constant.
 % 3. Set `hProxFun = @(vY, paramLambda) ...`.
 %    It applies the Proximal Operator with reagrd to g().
 
 % You may find this useful
-mDD = speye(numSamples) + paramRho * (mD.' * mD); %<! In practive, much better use operators
+mDD = speye(numSamples) + paramRho * (mD.' * mD); %<! In practice, much better use operators
 mDC = decomposition(mDD, 'chol');
 
 %----------------------------<Fill This>----------------------------%

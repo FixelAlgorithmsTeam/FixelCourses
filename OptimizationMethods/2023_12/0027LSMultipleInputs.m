@@ -85,6 +85,7 @@ disp(['Total run time: ', num2str(runTime), ' [Sec].']);
 % - What if A was symmetric? How can we take advantage of that?
 % - What if A was SPD? How can we take advantage of that?
 % - What if A was orthonormal?
+% - Will solving the Normal Equations make things faster? Think on dimensions and condition number.
 
 
 %% Auxiliary Functions

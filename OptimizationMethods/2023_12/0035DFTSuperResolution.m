@@ -188,6 +188,7 @@ function [ vX ] = SuperResolutionDftL1( vY, mF, paramLambda )
 % 
 % hGradFun = @(vX) mF' * (mF * vX - vY);
 % % Complex sign function: `sign(vY) = exp(1i * angle(vY));`.
+% % MATLAB's `sign()` function supports complex numbers as above.
 % hProxFun = @(vY, paramLambda) max(abs(vY) - paramLambda, 0) .* exp(1i * angle(vY));
 % stepSize = 2.00;
 % 

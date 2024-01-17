@@ -32,7 +32,7 @@ paramK      = 8; %<! Working on patches with size (paramK, paramK)
 
 % Model
 % Set 9 different values
-vSR = [5; 10; 15; 20; 30; 40; 50; 60; 64]; %<! Number of singular values for reconstruction
+vSR = [3; 5; 10; 20; 30; 40; 50; 60; 64]; %<! Number of singular values for reconstruction
 
 % Visualization
 

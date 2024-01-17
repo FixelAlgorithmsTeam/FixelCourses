@@ -39,7 +39,7 @@ vB = mA * vX;
 
 % What is the rank of A?
 %----------------------------<Fill This>----------------------------%
-% Use the SVD to calculate the rank of the matrix
+% 1. Use the SVD to calculate the rank of the matrix.
 [mU, mS, mV] = svd(mA);
 rankA = sum(diag(mS) ~= 0);
 %-------------------------------------------------------------------%
@@ -50,21 +50,22 @@ rankA = sum(diag(mS) ~= 0);
 
 % Calculate the pseudo inverse of mS.
 %----------------------------<Fill This>----------------------------%
-% Use the SVD to calculate the rank of the matrix
+% 1. Use the SVD to calculate the pseudo inverse of the matrix `mS`.
 mSI = mS.';
 for ii = 1:min(size(mSI))
     mSI(ii, ii) = ((mSI(ii, ii) ~=0) + 0) / (mSI(ii, ii) + (mSI(ii, ii) == 0) * 1);
 end
 %-------------------------------------------------------------------%
 
-% Calculate the SVD based Pseudo Inverse of A
+% Calculate the SVD based Pseudo Inverse of A.
 %----------------------------<Fill This>----------------------------%
-% Use the SVD to calculate the pseudo inverse of the matrix
+% 1. Use the SVD to calculate the pseudo inverse of the matrix `mA`.
 mAPInv = mV * mSI * mU.';
 %-------------------------------------------------------------------%
 
 % Solve the equation using the Pseudo Inverse
 %----------------------------<Fill This>----------------------------%
+% 1. Calculate the equation "best solution" using the pseudo inverse.
 vXEst = mAPInv * vB;
 %-------------------------------------------------------------------%
 
