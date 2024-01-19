@@ -49,7 +49,7 @@ paramLambda = 0.075;
 
 % Solver
 stepSize        = 0.015;
-paramRho        = 2;
+paramRho        = 0.25; %<! Try 5
 numIterations   = 10000;
 
 % Visualization

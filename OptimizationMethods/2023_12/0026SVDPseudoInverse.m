@@ -53,7 +53,7 @@ rankA = sum(diag(mS) ~= 0);
 % 1. Use the SVD to calculate the pseudo inverse of the matrix `mS`.
 mSI = mS.';
 for ii = 1:min(size(mSI))
-    mSI(ii, ii) = ((mSI(ii, ii) ~=0) + 0) / (mSI(ii, ii) + (mSI(ii, ii) == 0) * 1);
+    mSI(ii, ii) = ((mSI(ii, ii) ~= 0) + 0) / (mSI(ii, ii) + (mSI(ii, ii) == 0) * 1);
 end
 %-------------------------------------------------------------------%
 
