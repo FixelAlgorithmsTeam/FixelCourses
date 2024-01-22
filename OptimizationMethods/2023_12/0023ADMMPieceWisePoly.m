@@ -74,7 +74,7 @@ mD = spdiags([-ones(numSamples, 1), ones(numSamples, 1)], [-1, 0], numSamples, n
 for kk = 1:polyDeg
     mD = mD * mD;
 end
-mD = mD(polyDeg + 2:end, :);
+mD = mD((polyDeg + 2):end, :);
 
 % Solvers
 mX = zeros(numSamples, numIterations);
