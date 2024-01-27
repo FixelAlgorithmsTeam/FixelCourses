@@ -1,4 +1,4 @@
-# Technion - AI Program
+# AI Program
 
 ![](https://i.imgur.com/kvThExG.png)
 [![](./../FixelAlgorithmsLogo.png)](https://fixelalgorithms.gitlab.io/)

@@ -1,0 +1,37 @@
+name: TechnionAiProg
+channels:
+  - pytorch
+  - nvidia
+  - numba
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - scipy
+  - pandas
+  - scikit-learn
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - xgboost
+  - lightgbm
+  - catboost
+  - pytorch
+  - pytorch-cuda=12.1
+  - pytorch-lightning
+  - torchvision
+  - torchinfo
+  - tensorboard
+  - matplotlib
+  - seaborn
+  - skorch
+  - bokeh
+  - plotly
+  - umap-learn
+  - scikit-image
+  - opencv
+  - numba
+  - graphviz
+  - pydot
+  - distinctipy
+  - gdown
