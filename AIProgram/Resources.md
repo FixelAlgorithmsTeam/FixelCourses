@@ -12,6 +12,10 @@ This file is a curated list of resources related to the course.
 
  - [Nick Higham's _What Is_ Series](https://nhigham.com/index-of-what-is-articles).
 
+### Python
+
+ - [Introduction to Computer Science and Programming in Python](https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016).
+
 ## Classic Machine Learning
 
 ## Deep Learning
