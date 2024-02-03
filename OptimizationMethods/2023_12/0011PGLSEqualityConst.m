@@ -72,7 +72,7 @@ numIterations   = 2500;
 % vN is the AWGN and vY are the givem measurements.  
 % In matrix form:
 % vY = mX * vH + vN
-% Here, mX is the convolution matrix built by teh data samples.
+% Here, mX is the convolution matrix built by the data samples.
 
 vX = sawtooth(1:numSamples);
 for ii = 2:10
