@@ -22,6 +22,7 @@ dependencies:
   - pytorch-lightning
   - torchvision
   - torchinfo
+  - autograd
   - tensorboard
   - matplotlib
   - seaborn
