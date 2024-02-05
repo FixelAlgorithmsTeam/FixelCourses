@@ -15,6 +15,10 @@ This guide is mainly Windows users though the main steps can be replicated in `m
 3. Install VS Code  
    You should install VS Code form the [VS Code Download Page](https://code.visualstudio.com/download).  
    Choose the `User Installer`. Make sure to chose to add `Code` to path one options are showed.
+4. Enable Long Path Support  
+   See [Microsoft - Maximum Path Length Limitation](https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation).  
+   The operation requires elevated privileges.
+   
 
 
 # Install the Conda Environment
@@ -34,3 +38,4 @@ It is assumed that the Windows OS is used.
 7. Open VS Code (Run `code` on command line).
 8. Open the folder of the notebooks of the course.
 9. Open a notebook and make sure you set the Python Kernel to `TechnionAiProg` (It should say Python `3.11.7` or `3.11.8`).
+

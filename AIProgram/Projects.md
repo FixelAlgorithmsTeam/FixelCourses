@@ -10,6 +10,7 @@ Contains list of projects for the choice of the students.
 ## Classic Machine Learning
 
  - Improve `Predictive Power Score (PPS)` implementation.
+ - Predict 1:1 Match Result by Past Data (Tennis, Chess, etc...).
 
 
 **Remark**: The projects above can be solved with Deep Learning as well.
@@ -17,8 +18,11 @@ Contains list of projects for the choice of the students.
 ## Computer Vision
 
  - Tracking football players during play.
- - Measuring heart rate and respiration rate from video.
+ - Identifying events in a video stream.
+ - Measuring heart rate and respiration rate from a video.
  - Building a drone tracker.
+ - Continuously verifying the person identity over a video.
+ - Analyzing stress level via audio and video.
 
 ## Language Processing
 
