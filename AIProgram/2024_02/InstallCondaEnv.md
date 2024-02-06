@@ -19,9 +19,7 @@ This guide is mainly Windows users though the main steps can be replicated in `m
    See [Microsoft - Maximum Path Length Limitation](https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation).  
    The operation requires elevated privileges.
    
-
-
-# Install the Conda Environment
+## Install the Conda Environment
 
 This is a basic instruction how to install the course environment under Anaconda (Or any `conda` managed distribution).  
 It is assumed that the Windows OS is used.
@@ -39,3 +37,4 @@ It is assumed that the Windows OS is used.
 8. Open the folder of the notebooks of the course.
 9. Open a notebook and make sure you set the Python Kernel to `TechnionAiProg` (It should say Python `3.11.7` or `3.11.8`).
 
+**Remark**: The environment includes an installation of `pytorch-cuda=12.1`. For computers without a GPU by _NVIDIA_ this should remove (**Must on macOS**).

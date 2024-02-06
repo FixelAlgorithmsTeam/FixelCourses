@@ -11,6 +11,7 @@ Contains list of projects for the choice of the students.
 
  - Improve `Predictive Power Score (PPS)` implementation.
  - Predict 1:1 Match Result by Past Data (Tennis, Chess, etc...).
+ - Recommendation system using Decision Trees.
 
 
 **Remark**: The projects above can be solved with Deep Learning as well.
