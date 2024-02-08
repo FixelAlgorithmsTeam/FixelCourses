@@ -40,7 +40,7 @@ class DiffMode(Enum):
 def CalcFunGrad( vX: np.ndarray, hF: Callable, /, *, diffMode: DiffMode = DiffMode.CENTRAL, ε: float = 1e-6 ):
     """
     Calculates the gradient of `hF` using finite differences method (Numerical differentiation).
-    Args:
+    Input:
         vX          - Vector (numElements, ) of the point to calculate the gradient at.
         hF          - A function to calculate the gradient for.
         diffMode    - The method to use for the numeric calculation.
