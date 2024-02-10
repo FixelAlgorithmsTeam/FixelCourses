@@ -9,7 +9,8 @@ This folder is dedicated to the course [Technion AI Program](https://cont-edu.te
 
 ## Class 2024 (February)
 
- - First session of the program.
- - The [Technion Zoom Access](https://technion.zoom.us).
+ - First session of the program (Technion).
+ - [Technion Zoom Access](https://technion.zoom.us).
+ - [Resources](./Resources.md).
  - [Projects](./Projects.md).
 
