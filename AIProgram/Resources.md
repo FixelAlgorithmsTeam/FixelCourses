@@ -18,6 +18,11 @@ This file is a curated list of resources related to the course.
  - [Introduction to Computer Science and Programming in Python](https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016).
  - [A Quick Introduction to List Comprehensions with Python](https://github.com/mrdbourke/python-list-comprehensions-tutorial/blob/master/python-list-comprehensions-in-5-minutes.ipynb).
 
+### Development Environment
+
+ - [Conda Cheat Sheet](https://docs.conda.io/projects/conda/en/latest/_downloads/843d9e0198f2a193a3484886fa28163c/conda-cheatsheet.pdf).  
+   Mostly compatible with `micromamba` by replacing `conda` with `micromamba`.
+
 ## Classic Machine Learning
 
 ## Deep Learning
