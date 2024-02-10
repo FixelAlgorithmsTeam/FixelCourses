@@ -11,6 +11,7 @@ This file is a curated list of resources related to the course.
 ### Linear Algebra
 
  - [Nick Higham's _What Is_ Series](https://nhigham.com/index-of-what-is-articles).
+ - [Matrix Calculus for Machine Learning and Beyond](https://github.com/mitmath/matrixcalc).
 
 ### Python
 
