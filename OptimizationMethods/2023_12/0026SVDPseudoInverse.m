@@ -115,7 +115,7 @@ vXEst = mAPInv * vB;
 
 % Calculate b̂ = P_R(A) (b) = sum_i^r {u}_{i}^{T} b {u}_{i}
 %----------------------------<Fill This>----------------------------%
-vBHat = mU(:, 1:2) * mU(:, 1:2).' * vB; %<! Matches the loop
+vBHat = mU(:, 1:rankA) * mU(:, 1:rankA).' * vB; %<! Matches the loop
 %-------------------------------------------------------------------%
 
 % Compare the following solution:
