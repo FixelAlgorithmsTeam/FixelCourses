@@ -28,6 +28,7 @@ This file is a curated list of resources related to the course.
 ### Scientific Python
 
  - [100 NumPy Exercises with Solutions](https://github.com/rougier/numpy-100).
+ - [Project Euler](https://projecteuler.net).
 
 ## Classic Machine Learning
 
