@@ -1,0 +1,29 @@
+name: TechnionAiProg
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - blas=*=mkl
+  - libblas=*=*mkl
+  - numpy
+  - scipy
+  - pandas
+  - cvxpy
+  - scikit-learn
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - xgboost
+  - lightgbm
+  - autograd
+  - matplotlib
+  - seaborn
+  - bokeh
+  - plotly
+  - umap-learn
+  - scikit-image
+  - numba
+  - graphviz
+  - pydot
+  - distinctipy
+  - gdown
