@@ -38,3 +38,9 @@ It is assumed that the Windows OS is used.
 9. Open a notebook and make sure you set the Python Kernel to `TechnionAiProg` (It should say Python `3.11.7` or `3.11.8`).
 
 **Remark**: The environment includes an installation of `pytorch-cuda=12.1`. For computers without a GPU by _NVIDIA_ this should remove (**Must on macOS**).
+
+## Visual Studio Code (VS Code)
+
+ 1. Install the `Python` extension by **Microsoft**.
+ 2. Install the `Jupyter` extension by **Microsoft**.
+ 3. Install the `Pylance` extension by **Microsoft**.
