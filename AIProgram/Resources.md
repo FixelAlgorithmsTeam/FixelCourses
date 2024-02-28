@@ -25,6 +25,7 @@ This file is a curated list of resources related to the course.
 
 ### Python
 
+ - [MyPy Python Type Hints Cheat Sheet](https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html).
  - [Introduction to Computer Science and Programming in Python](https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016).
  - [A Quick Introduction to List Comprehensions with Python](https://github.com/mrdbourke/python-list-comprehensions-tutorial/blob/master/python-list-comprehensions-in-5-minutes.ipynb).
  - [Free Python Books](https://github.com/pamoroso/free-python-books) - A curated list of _free_ Python books.
