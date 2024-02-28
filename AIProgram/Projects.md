@@ -10,7 +10,8 @@
 
 Contains list of projects for the choice of the students.  
 
-> [!INFO]
+<!-- https://stackoverflow.com/a/72327818 -->
+> [!NOTE]
 > This list is only a suggestion. The student may chose a different subject with coordination with the the guide.
 
 ### Classic Machine Learning
