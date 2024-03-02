@@ -41,6 +41,12 @@ Contains list of projects for the choice of the students.
  - Text sentiment labeling.
 
 
+### Data Resources
+
+ - [CodaLab](https://codalab.lisn.upsaclay.fr) - ML competitions.
+ - [CodaBench](https://www.codabench.org) - ML competitions (Refinement of `CodaLab`).
+ - [Kaggle](https://www.kaggle.com) - ML competitions.
+
 ## Project Structure
 
 The project should have the following structure:

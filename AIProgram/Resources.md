@@ -56,3 +56,4 @@ This file is a curated list of resources related to the course.
 ### Miscellaneous
 
  - [Visual LaTeX Editor](https://latex.codecogs.com/eqneditor/editor.php).
+ - [OpenML](https://openml.org) - Machine Learning data sets. Accessible from _SciKit Learn_.
