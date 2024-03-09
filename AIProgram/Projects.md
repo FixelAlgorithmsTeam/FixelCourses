@@ -38,6 +38,8 @@ Contains list of projects for the choice of the students.
  - Sign Language Parsing.  
    See [Google - Isolated Sign Language Recognition](https://www.kaggle.com/competitions/asl-signs).  
    [Live Coding by Rob Mulla](https://www.youtube.com/watch?v=DTQA8KIWWhY).
+ - Image Denoising  
+   Replicate the results of state of the art Denoising algorithm.
  - 
 
 ### Language Processing
