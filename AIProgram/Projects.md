@@ -16,9 +16,13 @@ Contains list of projects for the choice of the students.
 
 ### Classic Machine Learning
 
- - Improve `Predictive Power Score (PPS)` implementation.
- - Predict 1:1 Match Result by Past Data (Tennis, Chess, etc...).
- - Recommendation system using Decision Trees.
+ -  Improve `Predictive Power Score (PPS)` implementation.
+ -  Predict 1:1 Match Result by Past Data (Tennis, Chess, etc...).
+ -  Recommendation system using Decision Trees.
+ -  Predict the Probability of a Worker to Resign   
+    See the [IBM HR Analytics Employee Attrition & Performance](https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset).  
+    See [What Is Your Model Hiding? A Tutorial on Evaluating ML Models](https://www.evidentlyai.com/blog/tutorial-2-model-evaluation-hr-attrition).
+ - 
 
 
 **Remark**: The projects above can be solved with Deep Learning as well.
@@ -38,7 +42,9 @@ Contains list of projects for the choice of the students.
 
 ### Language Processing
 
- - Text sentiment labeling.
+ - Text Sentiment Labeling  
+   For instance see [Sentiment Classifier for User Requests in the Banking Domain](https://rubrix.readthedocs.io/en/master/tutorials/01-labeling-finetuning.html).
+ - 
 
 
 ### Data Resources
@@ -46,6 +52,7 @@ Contains list of projects for the choice of the students.
  - [CodaLab](https://codalab.lisn.upsaclay.fr) - ML competitions.
  - [CodaBench](https://www.codabench.org) - ML competitions (Refinement of `CodaLab`).
  - [Kaggle](https://www.kaggle.com) - ML competitions.
+ - [Real World ML systems](https://www.evidentlyai.com/ml-system-design) - List of data sets accompanied by a project information.
 
 ## Project Structure
 
