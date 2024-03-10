@@ -8,7 +8,8 @@ import numpy as np
 import pandas as pd
 import scipy as sp
 
-# Models
+# Machine Learning
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 # Image Processing / Computer Vision
 
@@ -45,7 +46,8 @@ EDGE_COLOR      = 'k'
 MARKER_SIZE_DEF = 10
 LINE_WIDTH_DEF  = 2
 
-def PlotBinaryClassData( mX: np.ndarray, vY: np.ndarray, /, *, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF, elmSize: int = ELM_SIZE_DEF, classColor: Tuple[str, str] = CLASS_COLOR, axisTitle: Optional[str] = None ) -> plt.Axes:
+def PlotBinaryClassData( mX: np.ndarray, vY: np.ndarray, /, *, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF, 
+                        elmSize: int = ELM_SIZE_DEF, classColor: Tuple[str, str] = CLASS_COLOR, axisTitle: Optional[str] = None ) -> plt.Axes:
     """
     Plots binary 2D data as a scatter plot.
     Input:
@@ -122,3 +124,68 @@ def Plot2DLinearClassifier( mX: np.ndarray, vY: np.ndarray, vW: np.ndarray, mX1:
     hA.set_ylabel('$x_2$')
 
     return
+
+def PlotMnistImages(mX: np.ndarray, vY: np.ndarray, numImg: int, hF: Optional[plt.Figure] = None) -> plt.Figure:
+
+    numSamples  = mX.shape[0]
+    numPx       = mX.shape[1]
+
+    numRows = int(np.sqrt(numPx))
+
+    tFigSize = (numImg * 3, numImg * 3)
+
+    if hF is None:
+        hF, hA = plt.subplots(numImg, numImg, figsize = tFigSize)
+    else:
+        hA = hF.axis
+    
+    hA = np.atleast_1d(hA) #<! To support numImg = 1
+    hA = hA.flat
+    
+    for kk in range(numImg * numImg):
+        idx = np.random.choice(numSamples)
+        mI  = np.reshape(mX[idx, :], (numRows, numRows))
+    
+        # hA[kk].imshow(mI.clip(0, 1), cmap = 'gray')
+        hA[kk].imshow(mI, cmap = 'gray')
+        hA[kk].tick_params(axis = 'both', left = False, top = False, right = False, bottom = False, 
+                           labelleft = False, labeltop = False, labelright = False, labelbottom = False)
+        hA[kk].set_title(f'Index = {idx}, Label = {vY[idx]}')
+    
+    return hF
+
+def PlotLabelsHistogram( vY: np.ndarray, hA: Optional[plt.Axes] = None ) -> plt.Axes:
+
+    if hA is None:
+        hF, hA = plt.subplots(figsize = (8, 6))
+    
+    vLabels, vCounts = np.unique(vY, return_counts = True)
+
+    hA.bar(vLabels, vCounts, width = 0.9, align = 'center')
+    hA.set_title('Histogram of Classes / Labels')
+    hA.set_xlabel('Class')
+    hA.set_ylabel('Number of Samples')
+
+    return hA
+
+def PlotConfusionMatrix(vY: np.ndarray, vYPred: np.ndarray, normMethod: str = None, hA: Optional[plt.Axes] = None, 
+                        lLabels: Optional[List] = None, dScore: Optional[Dict] = None, titleStr: str = 'Confusion Matrix', 
+                        xLabelRot: Optional[int] = None, valFormat: Optional[str] = None) -> plt.Axes:
+
+    # Calculation of Confusion Matrix
+    mConfMat = confusion_matrix(vY, vYPred, normalize = normMethod)
+    oConfMat = ConfusionMatrixDisplay(mConfMat, display_labels = lLabels)
+    oConfMat = oConfMat.plot(ax = hA, values_format = valFormat)
+    hA = oConfMat.ax_
+    if dScore is not None:
+        titleStr += ':'
+        for scoreName, scoreVal in  dScore.items():
+            titleStr += f' {scoreName} = {scoreVal:0.2},'
+        titleStr = titleStr[:-1]
+    hA.set_title(titleStr)
+    hA.grid(False)
+    if xLabelRot is not None:
+        for xLabel in hA.get_xticklabels():
+            xLabel.set_rotation(xLabelRot)
+
+    return hA, mConfMat
