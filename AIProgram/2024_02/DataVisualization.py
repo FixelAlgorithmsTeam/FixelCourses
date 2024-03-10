@@ -49,8 +49,8 @@ def PlotBinaryClassData( mX: np.ndarray, vY: np.ndarray, /, *, hA: Optional[plt.
     """
     Plots binary 2D data as a scatter plot.
     Input:
-        mX          - Matrix (2, numSamples) of the data points.
-        vY          - Vector (numSamples) labels of the data.
+        mX          - Matrix (numSamples, 2) of the data points.
+        vY          - Vector (numSamples) labels of the data (2 Distinct values only).
     Output:
         hA          - Axes handler the scatter was drawn on.
     """
