@@ -164,7 +164,8 @@ def PlotLabelsHistogram( vY: np.ndarray, hA: Optional[plt.Axes] = None ) -> plt.
     hA.bar(vLabels, vCounts, width = 0.9, align = 'center')
     hA.set_title('Histogram of Classes / Labels')
     hA.set_xlabel('Class')
-    hA.set_ylabel('Number of Samples')
+    hA.set_xticks(vLabels, [f'{labelVal:d}' for labelVal in vLabels])
+    hA.set_ylabel('Count')
 
     return hA
 
