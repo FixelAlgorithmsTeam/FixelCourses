@@ -171,7 +171,7 @@ def PlotLabelsHistogram( vY: np.ndarray, hA: Optional[plt.Axes] = None ) -> plt.
 
 def PlotConfusionMatrix(vY: np.ndarray, vYPred: np.ndarray, normMethod: str = None, hA: Optional[plt.Axes] = None, 
                         lLabels: Optional[List] = None, dScore: Optional[Dict] = None, titleStr: str = 'Confusion Matrix', 
-                        xLabelRot: Optional[int] = None, valFormat: Optional[str] = None) -> plt.Axes:
+                        xLabelRot: Optional[int] = None, valFormat: Optional[str] = None) -> Tuple[plt.Axes, np.ndarray]:
 
     # Calculation of Confusion Matrix
     mConfMat = confusion_matrix(vY, vYPred, normalize = normMethod)
@@ -190,3 +190,32 @@ def PlotConfusionMatrix(vY: np.ndarray, vYPred: np.ndarray, normMethod: str = No
             xLabel.set_rotation(xLabelRot)
 
     return hA, mConfMat
+
+def PlotDecisionBoundaryClosure( numGridPts: int, gridXMin: float, gridXMax: float, gridYMin: float, gridYMax: float, clsColors: Tuple = CLASS_COLOR, numDigits: int = 1 ) -> Callable:
+
+    roundFctr = 10 ** numDigits
+    
+    # For equal axis
+    minVal = np.floor(roundFctr * min(gridXMin, gridYMin)) / roundFctr
+    maxVal = np.ceil(roundFctr * max(gridXMax, gridYMax)) / roundFctr
+    vX1     = np.linspace(minVal, maxVal, numGridPts)
+    vX2     = np.linspace(minVal, maxVal, numGridPts)
+    
+    mX1, mX2 = np.meshgrid(vX1, vX2)
+    mX       = np.c_[mX1.ravel(), mX2.ravel()] #<! Features (2D)
+
+    # A closure
+    def PlotDecisionBoundary(hDecFun: Callable, hA: plt.Axes = None) -> plt.Axes:
+        
+        if hA is None:
+            hF, hA = plt.subplots(figsize = (8, 6))
+
+        mZ = hDecFun(mX)
+        mZ = mZ.reshape(mX1.shape)
+
+        # Assumes 
+        hA.contourf(mX1, mX2, mZ, colors = clsColors, alpha = 0.3, levels = [-0.5, 0.5, 1.5])
+
+        return hA
+
+    return PlotDecisionBoundary
