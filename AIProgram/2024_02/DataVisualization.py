@@ -198,8 +198,8 @@ def PlotDecisionBoundaryClosure( numGridPts: int, gridXMin: float, gridXMax: flo
     # For equal axis
     minVal = np.floor(roundFctr * min(gridXMin, gridYMin)) / roundFctr
     maxVal = np.ceil(roundFctr * max(gridXMax, gridYMax)) / roundFctr
-    vX1     = np.linspace(minVal, maxVal, numGridPts)
-    vX2     = np.linspace(minVal, maxVal, numGridPts)
+    vX1    = np.linspace(minVal, maxVal, numGridPts)
+    vX2    = np.linspace(minVal, maxVal, numGridPts)
     
     mX1, mX2 = np.meshgrid(vX1, vX2)
     mX       = np.c_[mX1.ravel(), mX2.ravel()] #<! Features (2D)
@@ -213,7 +213,7 @@ def PlotDecisionBoundaryClosure( numGridPts: int, gridXMin: float, gridXMax: flo
         mZ = hDecFun(mX)
         mZ = mZ.reshape(mX1.shape)
 
-        # Assumes 
+        # Assumes values {0, 1}
         hA.contourf(mX1, mX2, mZ, colors = clsColors, alpha = 0.3, levels = [-0.5, 0.5, 1.5])
 
         return hA
