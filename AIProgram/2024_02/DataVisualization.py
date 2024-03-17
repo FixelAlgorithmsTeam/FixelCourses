@@ -134,9 +134,6 @@ def PlotMnistImages(mX: np.ndarray, vY: np.ndarray, numImg: int, lClasses: Optio
 
     tFigSize = (numImg * 3, numImg * 3)
 
-    if lClasses is None:
-        lClasses = [f'{valLbl}' for valLbl in np.unique(vY)]
-
     if hF is None:
         hF, hA = plt.subplots(numImg, numImg, figsize = tFigSize)
     else:
@@ -153,7 +150,10 @@ def PlotMnistImages(mX: np.ndarray, vY: np.ndarray, numImg: int, lClasses: Optio
         hA[kk].imshow(mI, cmap = 'gray')
         hA[kk].tick_params(axis = 'both', left = False, top = False, right = False, bottom = False, 
                            labelleft = False, labeltop = False, labelright = False, labelbottom = False)
-        hA[kk].set_title(f'Index = {idx}, Label = {lClasses[vY[idx]]}')
+        if lClasses is None:
+            hA[kk].set_title(f'Index = {idx}, Label = {vY[idx]}')
+        else:
+            hA[kk].set_title(f'Index = {idx}, Label = {lClasses[vY[idx]]}')
     
     return hF
 
