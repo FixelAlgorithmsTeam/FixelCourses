@@ -55,6 +55,7 @@ Contains list of projects for the choice of the students.
  - [CodaBench](https://www.codabench.org) - ML competitions (Refinement of `CodaLab`).
  - [Kaggle](https://www.kaggle.com) - ML competitions.
  - [Real World ML systems](https://www.evidentlyai.com/ml-system-design) - List of data sets accompanied by a project information.
+ - [TidyTuesday](https://github.com/rfordatascience/tidytuesday) - A weekly social data project. Many datasets with links to EDA's. There are videos on YouTube (Search for `Tidy Tuesday`).
 
 ## Project Structure
 

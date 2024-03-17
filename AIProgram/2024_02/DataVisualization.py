@@ -157,7 +157,7 @@ def PlotMnistImages(mX: np.ndarray, vY: np.ndarray, numImg: int, lClasses: Optio
     
     return hF
 
-def PlotLabelsHistogram( vY: np.ndarray, hA: Optional[plt.Axes] = None ) -> plt.Axes:
+def PlotLabelsHistogram( vY: np.ndarray, hA: Optional[plt.Axes] = None, lClass: Optional[List] = None ) -> plt.Axes:
 
     if hA is None:
         hF, hA = plt.subplots(figsize = (8, 6))
@@ -169,6 +169,8 @@ def PlotLabelsHistogram( vY: np.ndarray, hA: Optional[plt.Axes] = None ) -> plt.
     hA.set_xlabel('Class')
     hA.set_xticks(vLabels, [f'{labelVal}' for labelVal in vLabels])
     hA.set_ylabel('Count')
+    if lClass is not None:
+        hA.set_xticklabels(lClass)
 
     return hA
 
