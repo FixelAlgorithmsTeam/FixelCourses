@@ -125,7 +125,7 @@ def Plot2DLinearClassifier( mX: np.ndarray, vY: np.ndarray, vW: np.ndarray, mX1:
 
     return
 
-def PlotMnistImages(mX: np.ndarray, vY: np.ndarray, numImg: int, hF: Optional[plt.Figure] = None) -> plt.Figure:
+def PlotMnistImages(mX: np.ndarray, vY: np.ndarray, numImg: int, lClasses: Optional[List] = None, hF: Optional[plt.Figure] = None) -> plt.Figure:
 
     numSamples  = mX.shape[0]
     numPx       = mX.shape[1]
@@ -133,6 +133,9 @@ def PlotMnistImages(mX: np.ndarray, vY: np.ndarray, numImg: int, hF: Optional[pl
     numRows = int(np.sqrt(numPx))
 
     tFigSize = (numImg * 3, numImg * 3)
+
+    if lClasses is None:
+        lClasses = [f'{valLbl}' for valLbl in np.unique(vY)]
 
     if hF is None:
         hF, hA = plt.subplots(numImg, numImg, figsize = tFigSize)
@@ -150,7 +153,7 @@ def PlotMnistImages(mX: np.ndarray, vY: np.ndarray, numImg: int, hF: Optional[pl
         hA[kk].imshow(mI, cmap = 'gray')
         hA[kk].tick_params(axis = 'both', left = False, top = False, right = False, bottom = False, 
                            labelleft = False, labeltop = False, labelright = False, labelbottom = False)
-        hA[kk].set_title(f'Index = {idx}, Label = {vY[idx]}')
+        hA[kk].set_title(f'Index = {idx}, Label = {lClasses[vY[idx]]}')
     
     return hF
 
@@ -164,7 +167,7 @@ def PlotLabelsHistogram( vY: np.ndarray, hA: Optional[plt.Axes] = None ) -> plt.
     hA.bar(vLabels, vCounts, width = 0.9, align = 'center')
     hA.set_title('Histogram of Classes / Labels')
     hA.set_xlabel('Class')
-    hA.set_xticks(vLabels, [f'{labelVal:d}' for labelVal in vLabels])
+    hA.set_xticks(vLabels, [f'{labelVal}' for labelVal in vLabels])
     hA.set_ylabel('Count')
 
     return hA
