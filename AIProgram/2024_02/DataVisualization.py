@@ -125,26 +125,27 @@ def Plot2DLinearClassifier( mX: np.ndarray, vY: np.ndarray, vW: np.ndarray, mX1:
 
     return
 
-def PlotMnistImages(mX: np.ndarray, vY: np.ndarray, numImg: int, lClasses: Optional[List] = None, hF: Optional[plt.Figure] = None) -> plt.Figure:
+def PlotMnistImages(mX: np.ndarray, vY: np.ndarray, numRows: int, numCols: Optional[int] = None, tuImgSize: Tuple = (28, 28), randomChoice: bool = True, lClasses: Optional[List] = None, hF: Optional[plt.Figure] = None) -> plt.Figure:
 
     numSamples  = mX.shape[0]
     numPx       = mX.shape[1]
 
-    numRows = int(np.sqrt(numPx))
+    if numCols is None:
+        numCols = numRows
 
-    tFigSize = (numImg * 3, numImg * 3)
+    tFigSize = (numCols * 3, numRows * 3)
 
     if hF is None:
-        hF, hA = plt.subplots(numImg, numImg, figsize = tFigSize)
+        hF, hA = plt.subplots(numRows, numCols, figsize = tFigSize)
     else:
         hA = hF.axis
     
     hA = np.atleast_1d(hA) #<! To support numImg = 1
     hA = hA.flat
     
-    for kk in range(numImg * numImg):
-        idx = np.random.choice(numSamples)
-        mI  = np.reshape(mX[idx, :], (numRows, numRows))
+    for kk in range(numRows * numCols):
+        idx = np.random.choice(numSamples) if randomChoice else kk
+        mI  = np.reshape(mX[idx, :], tuImgSize)
     
         # hA[kk].imshow(mI.clip(0, 1), cmap = 'gray')
         hA[kk].imshow(mI, cmap = 'gray')
