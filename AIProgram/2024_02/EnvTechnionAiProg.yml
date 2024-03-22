@@ -9,19 +9,23 @@ dependencies:
   - numpy
   - scipy
   - pandas
-  - cvxpy
-  - scikit-learn
+  - numba
   - jupyter
   - ipykernel
   - ipywidgets
+  - cvxpy
+  - scikit-learn
   - xgboost
   - lightgbm
-  - catboost
+  - nltk
+  - umap-learn
   - pytorch
   - pytorch-cuda=12.1
   - pytorch-lightning
   - torchvision
   - torchinfo
+  - scikit-image
+  - opencv
   - autograd
   - tensorboard
   - matplotlib
@@ -29,10 +33,6 @@ dependencies:
   - skorch
   - bokeh
   - plotly
-  - umap-learn
-  - scikit-image
-  - opencv
-  - numba
   - graphviz
   - pydot
   - distinctipy

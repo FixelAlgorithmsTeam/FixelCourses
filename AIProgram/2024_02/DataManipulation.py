@@ -1,12 +1,13 @@
 
 # Python STD
-# import enum
-import math
+from enum import auto, Enum, unique
+# import math
+import shutil
 
 # Data
 import numpy as np
-import pandas as pd
-import scipy as sp
+# import pandas as pd
+# import scipy as sp
 
 # Machine Learning
 
@@ -15,15 +16,11 @@ import scipy as sp
 # Optimization
 
 # Auxiliary
-from numba import jit, njit
 
 # Visualization
-import distinctipy
-import matplotlib.colors
-import matplotlib.pyplot as plt
 
 # Miscellaneous
-from enum import auto, Enum, unique
+import gdown
 import gzip
 import os
 import urllib.request
@@ -41,6 +38,17 @@ class DiffMode(Enum):
     COMPLEX     = auto()
 
 # Constants
+
+def DownloadGDriveZip( fileId: str, lFileCont: List[str] ) -> None:
+
+    for fileName in lFileCont:
+        if os.path.isfile(fileName):
+            os.remove(fileName)
+    
+    fileNameZip = gdown.download(id = fileId)
+    shutil.unpack_archive(fileNameZip)
+
+    os.remove(fileNameZip)
 
 def DownloadDecompressGzip( fileUrl: str, fileName: str) -> None:
     # Based on https://stackoverflow.com/a/61195974

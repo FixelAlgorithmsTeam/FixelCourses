@@ -8,21 +8,22 @@ dependencies:
   - numpy
   - scipy
   - pandas
-  - cvxpy
-  - scikit-learn
+  - numba
   - jupyter
   - ipykernel
   - ipywidgets
+  - cvxpy
+  - scikit-learn
   - xgboost
   - lightgbm
+  - umap-learn
+  - nltk
   - autograd
+  - scikit-image
   - matplotlib
   - seaborn
   - bokeh
   - plotly
-  - umap-learn
-  - scikit-image
-  - numba
   - graphviz
   - pydot
   - distinctipy
