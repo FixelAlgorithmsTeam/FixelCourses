@@ -230,3 +230,30 @@ def PlotDecisionBoundaryClosure( numGridPts: int, gridXMin: float, gridXMax: flo
 
     return PlotDecisionBoundary
 
+def PlotRegressionData( mX: np.ndarray, vY: np.ndarray, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF, elmSize: int = ELM_SIZE_DEF, classColor: Tuple[str, str] = CLASS_COLOR, axisTitle: Optional[str] = None ) -> plt.Axes:
+
+    if hA is None:
+        hF, hA = plt.subplots(figsize = figSize)
+    else:
+        hF = hA.get_figure()
+    
+    if np.ndim(mX) == 1:
+        mX = np.reshape(mX, (mX.size, 1))
+
+    numSamples = len(vY)
+    numDim     = mX.shape[1]
+    if (numDim > 2):
+        raise ValueError(f'The features data must have at most 2 dimensions')
+    
+    # Work on 1D, Add support for 2D when needed
+    # See https://matplotlib.org/stable/api/toolkits/mplot3d.html
+    hA.scatter(mX[:, 0], vY, s = elmSize, color = classColor[0], edgecolor = 'k', label = f'Samples')
+    hA.axvline(x = 0, color = 'k')
+    hA.axhline(y = 0, color = 'k')
+    hA.set_xlabel('${x}_{1}$')
+    # hA.axis('equal')
+    if axisTitle is not None:
+        hA.set_title(axisTitle)
+    hA.legend()
+    
+    return hA
