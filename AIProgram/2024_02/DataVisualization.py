@@ -257,3 +257,25 @@ def PlotRegressionData( mX: np.ndarray, vY: np.ndarray, hA: Optional[plt.Axes] =
     hA.legend()
     
     return hA
+
+def PlotRegressionResults( vY, vYPred, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF, lineWidth: int = LINE_WIDTH_DEF, elmSize: int = ELM_SIZE_DEF, classColor: Tuple[str, str] = CLASS_COLOR, axisTitle: Optional[str] = None ) -> plt.Axes:
+
+    if hA is None:
+        hF, hA = plt.subplots(figsize = figSize)
+    else:
+        hF = hA.get_figure()
+
+    numSamples = len(vY)
+    if (numSamples != len(vYPred)):
+        raise ValueError(f'The inputs `vY` and `vYPred` must have the same number of elements')
+    
+    hA.plot(vY, vY, color = 'r', lw = lineWidth, label = 'Ground Truth')
+    hA.scatter(vY, vYPred, s = elmSize, color = classColor[0], edgecolor = 'k', label = f'Estimation')
+    hA.set_xlabel('Label Value')
+    hA.set_ylabel('Prediction Value')
+    # hA.axis('equal')
+    if axisTitle is not None:
+        hA.set_title(axisTitle)
+    hA.legend()
+    
+    return hA
