@@ -279,3 +279,29 @@ def PlotRegressionResults( vY, vYPred, hA: Optional[plt.Axes] = None, figSize: T
     hA.legend()
     
     return hA
+
+def PlotScatterData( mX: np.ndarray, vL: Optional[np.ndarray] = None, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF, markerSize: int = ELM_SIZE_DEF, edgeColor: int = EDGE_COLOR ) -> plt.Axes:
+
+    if hA is None:
+        hF, hA = plt.subplots(figsize = figSize)
+    else:
+        hF = hA.get_figure()
+    
+    numSamples = mX.shape[0]
+
+    if vL is None:
+        vL = np.zeros(numSamples)
+    
+    vU = np.unique(vL)
+    numClusters = len(vU)
+
+    for ii in range(numClusters):
+        vIdx = vL == vU[ii]
+        hA.scatter(mX[vIdx, 0], mX[vIdx, 1], s = markerSize, edgecolor = edgeColor, label = ii)
+    
+    hA.set_xlabel('${{x}}_{{1}}$')
+    hA.set_ylabel('${{x}}_{{2}}$')
+    hA.grid()
+    hA.legend()
+
+    return hA
