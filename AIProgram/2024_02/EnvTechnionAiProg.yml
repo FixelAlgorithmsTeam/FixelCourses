@@ -19,6 +19,7 @@ dependencies:
   - lightgbm
   - nltk
   - umap-learn
+  - kneed 
   - pytorch
   - pytorch-cuda=12.1
   - pytorch-lightning

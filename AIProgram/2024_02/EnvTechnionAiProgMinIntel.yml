@@ -17,6 +17,7 @@ dependencies:
   - xgboost
   - lightgbm
   - umap-learn
+  - kneed 
   - nltk
   - autograd
   - scikit-image
