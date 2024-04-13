@@ -305,3 +305,16 @@ def PlotScatterData( mX: np.ndarray, vL: Optional[np.ndarray] = None, hA: Option
     hA.legend()
 
     return hA
+
+def PlotDendrogram( dfX: Union[np.ndarray, pd.DataFrame], linkageMethod: str, valP: int, thrLvl: int, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF ) -> plt.Axes:
+
+    if hA is None:
+        hF, hA = plt.subplots(1, 1, figsize = figSize)
+    else:
+        hF = hA.get_figure()
+
+    mLinkage = sp.cluster.hierarchy.linkage(dfX, method = linkageMethod)
+    sp.cluster.hierarchy.dendrogram(mLinkage, p = valP, truncate_mode = 'lastp', color_threshold = thrLvl, no_labels = True, ax = hA)
+    hA.axhline(y = thrLvl, c = 'k', lw = 2, linestyle = '--')
+
+    return hA
