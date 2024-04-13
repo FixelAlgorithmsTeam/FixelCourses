@@ -66,6 +66,13 @@ def DownloadDecompressGzip( fileUrl: str, fileName: str) -> None:
             f.close()
         return
 
+def DownloadUrl( fileUrl: str, fileName: str ) -> str:
+    
+    if not os.path.exists(fileName):
+        urllib.request.urlretrieve(fileUrl, fileName)
+
+    return fileName
+
 def ConvertMnistDataDf( imgFilePath: str, labelFilePath: str ) -> Tuple[np.ndarray, np.ndarray]:
     numPx = 28 * 28
     # Merge of https://pjreddie.com/projects/mnist-in-csv/ and https://github.com/keras-team/keras/blob/master/keras/datasets/fashion_mnist.py

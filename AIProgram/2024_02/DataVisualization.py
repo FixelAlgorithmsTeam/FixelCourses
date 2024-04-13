@@ -125,7 +125,7 @@ def Plot2DLinearClassifier( mX: np.ndarray, vY: np.ndarray, vW: np.ndarray, mX1:
 
     return
 
-def PlotMnistImages(mX: np.ndarray, vY: np.ndarray, numRows: int, numCols: Optional[int] = None, tuImgSize: Tuple = (28, 28), randomChoice: bool = True, lClasses: Optional[List] = None, hF: Optional[plt.Figure] = None) -> plt.Figure:
+def PlotMnistImages( mX: np.ndarray, vY: np.ndarray, numRows: int, numCols: Optional[int] = None, tuImgSize: Tuple = (28, 28), randomChoice: bool = True, lClasses: Optional[List] = None, hF: Optional[plt.Figure] = None ) -> plt.Figure:
 
     numSamples  = mX.shape[0]
     numPx       = mX.shape[1]
