@@ -38,6 +38,7 @@ class DiffMode(Enum):
     COMPLEX     = auto()
 
 # Constants
+L_ARCHIVE_EXT = ['.zip', '.tar.bz2', '.bz2', '.tbz2', '.tar.gz', '.gz', '.tgz', '.tar', '.tar.xz', '.xz', '.txz']
 
 def DownloadGDriveZip( fileId: str, lFileCont: List[str] ) -> None:
 
@@ -45,10 +46,12 @@ def DownloadGDriveZip( fileId: str, lFileCont: List[str] ) -> None:
         if os.path.isfile(fileName):
             os.remove(fileName)
     
-    fileNameZip = gdown.download(id = fileId)
-    shutil.unpack_archive(fileNameZip)
-
-    os.remove(fileNameZip)
+    fileNameExt = gdown.download(id = fileId)
+    fileName, fileExt = os.path.splitext(fileNameExt)
+    if fileExt in L_ARCHIVE_EXT:
+        # Might not work with `tar` files (Might require unpacking twice)
+        shutil.unpack_archive(fileNameExt)
+        os.remove(fileNameExt)
 
 def DownloadDecompressGzip( fileUrl: str, fileName: str) -> None:
     # Based on https://stackoverflow.com/a/61195974
