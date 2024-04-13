@@ -306,6 +306,37 @@ def PlotScatterData( mX: np.ndarray, vL: Optional[np.ndarray] = None, hA: Option
 
     return hA
 
+def PlotScatterData3D( mX: np.ndarray, vL: Optional[np.ndarray] = None, vC: Optional[np.ndarray] = None, axesProjection: Optional[str] = '3d', hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF ) -> plt.Axes:
+
+    if hA is None:
+        hF, hA = plt.subplots(figsize = figSize, subplot_kw = {'projection': axesProjection})
+    else:
+        hF = hA.get_figure()
+    
+    if vL is not None:
+        vU = np.unique(vL)
+        numClusters = len(vU)
+    else:
+        vL = np.zeros(mX.shape[0])
+        vU = np.zeros(1)
+        numClusters = 1
+
+    for ii in range(numClusters):
+        vIdx = vL == vU[ii]
+        if axesProjection == '3d':
+            hA.scatter(mX[vIdx, 0], mX[vIdx, 1], mX[vIdx, 2], s = ELM_SIZE_DEF, c = vC, alpha = 1, edgecolor = EDGE_COLOR, label = ii)
+        else:
+            hA.scatter(mX[vIdx, 0], mX[vIdx, 1], s = ELM_SIZE_DEF, c = vC, alpha = 1, edgecolor = EDGE_COLOR, label = ii)
+    
+    hA.set_xlabel('${{x}}_{{1}}$')
+    hA.set_ylabel('${{x}}_{{2}}$')
+    if axesProjection == '3d':
+        hA.set_zlabel('${{x}}_{{3}}$')
+    hA.grid()
+    hA.legend()
+
+    return hA
+
 def PlotDendrogram( dfX: Union[np.ndarray, pd.DataFrame], linkageMethod: str, valP: int, thrLvl: int, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF ) -> plt.Axes:
 
     if hA is None:
