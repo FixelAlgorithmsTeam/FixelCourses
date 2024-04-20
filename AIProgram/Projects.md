@@ -22,7 +22,9 @@ Contains list of projects for the choice of the students.
  -  Predict the Probability of a Worker to Resign   
     See the [IBM HR Analytics Employee Attrition & Performance](https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset).  
     See [What Is Your Model Hiding? A Tutorial on Evaluating ML Models](https://www.evidentlyai.com/blog/tutorial-2-model-evaluation-hr-attrition).
- - 
+ - Facility Entrance System  
+   Build employees data set, recognize. Improve over time.
+ - [Detecting Early Alzheimer](https://www.kaggle.com/code/hyunseokc/detecting-early-alzheimer-s).
 
 
 **Remark**: The projects above can be solved with Deep Learning as well.
@@ -40,6 +42,8 @@ Contains list of projects for the choice of the students.
    [Live Coding by Rob Mulla](https://www.youtube.com/watch?v=DTQA8KIWWhY).
  - Image Denoising  
    Replicate the results of state of the art Denoising algorithm.
+ - Facility Entrance System  
+   Build employees data set, recognize. Improve over time.
  - 
 
 ### Language Processing
@@ -56,6 +60,7 @@ Contains list of projects for the choice of the students.
  - [Kaggle](https://www.kaggle.com) - ML competitions.
  - [Real World ML systems](https://www.evidentlyai.com/ml-system-design) - List of data sets accompanied by a project information.
  - [TidyTuesday](https://github.com/rfordatascience/tidytuesday) - A weekly social data project. Many datasets with links to EDA's. There are videos on YouTube (Search for `Tidy Tuesday`).
+ - [NumerAI](https://numer.ai) - Quants data for Hedge Fund like.
 
 ## Project Structure
 

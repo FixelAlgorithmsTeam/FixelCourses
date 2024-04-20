@@ -16,6 +16,7 @@ This file is a curated list of resources related to the course.
  - [Mathematics for Machine Learning](https://mml-book.github.io).  
    The project has a [GitHub Repository](https://github.com/mml-book/mml-book.github.io).
  - [Probability and Regression Review](https://mixtape.scunning.com/02-probability_and_regression).
+ - [Mathematics Quizzes](https://www.mathopolis.com/questions/quizzes.php).
 
 ### Development Environment
 
@@ -36,7 +37,11 @@ This file is a curated list of resources related to the course.
  - [Project Euler](https://projecteuler.net).
  - [NumPy Fundamentals for Data Science and Machine Learning](https://pabloinsente.github.io/intro-numpy-fundamentals).
  - [Introduction to Linear Algebra for Applied Machine Learning with Python](https://pabloinsente.github.io/intro-linear-algebra).
+ - [Weighted Sampling without Replacement in Pure Python](https://maxhalford.github.io/blog/weighted-sampling-without-replacement).
+ - [A Few Pandas Tricks](https://maxhalford.github.io/blog/pandas-tricks).
  - [Pandas Exercises](https://github.com/guipsamora/pandas_exercises).
+ - [Speeding Up SciKit Learn for Single Predictions](https://maxhalford.github.io/blog/speeding-up-sklearn-single-predictions).
+ - [Matrix Inverse Mini Batch Updates](https://maxhalford.github.io/blog/matrix-inverse-mini-batch).
 
 ### Data Visualization & Exploratory Data Analysis (EDA)
 
@@ -45,6 +50,30 @@ This file is a curated list of resources related to the course.
  - 
 
 ## Classic Machine Learning
+
+ - [Dean Markwick - Blog](https://dm13450.github.io/blog)  
+   Posts on data analysis using statistics in Quants and other data.
+ - [Kaggle - AdaBoost Classifier Tutorial](https://www.kaggle.com/code/prashant111/adaboost-classifier-tutorial).
+ - [Machine Learning Books Repository](https://github.com/gimac/gninrael-enihcam).
+
+### Feature Engineering
+ * [Feature Tools](https://github.com/alteryx/featuretools).
+ * [Featuristic](https://github.com/martineastwood/featuristic) - An open source library using genetic algorithms for automated feature engineering and feature selection.
+ * [Feature Engineering and Feature Selection](https://github.com/Yimeng-Zhang/feature-engineering-and-feature-selection) - A Guide for Feature Engineering and Feature Selection, with implementations and examples in Python.
+ * [Awesome Feature Engineering](https://github.com/aikho/awesome-feature-engineering) - A curated list of resources dedicated to Feature Engineering Techniques for Machine Learning.
+ * [Kaggle - Automated Feature Engineering Basics](https://www.kaggle.com/code/willkoehrsen/automated-feature-engineering-basics).
+ * [Kaggle - Automated Feature Engineering Tutorial](https://www.kaggle.com/code/willkoehrsen/automated-feature-engineering-tutorial).
+ * 
+
+### Time Series
+
+ - [SciKit Time (SKTime)](https://github.com/sktime/sktime).
+ - [Auto TS](https://github.com/AutoViML/Auto_TS).
+ - [AutoTS](https://github.com/winedarksea/AutoTS).
+ - [TSAI](https://github.com/timeseriesAI/tsai).
+ - [ML Forecast](https://github.com/Nixtla/mlforecast).
+ - [TSFEL](https://github.com/fraunhoferportugal/tsfel) - An intuitive library to extract features from time series.
+ - [Kaggle - Daily Electricity Demand Forecast Machine Learning](https://www.kaggle.com/code/manualrg/daily-electricity-demand-forecast-machine-learning).
 
 ## Deep Learning
 

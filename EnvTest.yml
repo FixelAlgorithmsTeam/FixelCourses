@@ -1,4 +1,4 @@
-name: TechnionAiProg
+name: Test
 channels:
   - conda-forge
 dependencies:
