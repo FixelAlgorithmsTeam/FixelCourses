@@ -1,7 +1,7 @@
 
 # Python STD
 from enum import auto, Enum, unique
-# import math
+import math
 
 # Data
 import numpy as np
@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 
 
 # Typing
-from typing import Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Callable, Dict, Generator, List, Optional, Set, Tuple, Union
 
 # See https://docs.python.org/3/library/enum.html
 @unique
@@ -174,13 +174,13 @@ def MseLoss( vY: np.ndarray, vZ: np.ndarray ) -> Tuple[np.float_, np.ndarray]:
 
 # Model Class
 
-# NN Model
-class ModelNN():
+# Sequential NN Model
+class ModelSequentialNN():
     def __init__( self, lLayers: List ) -> None:
         
         self.lLayers = lLayers
         
-    def Forward( self, mX:np.ndarray ) -> np.ndarray:
+    def Forward( self, mX: np.ndarray ) -> np.ndarray:
         
         for oLayer in self.lLayers:
             mX = oLayer.Forward(mX)
@@ -191,8 +191,159 @@ class ModelNN():
         for oLayer in reversed(self.lLayers):
             mDz = oLayer.Backward(mDz)
 
+# Union of Types
+ModelNN = Union[ModelSequentialNN]
+
+# Data
+
+class DataSet():
+    def __init__( self, mX: np.ndarray, vY: np.ndarray, batchSize: int, shuffleData: bool = True, dropLast: bool = True ) -> None:
+
+        numSamples = len(vY)
+        
+        if batchSize > numSamples:
+            raise ValueError(f'The batch size: {batchSize} is greater than the number of samples: {numSamples}')
+        
+        self.mX          = mX
+        self.vY          = vY
+        self.batchSize   = batchSize
+        self.shuffleData = shuffleData #<! If shuffleData = False and numSamples / batchSize /= Int some samples will always left out
+        self.numSamples  = numSamples
+        if dropLast:
+            self.numBatches  = numSamples // batchSize
+        else:
+            self.numBatches  = math.ceil(numSamples / batchSize)
+        self.vIdx        = np.random.permutation(self.numSamples)
+        
+    def __len__( self ) -> int:
+        
+        return self.numBatches
+    
+    def __iter__( self ) -> Generator[Tuple[np.ndarray, np.ndarray], None, None]:
+
+        if self.shuffleData:
+            vIdx = np.random.permutation(self.numSamples)
+        else:
+            vIdx = self.vIdx
+
+        for ii in range(self.numBatches):
+            startIdx  = ii       * self.batchSize
+            endIdx    = min(startIdx + self.batchSize, self.numSamples)
+            vBatchIdx = vIdx[startIdx:endIdx]
+            mXBatch   = self.mX[:, vBatchIdx]
+            vYBatch   = self.vY[vBatchIdx]
+
+            yield mXBatch, vYBatch
 
 # Training Loop
+
+def TrainEpoch( oModel: ModelNN, oDataSet: DataSet, learnRate: float, hL: Callable, hS: Callable ) -> Tuple[float, float]:
+    """
+    Applies a single Epoch training of a model.  
+    Input:
+        oModel      - ModelNN object which supports `Forward()` and `Backward()` methods.
+        oDataSet    - DataSet object which supports iterating.
+        learnRate   - Scalar of the learning rate in the range (0, inf).
+        hL          - Callable for the Loss function.
+        hS          - Callable for the Score function.
+    Output:
+        valLoss     - Scalar of the loss.
+        valScore    - Scalar of the score.
+    Remarks:
+      - The `oDataSet` object returns a Tuple of (mX, vY) per batch.
+      - The `hL` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
+        It should return a Tuple of `valLoss` (Scalar of the loss) and `mDz` (Gradient by the loss).
+      - The `hS` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
+        It should return a scalar `valScore` of the score.
+    """
+
+    epochLoss   = 0.0
+    epochScore  = 0.0
+    numSamples  = 0
+    for ii, (mX, vY) in enumerate(oDataSet):
+        batchSize       = len(vY)
+        # Forward
+        mZ              = oModel.Forward(mX)
+        valLoss, mDz    = hL(vY, mZ)
+        
+        # Backward
+        oModel.Backward(mDz)
+        
+        # Gradient Descent (Update parameters
+        for oLayer in oModel.lLayers:
+            for sParam in oLayer.dGrads:
+                oLayer.dParams[sParam] -= learnRate * oLayer.dGrads[sParam]
+        
+        # Score
+        valScore = hS(mZ, vY)
+
+        epochLoss  += batchSize * valLoss
+        epochScore += batchSize * valScore
+        numSamples += batchSize
+    
+            
+    return epochLoss / numSamples, epochScore / numSamples
+
+
+def ScoreEpoch( oModel: ModelNN, oDataSet: DataSet, hL: Callable, hS: Callable ) -> Tuple[float, float]:
+    """
+    Calculates the loss and the score of a model over an Epoch.  
+    Input:
+        oModel      - ModelNN which supports `Forward()` and `Backward()` methods.
+        oDataSet    - DataSet object which supports iterating.
+        hL          - Callable for the Loss function.
+        hS          - Callable for the Score function.
+    Output:
+        valLoss     - Scalar of the loss.
+        valScore    - Scalar of the score.
+    Remarks:
+      - The `hL` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
+        It should return a Tuple of `valLoss` (Scalar of the loss) and `mDz` (Gradient by the loss).
+      - The `hS` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
+        It should return a scalar `valScore` of the score.
+      - The function does not optimize the model parameter.
+    """
+    
+    epochLoss   = 0.0
+    epochScore  = 0.0
+    numSamples  = 0
+    for ii, (mX, vY) in enumerate(oDataSet):
+        batchSize       = len(vY)
+        # Forward
+        mZ              = oModel.Forward(mX)
+        valLoss, mDz    = hL(vY, mZ)
+        
+        # Score
+        valScore = hS(mZ, vY)
+
+        epochLoss  += batchSize * valLoss
+        epochScore += batchSize * valScore
+        numSamples += batchSize
+    
+            
+    return epochLoss / numSamples, epochScore / numSamples
+
+# Score Functions
+
+def ScoreAccLogits( mScore: np.ndarray, vY: np.ndarray ) -> np.float_:
+    """
+    Calculates the classification accuracy.  
+    Input:
+        mScore      - Matrix (numCls, batchSize) of the Logits Score.
+        vY          - Vector (batchSize, ) of the reference classes: {0, 1, .., numCls - 1}.
+    Output:
+        valAcc      - Scalar of the accuracy in [0, 1] range.
+    Remarks:
+      - The Logits are assumed to be monotonic with regard to probabilities.  
+        Namely, the class probability is a monotonic transformation of the Logit.  
+        For instance, by a SoftMax.
+      - Classes are in the range {0, 1, ..., numCls - 1}.
+    """
+    
+    vYHat  = np.argmax(mScore, axis = 0) #<! Class prediction
+    valAcc = np.mean(vYHat == vY)
+    
+    return valAcc
 
 # Auxiliary Functions
 
