@@ -25,6 +25,7 @@ Contains list of projects for the choice of the students.
  - Facility Entrance System  
    Build employees data set, recognize. Improve over time.
  - [Detecting Early Alzheimer](https://www.kaggle.com/code/hyunseokc/detecting-early-alzheimer-s).
+ - Finding all label errors in MNIST and Fashion MNIST.
 
 
 **Remark**: The projects above can be solved with Deep Learning as well.
