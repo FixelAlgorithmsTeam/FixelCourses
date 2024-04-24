@@ -228,7 +228,7 @@ class DataSet():
 
         for ii in range(self.numBatches):
             startIdx  = ii       * self.batchSize
-            endIdx    = min(startIdx + self.batchSize, self.numSamples)
+            endIdx    = min(startIdx + self.batchSize, self.numSamples) #<! Will work without the "safety net": lA = [None] * 3; lA[1:20]
             vBatchIdx = vIdx[startIdx:endIdx]
             mXBatch   = self.mX[:, vBatchIdx]
             vYBatch   = self.vY[vBatchIdx]
@@ -277,6 +277,7 @@ def TrainEpoch( oModel: ModelNN, oDataSet: DataSet, learnRate: float, hL: Callab
         # Score
         valScore = hS(mZ, vY)
 
+        # Normalize so each sample has the same weight
         epochLoss  += batchSize * valLoss
         epochScore += batchSize * valScore
         numSamples += batchSize
