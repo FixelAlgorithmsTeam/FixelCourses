@@ -30,8 +30,8 @@ from typing import Callable, Dict, Generator, List, Optional, Set, Tuple, Union
 # See https://docs.python.org/3/library/enum.html
 @unique
 class NNMode(Enum):
-    TRAIN    = auto()
-    TEST     = auto() 
+    TRAIN     = auto()
+    INFERENCE = auto() 
 
 @unique
 class NNWeightInit(Enum):
@@ -107,10 +107,10 @@ class LinearLayer():
 class DropoutLayer():
     def __init__( self, p: float = 0.5 ) -> None:
         
-        self.dParams = {}
-        self.dGrads  = {}
         self.p       = p
         self.mMask   = None
+        self.dGrads  = {}
+        self.dParams = {}
 
     # Train Time
     def Forward( self, mX: np.ndarray ) -> np.ndarray:
@@ -236,9 +236,9 @@ class ModelNN():
     def Forward( self, mX: np.ndarray ) -> np.ndarray:
         
         for oLayer in self.lLayers:
-            if self.opMode == NNMode.TEST and hasattr(oLayer, 'Predict'):
+            if self.opMode == NNMode.INFERENCE and hasattr(oLayer, 'Predict'):
                 mX = oLayer.Predict(mX) #<! Test Time & Predict
-            if self.opMode == NNMode.TRAIN or self.opMode == NNMode.TEST:
+            if self.opMode == NNMode.TRAIN or self.opMode == NNMode.INFERENCE:
                 mX = oLayer.Forward(mX)
             else:
                 raise ValueError(f'The operation mode value {self.opMode} is not supported')
@@ -312,7 +312,7 @@ class Optimizer():
                 # Get parameters, gradient and history
                 mP       = oLayer.dParams[sParamKey]
                 mDp      = oLayer.dGrads [sParamKey]
-                sParamID = f'{ii}_{sParamKey}'
+                sParamID = f'{ii}_{sParamKey}'            #<! Unique identifier per layer
                 dState   = self.dStates.get(sParamID, {}) #<! Default for 1st iteration
 
                 # Apply Step
@@ -355,7 +355,7 @@ class DataSet():
             vIdx = self.vIdx
 
         for ii in range(self.numBatches):
-            startIdx  = ii       * self.batchSize
+            startIdx  = ii * self.batchSize
             endIdx    = min(startIdx + self.batchSize, self.numSamples) #<! Will work without the "safety net": lA = [None] * 3; lA[1:20]
             vBatchIdx = vIdx[startIdx:endIdx]
             mXBatch   = self.mX[:, vBatchIdx]
@@ -454,7 +454,7 @@ def ScoreEpoch( oModel: ModelNN, oDataSet: DataSet, hL: Callable, hS: Callable )
 
 def RunEpoch( oModel: ModelNN, oDataSet: DataSet, oOpt: Optimizer, hL: Callable, hS: Callable, opMode: NNMode = NNMode.TRAIN ) -> Tuple[float, float]:
     """
-    Applies a single Epoch training of a model.  
+    Runs a single Epoch (Train / Test) of a model.  
     Input:
         oModel      - ModelNN object which supports `Forward()` and `Backward()` methods.
         oDataSet    - DataSet object which supports iterating.
@@ -472,9 +472,12 @@ def RunEpoch( oModel: ModelNN, oDataSet: DataSet, oOpt: Optimizer, hL: Callable,
         It should return a scalar `valScore` of the score.
     """
 
+    oModel.opMode = opMode
+    
     epochLoss   = 0.0
     epochScore  = 0.0
     numSamples  = 0
+    
     for ii, (mX, vY) in enumerate(oDataSet):
         batchSize       = len(vY)
         # Forward

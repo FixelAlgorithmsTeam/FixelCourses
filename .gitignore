@@ -50,6 +50,11 @@ Archive/*
 
 # Python
 *.ckpt
+*.db
+*.pck
+*.pcl
+*.pkl
+*.pickle
 *.pth
 .ipynb_checkpoints*
 *.npz

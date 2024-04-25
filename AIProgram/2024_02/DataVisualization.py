@@ -148,7 +148,12 @@ def PlotMnistImages( mX: np.ndarray, vY: np.ndarray, numRows: int, numCols: Opti
         mI  = np.reshape(mX[idx, :], tuImgSize)
     
         # hA[kk].imshow(mI.clip(0, 1), cmap = 'gray')
-        hA[kk].imshow(mI, cmap = 'gray')
+        if len(tuImgSize) == 2:
+            hA[kk].imshow(mI, cmap = 'gray')
+        elif len(tuImgSize) == 3:
+            hA[kk].imshow(mI)
+        else:
+            raise ValueError(f'The length of the image size tuple is {len(tuImgSize)} which is not supported')
         hA[kk].tick_params(axis = 'both', left = False, top = False, right = False, bottom = False, 
                            labelleft = False, labeltop = False, labelright = False, labelbottom = False)
         if lClasses is None:
