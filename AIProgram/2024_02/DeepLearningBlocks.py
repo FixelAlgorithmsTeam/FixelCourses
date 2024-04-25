@@ -29,12 +29,15 @@ from typing import Callable, Dict, Generator, List, Optional, Set, Tuple, Union
 
 # See https://docs.python.org/3/library/enum.html
 @unique
+class NNMode(Enum):
+    TRAIN    = auto()
+    TEST     = auto() 
+
+@unique
 class NNWeightInit(Enum):
-    # Type of data in the CSV
     CONST   = auto()
     KAIMING = auto()
     XAVIER  = auto()
-
 
 # Layers
 
@@ -43,6 +46,26 @@ class NNWeightInit(Enum):
 class LinearLayer():
     def __init__( self, dimIn: int, dimOut: int, initMethod: NNWeightInit = NNWeightInit.KAIMING, initStd: float = 0.01 ) -> None:
         
+        mW = np.empty(shape = (dimOut, dimIn))
+        vB = np.zeros(dimOut)
+        
+        # Parameters
+        self.dimIn      = dimIn
+        self.dimOut     = dimOut
+        self.initMethod = initMethod
+        self.initStd    = initStd
+        self.mX         = None #<! Required for the backward pass
+        self.dParams    = {'mW' : mW,   'vB' : vB}
+        self.dGrads     = {'mW' : None, 'vB' : None}
+        self.Init()
+    
+    def Init( self ) -> None:
+        
+        dimIn       = self.dimIn
+        dimOut      = self.dimOut
+        initMethod  = self.initMethod
+        initStd     = self.initStd
+
         # Initialization
         if initMethod is NNWeightInit.CONST:
             weightsStd = initStd
@@ -51,14 +74,10 @@ class LinearLayer():
         elif initMethod is NNWeightInit.XAVIER:
             weightsStd = np.sqrt(1 / dimIn)
         
-        mW = weightsStd * np.random.randn(dimOut, dimIn)
-
-        vB = np.zeros(dimOut)
-        
-        # Parameters
-        self.mX      = None #<! Required for the backward pass
-        self.dParams = {'mW' : mW,   'vB' : vB}
-        self.dGrads  = {'mW' : None, 'vB' : None}
+        self.dParams['mW']  = weightsStd * np.random.randn(dimOut, dimIn)
+        self.dParams['vB']  = np.zeros(dimOut)
+        self.dGrads['mW']   = None
+        self.dGrads['vB']   = None
         
     def Forward( self, mX: np.ndarray ) -> np.ndarray:
         self.mX = mX #<! Required for the backward pass
@@ -84,6 +103,33 @@ class LinearLayer():
                 
         return mDx
     
+
+class DropoutLayer():
+    def __init__( self, p: float = 0.5 ) -> None:
+        
+        self.dParams = {}
+        self.dGrads  = {}
+        self.p       = p
+        self.mMask   = None
+
+    # Train Time
+    def Forward( self, mX: np.ndarray ) -> np.ndarray:
+        
+        self.mMask = (np.random.rand(*mX.shape) < self.p) / self.p
+        mZ         = mX * self.mMask
+
+        return mZ
+
+    # Test Time
+    def Predict( self, mX: np.ndarray ) -> np.ndarray:
+        
+        return mX
+    
+    def Backward( self, mDz: np.ndarray) -> np.ndarray:
+        
+        mDx   = mDz * self.mMask
+
+        return mDx
 
 # Activations
 
@@ -175,15 +221,28 @@ def MseLoss( vY: np.ndarray, vZ: np.ndarray ) -> Tuple[np.float_, np.ndarray]:
 # Model Class
 
 # Sequential NN Model
-class ModelSequentialNN():
-    def __init__( self, lLayers: List ) -> None:
+class ModelNN():
+    def __init__( self, lLayers: List, opMode: NNMode = NNMode.TRAIN ) -> None:
         
-        self.lLayers = lLayers
+        self.lLayers    = lLayers
+        self.opMode     = opMode
+    
+    def Init( self ) -> None:
+
+        for oLayer in self.lLayers:
+            if hasattr(oLayer, 'Init'):
+                oLayer.Init()
         
     def Forward( self, mX: np.ndarray ) -> np.ndarray:
         
         for oLayer in self.lLayers:
-            mX = oLayer.Forward(mX)
+            if self.opMode == NNMode.TEST and hasattr(oLayer, 'Predict'):
+                mX = oLayer.Predict(mX) #<! Test Time & Predict
+            if self.opMode == NNMode.TRAIN or self.opMode == NNMode.TEST:
+                mX = oLayer.Forward(mX)
+            else:
+                raise ValueError(f'The operation mode value {self.opMode} is not supported')
+        
         return mX
     
     def Backward( self, mDz: np.ndarray ) -> None:
@@ -191,8 +250,77 @@ class ModelSequentialNN():
         for oLayer in reversed(self.lLayers):
             mDz = oLayer.Backward(mDz)
 
-# Union of Types
-ModelNN = Union[ModelSequentialNN]
+# Optimizers
+
+class SGD():
+    def __init__( self, μ: float = 1e-3, β: float = 0.9, λ = 0.0 ) -> None:
+        
+        self.μ = μ
+        self.β = β
+        self.λ = λ #<! Weight Decay (L2 Squared)
+
+    def Step( self, mW: np.ndarray, mDw: np.ndarray, dState: Dict = {} ) -> Tuple[np.ndarray, Dict]:
+        
+        mV            = dState.get('mV', np.zeros(mW.shape)) #<! Default for 1st iteration
+        mV            = self.β * mV - self.μ * mDw
+        mW           += mV - (self.λ * mW)
+        dState['mV']  = mV
+
+        return mW, dState
+    
+class Adam():
+    def __init__( self, μ: float = 1e-3, β1: float = 0.9, β2: float = 0.99, ϵ: float = 1e-8, λ = 0.0 ) -> None:
+        self.μ  = μ
+        self.β1 = β1
+        self.β2 = β2
+        self.ϵ  = ϵ
+        self.λ  = λ #<! Weight Decay (L2 Squared)
+
+    def Step( self, mW: np.ndarray, mDw: np.ndarray, dState: Dict = {} ) -> Tuple[np.ndarray, Dict]:
+        
+        mV            = dState.get('mV', np.zeros(mW.shape)) #<! Default for 1st iteration 
+        mS            = dState.get('mS', np.zeros(mW.shape)) #<! Default for 1st iteration
+        ii            = dState.get('ii', 0) + 1              #<! Default for 1st iteration
+
+        mV            = self.β1 * mV + (1.0 - self.β1) * mDw
+        mS            = self.β2 * mS + (1.0 - self.β2) * mDw * mDw
+
+        mTildeV       = mV / (1.0 - math.pow(self.β1, ii))
+        mTildeS       = mS / (1.0 - math.pow(self.β2, ii))
+
+        mW           -= self.μ * mTildeV / (np.sqrt(mTildeS) + self.ϵ) + self.λ * mW
+        dState['mV']  = mV
+        dState['mS']  = mS
+        dState['ii']  = ii
+
+        return mW, dState
+
+OptTypeNN = Union[SGD, Adam]
+
+class Optimizer():
+    def __init__( self, oOptType: OptTypeNN ) -> None:
+        self.oUpdateRule = oOptType #<! SGD, ADAM
+        self.dStates     = {}
+
+    def Step( self, oModel: ModelNN, learnRate: Optional[float] = None ) -> None:
+        
+        if learnRate is not None:
+            self.oUpdateRule.μ = learnRate
+
+        for ii, oLayer in enumerate(oModel.lLayers):
+            for sParamKey in oLayer.dGrads:
+                # Get parameters, gradient and history
+                mP       = oLayer.dParams[sParamKey]
+                mDp      = oLayer.dGrads [sParamKey]
+                sParamID = f'{ii}_{sParamKey}'
+                dState   = self.dStates.get(sParamID, {}) #<! Default for 1st iteration
+
+                # Apply Step
+                mP, dState = self.oUpdateRule.Step(mP, mDp, dState)
+
+                # Set parameters and history
+                oLayer.dParams[sParamKey] = mP
+                self.dStates  [sParamID ] = dState
 
 # Data
 
@@ -317,6 +445,51 @@ def ScoreEpoch( oModel: ModelNN, oDataSet: DataSet, hL: Callable, hS: Callable )
         # Score
         valScore = hS(mZ, vY)
 
+        epochLoss  += batchSize * valLoss
+        epochScore += batchSize * valScore
+        numSamples += batchSize
+    
+            
+    return epochLoss / numSamples, epochScore / numSamples
+
+def RunEpoch( oModel: ModelNN, oDataSet: DataSet, oOpt: Optimizer, hL: Callable, hS: Callable, opMode: NNMode = NNMode.TRAIN ) -> Tuple[float, float]:
+    """
+    Applies a single Epoch training of a model.  
+    Input:
+        oModel      - ModelNN object which supports `Forward()` and `Backward()` methods.
+        oDataSet    - DataSet object which supports iterating.
+        oOpt        - Optimizer object which supports `Step` method.
+        hL          - Callable for the Loss function.
+        hS          - Callable for the Score function.
+    Output:
+        valLoss     - Scalar of the loss.
+        valScore    - Scalar of the score.
+    Remarks:
+      - The `oDataSet` object returns a Tuple of (mX, vY) per batch.
+      - The `hL` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
+        It should return a Tuple of `valLoss` (Scalar of the loss) and `mDz` (Gradient by the loss).
+      - The `hS` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
+        It should return a scalar `valScore` of the score.
+    """
+
+    epochLoss   = 0.0
+    epochScore  = 0.0
+    numSamples  = 0
+    for ii, (mX, vY) in enumerate(oDataSet):
+        batchSize       = len(vY)
+        # Forward
+        mZ              = oModel.Forward(mX)
+        valLoss, mDz    = hL(vY, mZ)
+        
+        if opMode == NNMode.TRAIN:
+            # Backward
+            oModel.Backward(mDz) #<! Backward
+            oOpt.Step(oModel)  #<! Update parameters
+        
+        # Score
+        valScore = hS(mZ, vY)
+
+        # Normalize so each sample has the same weight
         epochLoss  += batchSize * valLoss
         epochScore += batchSize * valScore
         numSamples += batchSize
