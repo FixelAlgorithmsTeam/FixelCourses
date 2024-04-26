@@ -43,6 +43,7 @@ This file is a curated list of resources related to the course.
  - [Pandas Exercises](https://github.com/guipsamora/pandas_exercises).
  - [Speeding Up SciKit Learn for Single Predictions](https://maxhalford.github.io/blog/speeding-up-sklearn-single-predictions).
  - [Matrix Inverse Mini Batch Updates](https://maxhalford.github.io/blog/matrix-inverse-mini-batch).
+ - [A Primer on Algorithmic Differentiation](https://gdalle.github.io/AutodiffTutorial).
 
 ### Data Visualization & Exploratory Data Analysis (EDA)
 
