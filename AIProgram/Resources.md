@@ -17,6 +17,7 @@ This file is a curated list of resources related to the course.
    The project has a [GitHub Repository](https://github.com/mml-book/mml-book.github.io).
  - [Probability and Regression Review](https://mixtape.scunning.com/02-probability_and_regression).
  - [Mathematics Quizzes](https://www.mathopolis.com/questions/quizzes.php).
+ - [Eberhard Karls University of Tubingen - Tutorial: Math for Deep Learning](https://uni-tuebingen.de/de/241678).
 
 ### Development Environment
 
@@ -77,7 +78,11 @@ This file is a curated list of resources related to the course.
 
 ## Deep Learning
 
+ - [Eberhard Karls University of Tubingen - Deep Learning](https://uni-tuebingen.de/en/fakultaeten/mathematisch-naturwissenschaftliche-fakultaet/fachbereiche/informatik/lehrstuehle/autonomous-vision/lectures/deep-learning).
+
 ### Computer Vision
+
+ - [Eberhard Karls University of Tubingen - Computer Vision](https://uni-tuebingen.de/en/fakultaeten/mathematisch-naturwissenschaftliche-fakultaet/fachbereiche/informatik/lehrstuehle/autonomous-vision/lectures/computer-vision).
 
 ### Natural Language Processing (NLP)
 
