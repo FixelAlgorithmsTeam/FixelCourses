@@ -69,6 +69,8 @@ Report*.html
 KaggleWhatsCooking.json
 IMDBReviews*.*
 
+# TensorBoard
+*tfevents*
 
 
 */Exercises - Copy/*
