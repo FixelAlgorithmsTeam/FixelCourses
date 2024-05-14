@@ -92,3 +92,6 @@ This file is a curated list of resources related to the course.
 
  - [Visual LaTeX Editor](https://latex.codecogs.com/eqneditor/editor.php).
  - [OpenML](https://openml.org) - Machine Learning data sets. Accessible from _SciKit Learn_.
+ - [Gradient Descent Visualization](https://github.com/lilipads/gradient_descent_viz) - Application to visualize several _gradient descent_ methods.  
+   See [Hacker News Discussion](https://news.ycombinator.com/item?id=40282923).
+ - 

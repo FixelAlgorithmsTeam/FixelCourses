@@ -15,6 +15,7 @@ import torch
 import torch.nn            as nn
 import torch.nn.functional as F
 from torch.optim.optimizer import Optimizer
+from torch.optim.lr_scheduler import LRScheduler
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 
@@ -37,6 +38,21 @@ from DeepLearningBlocks import NNMode
 # Typing
 from typing import Callable, Dict, Generator, List, Optional, Set, Tuple, Union
 
+# Auxiliary Classes
+
+class TBLogger():
+    def __init__( self, logDir: Optional[str] = None ) -> None:
+
+        self.oTBWriter  = SummaryWriter(log_dir = logDir)
+        self.iiEpcoh    = 0
+        self.iiItr      = 0
+        
+        pass
+
+    def close( self ) -> None:
+
+        self.oTBWriter.close()
+
 
 # Auxiliary Functions
 
@@ -57,8 +73,13 @@ def InitWeights( oLayer: nn.Module ) -> None:
     if isinstance(oLayer, nn.Linear):
         nn.init.kaiming_normal_(oLayer.weight.data)
 
+def InitWeightsKaiNorm( oLayer: nn.Module, tuLyrClas: Tuple = (nn.Linear, nn.Conv1d, nn.Conv2d, nn.Conv3d, nn.Bilinear, nn.ConvTranspose1d, nn.ConvTranspose2d, nn.ConvTranspose3d) ) -> None:
+    # Use: oModel.apply(InitWeights) #<! Applies the function on all layers
+    if isinstance(oLayer, tuLyrClas):
+        nn.init.kaiming_normal_(oLayer.weight.data)
 
-def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable, oOpt: Optional[Optimizer] = None, opMode: NNMode = NNMode.TRAIN ) -> Tuple[float, float]:
+
+def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable, oOpt: Optional[Optimizer] = None, oSch: Optional[LRScheduler] = None, opMode: NNMode = NNMode.TRAIN ) -> Tuple[float, float]:
     """
     Runs a single Epoch (Train / Test) of a model.  
     Input:
