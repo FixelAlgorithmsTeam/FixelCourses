@@ -79,7 +79,7 @@ def InitWeightsKaiNorm( oLayer: nn.Module, tuLyrClas: Tuple = (nn.Linear, nn.Con
         nn.init.kaiming_normal_(oLayer.weight.data)
 
 
-def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable, oOpt: Optional[Optimizer] = None, oSch: Optional[LRScheduler] = None, opMode: NNMode = NNMode.TRAIN ) -> Tuple[float, float]:
+def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable, oOpt: Optional[Optimizer] = None, opMode: NNMode = NNMode.TRAIN ) -> Tuple[float, float]:
     """
     Runs a single Epoch (Train / Test) of a model.  
     Input:
@@ -120,7 +120,6 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
         mX = mX.to(runDevice) #<! Lazy
         vY = vY.to(runDevice) #<! Lazy
 
-
         batchSize = mX.shape[0]
         
         if opMode == NNMode.TRAIN:
@@ -134,7 +133,7 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
             oOpt.step()         #<! Update parameters
         else: #<! Value of `opMode` was already validated
             with torch.no_grad():
-                # No computational 
+                # No computational graph
                 mZ      = oModel(mX) #<! Model output
                 valLoss = hL(mZ, vY) #<! Loss
 
@@ -146,7 +145,7 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
             epochScore += batchSize * valScore.item()
             numSamples += batchSize
 
-        print(f'\r{"Train" if opMode == NNMode.TRAIN else "Val"} - Iteration: {ii:3d} ({numBatches}): loss = {valLoss:.6f}', end = '')
+        print(f'\r{"Train" if opMode == NNMode.TRAIN else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}: loss = {valLoss:.6f}', end = '')
     
     print('', end = '\r')
             
@@ -154,7 +153,7 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
 
 # Training Model Loop Function
 
-def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt: Optimizer, numEpoch: int, hL: Callable, hS: Callable , oTBWriter: Optional[SummaryWriter] = None) -> Tuple[nn.Module, List, List, List, List]:
+def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt: Optimizer, numEpoch: int, hL: Callable, hS: Callable, oSch: Optional[LRScheduler] = None, oTBWriter: Optional[SummaryWriter] = None) -> Tuple[nn.Module, List, List, List, List]:
 
     lTrainLoss  = []
     lTrainScore = []
@@ -164,10 +163,16 @@ def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt:
     # Support R2
     bestScore = -1e9 #<! Assuming higher is better
 
+    learnRate = oOpt.param_groups[0]['lr']
+
     for ii in range(numEpoch):
         startTime           = time.time()
         trainLoss, trainScr = RunEpoch(oModel, dlTrain, hL, hS, oOpt, opMode = NNMode.TRAIN) #<! Train
         valLoss,   valScr   = RunEpoch(oModel, dlVal, hL, hS, oOpt, opMode = NNMode.INFERENCE)    #<! Score Validation
+        if oSch is not None:
+            # Adjusting the scheduler on Epoch level
+            learnRate = oSch.get_last_lr()[0]
+            oSch.step()
         epochTime           = time.time() - startTime
 
         # Aggregate Results
@@ -177,10 +182,9 @@ def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt:
         lValScore.append(valScr)
 
         if oTBWriter is not None:
-            oTBWriter.add_scalar('Train Loss', trainLoss, ii)
-            oTBWriter.add_scalar('Train Score', trainScr, ii)
-            oTBWriter.add_scalar('Validation Loss', valLoss, ii)
-            oTBWriter.add_scalar('Validation Score', valScr, ii)
+            oTBWriter.add_scalars('Loss (Epoch)', {'Train': trainLoss, 'Validation': valLoss}, ii)
+            oTBWriter.add_scalars('Score (Epoch)', {'Train': trainScr, 'Validation': valScr}, ii)
+            oTBWriter.add_scalar('Learning Rate', learnRate, ii)
         
         # Display (Babysitting)
         print('Epoch '              f'{(ii + 1):4d} / ' f'{numEpoch}:', end = '')
@@ -196,6 +200,8 @@ def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt:
             print(' | <-- Checkpoint!', end = '')
             try:
                 dCheckpoint = {'Model' : oModel.state_dict(), 'Optimizer' : oOpt.state_dict()}
+                if oSch is not None:
+                    dCheckpoint['Scheduler': oSch.state_dict()]
                 torch.save(dCheckpoint, 'BestModel.pt')
             except:
                 pass
