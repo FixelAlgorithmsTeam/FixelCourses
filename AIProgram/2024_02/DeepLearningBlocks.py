@@ -440,7 +440,7 @@ def ScoreEpoch( oModel: ModelNN, oDataSet: DataSet, hL: Callable, hS: Callable )
         batchSize       = len(vY)
         # Forward
         mZ              = oModel.Forward(mX)
-        valLoss, mDz    = hL(vY, mZ)
+        valLoss, _      = hL(vY, mZ)
         
         # Score
         valScore = hS(mZ, vY)

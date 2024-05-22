@@ -49,6 +49,12 @@ Contains list of projects for the choice of the students.
    Build employees data set, recognize. Improve over time.
  - 
 
+### Audio / Voice Processing
+
+ - [Common Voice](https://www.kaggle.com/datasets/mozillaorg/common-voice) - 500 hours of speech recordings, with speaker demographics.  
+   It may used for gender recognition, age estimation, accent detection, etc...
+ - 
+
 ### Language Processing
 
  - Text Sentiment Labeling  
