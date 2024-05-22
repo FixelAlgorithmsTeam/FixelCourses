@@ -1,16 +1,2 @@
 # Folders
-__pycache__*
-.vscode*
-**/Figures/*
-**/CSV/*
-*_files/*
-**/Data/*
-**/Drops/*
-Archive/*
-**/*logs*/*
-**/catboost_*/*
-**/TensorBoardLog/*
-**/DetectShips/*
-**/HW*/*
-
 NotMNIST/*
