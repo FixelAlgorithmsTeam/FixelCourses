@@ -31,6 +31,7 @@ This file is a curated list of resources related to the course.
  - [Introduction to Computer Science and Programming in Python](https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016).
  - [A Quick Introduction to List Comprehensions with Python](https://github.com/mrdbourke/python-list-comprehensions-tutorial/blob/master/python-list-comprehensions-in-5-minutes.ipynb).
  - [Free Python Books](https://github.com/pamoroso/free-python-books) - A curated list of _free_ Python books.
+ - [CalmCode](https://calmcode.io) - Code. Simply. Clearly. Calmly. Video tutorials for modern ideas and open source tools. 
 
 ### Scientific Python
 
@@ -94,4 +95,5 @@ This file is a curated list of resources related to the course.
  - [OpenML](https://openml.org) - Machine Learning data sets. Accessible from _SciKit Learn_.
  - [Gradient Descent Visualization](https://github.com/lilipads/gradient_descent_viz) - Application to visualize several _gradient descent_ methods.  
    See [Hacker News Discussion](https://news.ycombinator.com/item?id=40282923).
- - 
+ - [NotMNIST](https://github.com/davidflanagan/notMNIST-to-MNIST) - An MNIST like data set based on letters.
+ - [Fun Datasets](https://calmcode.io/datasets) - Simple fun datasets.

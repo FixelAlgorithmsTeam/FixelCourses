@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 
 
 # Typing
-from typing import Callable, Dict, Generator, List, Optional, Set, Tuple, Union
+from typing import Callable, Dict, Generator, List, Optional, Self, Set, Tuple, Union
 
 # See https://docs.python.org/3/library/enum.html
 @unique
@@ -96,7 +96,7 @@ class LinearLayer():
         
         vDb = np.sum(mDz, axis = 1) #<! Explicit Sum
         mDw = mDz @ mX.T #<! Implicit Sum
-        mDx = mW.T @ mDz
+        mDx = mW.T @ mDz #<! Gradient per Column (Sample)
         
         self.dGrads['vB'] = vDb
         self.dGrads['mW'] = mDw
@@ -144,7 +144,7 @@ class ReLULayer():
     
     def Forward( self, mX: np.ndarray ) -> np.ndarray:
         
-        self.mX = mX                 #-- store for Backward
+        self.mX = mX #<! Store for Backward pass
         mZ      = np.maximum(mX, 0)
         
         return mZ
@@ -166,14 +166,14 @@ class LeakyReLULayer():
         self.dParams = {}
         self.dGrads  = {}
     
-    def Forward( self, mX: np.ndarray ) -> np.ndarray:
+    def Forward( self: Self, mX: np.ndarray ) -> np.ndarray:
 
-        self.mX = mX                 #-- store for Backward
+        self.mX = mX #<! Store for Backward pass
         mZ      = np.where(mX > 0, mX, self.α * mX)
         
         return mZ
     
-    def Backward( self, mDz: np.ndarray ) -> np.ndarray:
+    def Backward( self: Self, mDz: np.ndarray ) -> np.ndarray:
         
         mX  = self.mX
         mDx = np.where(mX > 0, mDz, self.α * mDz)
@@ -198,7 +198,7 @@ def CrossEntropyLoss( vY: np.ndarray, mZ: np.ndarray ) -> Tuple[np.float_, np.nd
     valLoss = -np.mean(np.log(mYHat[vY, range(N)]))
     
     mDz                = mYHat
-    mDz[vY, range(N)] -= 1
+    mDz[vY, range(N)] -= 1 #<! Assumes `vY` is One Hot
     mDz               /= N #<! Now all needed is to sum gradients
     
     return valLoss, mDz
@@ -233,7 +233,7 @@ class ModelNN():
             if hasattr(oLayer, 'Init'):
                 oLayer.Init()
         
-    def Forward( self, mX: np.ndarray ) -> np.ndarray:
+    def Forward( self: Self, mX: np.ndarray ) -> np.ndarray:
         
         for oLayer in self.lLayers:
             if self.opMode == NNMode.INFERENCE and hasattr(oLayer, 'Predict'):
@@ -245,7 +245,7 @@ class ModelNN():
         
         return mX
     
-    def Backward( self, mDz: np.ndarray ) -> None:
+    def Backward( self: Self, mDz: np.ndarray ) -> None:
         
         for oLayer in reversed(self.lLayers):
             mDz = oLayer.Backward(mDz)
@@ -259,7 +259,7 @@ class SGD():
         self.β = β
         self.λ = λ #<! Weight Decay (L2 Squared)
 
-    def Step( self, mW: np.ndarray, mDw: np.ndarray, dState: Dict = {} ) -> Tuple[np.ndarray, Dict]:
+    def Step( self: Self, mW: np.ndarray, mDw: np.ndarray, dState: Dict = {} ) -> Tuple[np.ndarray, Dict]:
         
         mV            = dState.get('mV', np.zeros(mW.shape)) #<! Default for 1st iteration
         mV            = self.β * mV - self.μ * mDw
@@ -276,7 +276,7 @@ class Adam():
         self.ϵ  = ϵ
         self.λ  = λ #<! Weight Decay (L2 Squared)
 
-    def Step( self, mW: np.ndarray, mDw: np.ndarray, dState: Dict = {} ) -> Tuple[np.ndarray, Dict]:
+    def Step( self: Self, mW: np.ndarray, mDw: np.ndarray, dState: Dict = {} ) -> Tuple[np.ndarray, Dict]:
         
         mV            = dState.get('mV', np.zeros(mW.shape)) #<! Default for 1st iteration 
         mS            = dState.get('mS', np.zeros(mW.shape)) #<! Default for 1st iteration
@@ -302,7 +302,7 @@ class Optimizer():
         self.oUpdateRule = oOptType #<! SGD, ADAM
         self.dStates     = {}
 
-    def Step( self, oModel: ModelNN, learnRate: Optional[float] = None ) -> None:
+    def Step( self: Self, oModel: ModelNN, learnRate: Optional[float] = None ) -> None:
         
         if learnRate is not None:
             self.oUpdateRule.μ = learnRate
@@ -343,11 +343,11 @@ class DataSet():
             self.numBatches  = math.ceil(numSamples / batchSize)
         self.vIdx        = np.random.permutation(self.numSamples)
         
-    def __len__( self ) -> int:
+    def __len__( self: Self ) -> int:
         
         return self.numBatches
     
-    def __iter__( self ) -> Generator[Tuple[np.ndarray, np.ndarray], None, None]:
+    def __iter__( self: Self ) -> Generator[Tuple[np.ndarray, np.ndarray], None, None]:
 
         if self.shuffleData:
             vIdx = np.random.permutation(self.numSamples)
