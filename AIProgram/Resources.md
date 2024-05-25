@@ -97,3 +97,8 @@ This file is a curated list of resources related to the course.
    See [Hacker News Discussion](https://news.ycombinator.com/item?id=40282923).
  - [NotMNIST](https://github.com/davidflanagan/notMNIST-to-MNIST) - An MNIST like data set based on letters.
  - [Fun Datasets](https://calmcode.io/datasets) - Simple fun datasets.
+
+
+## Work Shops
+
+ - [WorkShop 001 - Machine Learning on Cloud Server](./WorkShop001).

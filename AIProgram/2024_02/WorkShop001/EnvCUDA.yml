@@ -1,0 +1,14 @@
+name: WorkshopCUDAEnv
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pytorch 
+  - scipy
+  - torchvision 
+  - torchaudio 
+  - pytorch-cuda=12.1
+  - cupy
+  - tensorflow
