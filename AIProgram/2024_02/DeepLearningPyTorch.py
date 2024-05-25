@@ -36,7 +36,7 @@ from DeepLearningBlocks import NNMode
 
 
 # Typing
-from typing import Callable, Dict, Generator, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, Generator, List, Optional, Self, Set, Tuple, Union
 
 # Auxiliary Classes
 
@@ -159,6 +159,7 @@ def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt:
     lTrainScore = []
     lValLoss    = []
     lValScore   = []
+    lLearnRate  = []
 
     # Support R2
     bestScore = -1e9 #<! Assuming higher is better
@@ -168,7 +169,7 @@ def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt:
     for ii in range(numEpoch):
         startTime           = time.time()
         trainLoss, trainScr = RunEpoch(oModel, dlTrain, hL, hS, oOpt, opMode = NNMode.TRAIN) #<! Train
-        valLoss,   valScr   = RunEpoch(oModel, dlVal, hL, hS, oOpt, opMode = NNMode.INFERENCE)    #<! Score Validation
+        valLoss,   valScr   = RunEpoch(oModel, dlVal, hL, hS, oOpt, opMode = NNMode.INFERENCE) #<! Score Validation
         if oSch is not None:
             # Adjusting the scheduler on Epoch level
             learnRate = oSch.get_last_lr()[0]
@@ -180,6 +181,7 @@ def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt:
         lTrainScore.append(trainScr)
         lValLoss.append(valLoss)
         lValScore.append(valScr)
+        lLearnRate.append(learnRate)
 
         if oTBWriter is not None:
             oTBWriter.add_scalars('Loss (Epoch)', {'Train': trainLoss, 'Validation': valLoss}, ii)
@@ -197,18 +199,51 @@ def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt:
         # Save best model ("Early Stopping")
         if valScr > bestScore:
             bestScore = valScr
-            print(' | <-- Checkpoint!', end = '')
             try:
-                dCheckpoint = {'Model' : oModel.state_dict(), 'Optimizer' : oOpt.state_dict()}
+                dCheckPoint = {'Model': oModel.state_dict(), 'Optimizer': oOpt.state_dict()}
                 if oSch is not None:
-                    dCheckpoint['Scheduler': oSch.state_dict()]
-                torch.save(dCheckpoint, 'BestModel.pt')
+                    dCheckPoint['Scheduler'] = oSch.state_dict()
+                torch.save(dCheckPoint, 'BestModel.pt')
+                print(' | <-- Checkpoint!', end = '')
             except:
-                pass
+                print(' | <-- Failed!', end = '')
         print(' |')
     
     # Load best model ("Early Stopping")
-    dCheckpoint = torch.load('BestModel.pt')
-    oModel.load_state_dict(dCheckpoint['Model'])
+    # dCheckPoint = torch.load('BestModel.pt')
+    # oModel.load_state_dict(dCheckPoint['Model'])
 
-    return oModel, lTrainLoss, lTrainScore, lValLoss, lValScore
+    return oModel, lTrainLoss, lTrainScore, lValLoss, lValScore, lLearnRate
+
+
+# Auxiliary Blocks
+
+# Residual Class
+# Residual Block:
+# - https://scribe.rip/471810e894ed.
+# - https://stackoverflow.com/questions/57229054.
+# - https://wandb.ai/amanarora/Written-Reports/reports/Understanding-ResNets-A-Deep-Dive-into-Residual-Networks-with-PyTorch--Vmlldzo1MDAxMTk5
+# For nn. vs. F. see:
+# - https://discuss.pytorch.org/t/31857
+# - https://stackoverflow.com/questions/53419474
+
+# Simple Residual Block
+class ResidualBlock( nn.Module ):
+    def __init__( self, numChnl: int ) -> None:
+        super(ResidualBlock, self).__init__()
+        
+        self.oConv2D1       = nn.Conv2d(numChnl, numChnl, kernel_size = 3, padding = 1, bias = False)
+        self.oBatchNorm1    = nn.BatchNorm2d(numChnl)
+        self.oReLU1         = nn.ReLU(inplace = True)
+        self.oConv2D2       = nn.Conv2d(numChnl, numChnl, kernel_size = 3, padding = 1, bias = False)
+        self.oBatchNorm2    = nn.BatchNorm2d(numChnl)
+        self.oReLU2         = nn.ReLU(inplace = True) #<! No need for it, for better visualization
+            
+    def forward( self: Self, tX: torch.Tensor ) -> torch.Tensor:
+        
+        tY = self.oReLU(self.oBatchNorm1(self.oConv2D1(tX)))
+        tY = self.oBatchNorm2(self.oConv2D2(tY))
+        tY += tX
+        tY = self.oReLU(tY)
+		
+        return tY
