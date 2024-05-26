@@ -14,4 +14,6 @@ This folder is dedicated to the course [Technion AI Program](https://cont-edu.te
  - [Technion Zoom Access](https://technion.zoom.us).
  - [Resources](./Resources.md).
  - [Projects](./Projects.md).
+ - [Azure Labs](https://labs.azure.com/) - Virtual Machines.
+ - [WorkShop 001 - Machine Learning on Cloud Server](./2024_02/WorkShop001).
 

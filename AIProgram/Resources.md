@@ -66,7 +66,7 @@ This file is a curated list of resources related to the course.
  * [Awesome Feature Engineering](https://github.com/aikho/awesome-feature-engineering) - A curated list of resources dedicated to Feature Engineering Techniques for Machine Learning.
  * [Kaggle - Automated Feature Engineering Basics](https://www.kaggle.com/code/willkoehrsen/automated-feature-engineering-basics).
  * [Kaggle - Automated Feature Engineering Tutorial](https://www.kaggle.com/code/willkoehrsen/automated-feature-engineering-tutorial).
- * 
+ * [Deformable Part Models for Computer Vision](http://vision.stanford.edu/teaching/cs231b_spring1213/slides/dpm-slides-ross-girshick.pdf).
 
 ### Time Series
 
@@ -85,6 +85,8 @@ This file is a curated list of resources related to the course.
 ### Computer Vision
 
  - [Eberhard Karls University of Tubingen - Computer Vision](https://uni-tuebingen.de/en/fakultaeten/mathematisch-naturwissenschaftliche-fakultaet/fachbereiche/informatik/lehrstuehle/autonomous-vision/lectures/computer-vision).
+ - [PyTorch Image Classification](https://github.com/hysts/pytorch_image_classification) - Comparison of foundation models for Image Classification.
+ - [Thread on Early Days of Deep Learning for Computer Vision](https://www.reddit.com/r/MachineLearning/comments/hoo6m8).
 
 ### Natural Language Processing (NLP)
 
@@ -101,4 +103,5 @@ This file is a curated list of resources related to the course.
 
 ## Work Shops
 
+ - [Azure Labs](https://labs.azure.com/) - Virtual Machines.
  - [WorkShop 001 - Machine Learning on Cloud Server](./WorkShop001).
