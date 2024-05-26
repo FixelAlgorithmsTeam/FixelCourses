@@ -87,6 +87,19 @@ This file is a curated list of resources related to the course.
  - [Eberhard Karls University of Tubingen - Computer Vision](https://uni-tuebingen.de/en/fakultaeten/mathematisch-naturwissenschaftliche-fakultaet/fachbereiche/informatik/lehrstuehle/autonomous-vision/lectures/computer-vision).
  - [PyTorch Image Classification](https://github.com/hysts/pytorch_image_classification) - Comparison of foundation models for Image Classification.
  - [Thread on Early Days of Deep Learning for Computer Vision](https://www.reddit.com/r/MachineLearning/comments/hoo6m8).
+ - [`NHWC` vs. `NCHW` : A Memory Access Perspective on GPUs](https://scribe.rip/4e79bd3b1b54).
+ - [Why Does PyTorch Prefer Using NCHW](https://discuss.pytorch.org/t/83637).
+ - [A Comprehensible Explanation of the Dimensions in CNNs](https://scribe.rip/841dba49df5e).
+ - [Why Does the Net Becomes Deeper](https://datascience.stackexchange.com/questions/55545).
+ - Architectures
+    - [Deep Convolutional Neural Networks (AlexNet)](https://d2l.ai/chapter_convolutional-modern/alexnet.html).
+    - [Networks Using Blocks (VGG)](https://d2l.ai/chapter_convolutional-modern/vgg.html).
+    - [Multi Branch Networks (GoogLeNet)](https://d2l.ai/chapter_convolutional-modern/googlenet.html).
+    - [Residual Networks (ResNet) and ResNeXt](https://d2l.ai/chapter_convolutional-modern/resnet.html).
+    - [ResNeXt: A New Paradigm in Image Processing](https://scribe.rip/ee40425aea1f).
+    - [Densely Connected Networks (DenseNet)](https://d2l.ai/chapter_convolutional-modern/densenet.html).
+    - [EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks](https://scribe.rip/92941c5bfb95).
+ - 
 
 ### Natural Language Processing (NLP)
 
