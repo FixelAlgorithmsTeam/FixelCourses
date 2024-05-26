@@ -101,7 +101,3 @@ This file is a curated list of resources related to the course.
  - [Fun Datasets](https://calmcode.io/datasets) - Simple fun datasets.
 
 
-## Work Shops
-
- - [Azure Labs](https://labs.azure.com/) - Virtual Machines.
- - [WorkShop 001 - Machine Learning on Cloud Server](./WorkShop001).
