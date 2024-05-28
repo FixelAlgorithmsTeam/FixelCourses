@@ -241,9 +241,9 @@ class ResidualBlock( nn.Module ):
             
     def forward( self: Self, tX: torch.Tensor ) -> torch.Tensor:
         
-        tY = self.oReLU(self.oBatchNorm1(self.oConv2D1(tX)))
+        tY = self.oReLU1(self.oBatchNorm1(self.oConv2D1(tX)))
         tY = self.oBatchNorm2(self.oConv2D2(tY))
         tY += tX
-        tY = self.oReLU(tY)
+        tY = self.oReLU2(tY)
 		
         return tY
