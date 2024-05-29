@@ -70,6 +70,8 @@ Contains list of projects for the choice of the students.
  - [Real World ML systems](https://www.evidentlyai.com/ml-system-design) - List of data sets accompanied by a project information.
  - [TidyTuesday](https://github.com/rfordatascience/tidytuesday) - A weekly social data project. Many datasets with links to EDA's. There are videos on YouTube (Search for `Tidy Tuesday`).
  - [NumerAI](https://numer.ai) - Quants data for Hedge Fund like.
+ - [Analytics Vidhya - Data Science Hackathons](https://datahack.analyticsvidhya.com) - Competitions and datasets.
+ - [Hugging Face - Data Sets](https://huggingface.co/datasets) - Hugging Face data sets. It allows searching for specific tasks.
 
 ## Project Structure
 

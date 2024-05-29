@@ -18,10 +18,15 @@ from torch.optim.optimizer import Optimizer
 from torch.optim.lr_scheduler import LRScheduler
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
+import torchvision
+from torchvision.datasets.folder import IMG_EXTENSIONS, pil_loader
 
 # Image Processing / Computer Vision
 
 # Optimization
+
+# Python STD
+import os
 
 # Auxiliary
 
@@ -52,6 +57,30 @@ class TBLogger():
     def close( self ) -> None:
 
         self.oTBWriter.close()
+
+class TestDataSet( torchvision.datasets.VisionDataset ):
+    def __init__(self, root: str = None, transforms: Callable[..., Any] | None = None, transform: Callable[..., Any] | None = None, target_transform: Callable[..., Any] | None = None) -> None:
+        super().__init__(root, transforms, transform, target_transform)
+
+
+        lF = os.listdir(root)
+        lFiles = [fileName for fileName in lF if (os.path.isfile(os.path.join(root, fileName)) and (os.path.splitext(os.path.join(root, fileName))[1] in IMG_EXTENSIONS))]
+
+        self.lFiles = lFiles
+        self.loader = pil_loader
+    
+    def __len__(self) -> int:
+        
+        return len(self.lFiles)
+    
+    def __getitem__(self, index: int) -> Any:
+        
+        imgSample =  self.loader(os.path.join(self.root, self.lFiles[index]))
+        if self.transform is not None:
+            imgSample = self.transform(imgSample)
+        
+        return imgSample
+
 
 
 # Auxiliary Functions
