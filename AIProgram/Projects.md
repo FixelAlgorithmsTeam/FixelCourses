@@ -49,11 +49,11 @@ Contains list of projects for the choice of the students.
    Build employees data set, recognize. Improve over time.
  - 
 
-### Audio / Voice Processing
+### Signal Processing
 
  - [Common Voice](https://www.kaggle.com/datasets/mozillaorg/common-voice) - 500 hours of speech recordings, with speaker demographics.  
    It may used for gender recognition, age estimation, accent detection, etc...
- - 
+ - [Brain Neural Computer Interaction (BNCI) Data Sets](https://bnci-horizon-2020.eu/database/data-sets) - Several data sets of EEG / EOG / fNIRS / ECoG / EMG signals.
 
 ### Language Processing
 
