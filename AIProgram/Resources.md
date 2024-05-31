@@ -32,6 +32,7 @@ This file is a curated list of resources related to the course.
  - [A Quick Introduction to List Comprehensions with Python](https://github.com/mrdbourke/python-list-comprehensions-tutorial/blob/master/python-list-comprehensions-in-5-minutes.ipynb).
  - [Free Python Books](https://github.com/pamoroso/free-python-books) - A curated list of _free_ Python books.
  - [CalmCode](https://calmcode.io) - Code. Simply. Clearly. Calmly. Video tutorials for modern ideas and open source tools. 
+ - [Python 3 Quick Tutorial](https://gist.github.com/kenjyco/69eeb503125035f21a9d).
 
 ### Scientific Python
 
@@ -60,6 +61,7 @@ This file is a curated list of resources related to the course.
  - [Machine Learning Books Repository](https://github.com/gimac/gninrael-enihcam).
 
 ### Feature Engineering
+
  * [Feature Tools](https://github.com/alteryx/featuretools).
  * [Featuristic](https://github.com/martineastwood/featuristic) - An open source library using genetic algorithms for automated feature engineering and feature selection.
  * [Feature Engineering and Feature Selection](https://github.com/Yimeng-Zhang/feature-engineering-and-feature-selection) - A Guide for Feature Engineering and Feature Selection, with implementations and examples in Python.
@@ -99,9 +101,15 @@ This file is a curated list of resources related to the course.
     - [ResNeXt: A New Paradigm in Image Processing](https://scribe.rip/ee40425aea1f).
     - [Densely Connected Networks (DenseNet)](https://d2l.ai/chapter_convolutional-modern/densenet.html).
     - [EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks](https://scribe.rip/92941c5bfb95).
- - 
+ - [LightLy](https://github.com/lightly-ai/lightly) - A python library for self-supervised learning on images.
 
 ### Natural Language Processing (NLP)
+
+
+### PyTorch
+
+ - [PyTorch Segmentation Models](https://github.com/qubvel/segmentation_models.pytorch) - Python library with Pre Trained Neural Networks for Image Segmentation based on PyTorch.
+ - [Captum](https://github.com/pytorch/captum) - Model interpretability and understanding for PyTorch.
 
 
 ### Miscellaneous

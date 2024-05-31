@@ -174,11 +174,104 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
             epochScore += batchSize * valScore.item()
             numSamples += batchSize
 
-        print(f'\r{"Train" if opMode == NNMode.TRAIN else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}: loss = {valLoss:.6f}', end = '')
+        print(f'\r{"Train" if opMode == NNMode.TRAIN else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}, loss: {valLoss:.6f}', end = '')
     
     print('', end = '\r')
             
     return epochLoss / numSamples, epochScore / numSamples
+
+# Training Epoch
+def RunEpochSch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable, oOpt: Optional[Optimizer] = None, oSch: Optional[LRScheduler] = None, opMode: NNMode = NNMode.TRAIN, oTBLogger: Optional[TBLogger] = None ) -> Tuple[float, float]:
+    """
+    Runs a single Epoch (Train / Test) of a model.  
+    Input:
+        oModel      - PyTorch `nn.Module` object.
+        dlData      - PyTorch `Dataloader` object.
+        hL          - Callable for the Loss function.
+        hS          - Callable for the Score function.
+        oOpt        - PyTorch `Optimizer` object.
+        oSch        - PyTorch `Scheduler` (`LRScheduler`) object.
+        opMode      - An `NNMode` to set the mode of operation.
+        oTBLogger   - An `TBLogger` object.
+    Output:
+        valLoss     - Scalar of the loss.
+        valScore    - Scalar of the score.
+        learnRate   - Scalar of the average learning rate over the epoch.
+    Remarks:
+      - The `oDataSet` object returns a Tuple of (mX, vY) per batch.
+      - The `hL` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
+        It should return a Tuple of `valLoss` (Scalar of the loss) and `mDz` (Gradient by the loss).
+      - The `hS` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
+        It should return a scalar `valScore` of the score.
+      - The optimizer / scheduler are required for training mode.
+    """
+    
+    epochLoss   = 0.0
+    epochScore  = 0.0
+    numSamples  = 0
+    epochLr     = 0.0
+    numBatches = len(dlData)
+    lLearnRate = []
+
+    runDevice = next(oModel.parameters()).device #<! CPU \ GPU
+
+    if opMode == NNMode.TRAIN:
+        oModel.train(True) #<! Equivalent of `oModel.train()`
+    elif opMode == NNMode.INFERENCE:
+        oModel.eval() #<! Equivalent of `oModel.train(False)`
+    else:
+        raise ValueError(f'The `opMode` value {opMode} is not supported!')
+    
+    for ii, (mX, vY) in enumerate(dlData):
+        # Move Data to Model's device
+        mX = mX.to(runDevice) #<! Lazy
+        vY = vY.to(runDevice) #<! Lazy
+
+        batchSize = mX.shape[0]
+        
+        if opMode == NNMode.TRAIN:
+            # Forward
+            mZ      = oModel(mX) #<! Model output
+            valLoss = hL(mZ, vY) #<! Loss
+            
+            # Backward
+            oOpt.zero_grad()    #<! Set gradients to zeros
+            valLoss.backward()  #<! Backward
+            oOpt.step()         #<! Update parameters
+
+            learnRate = oSch.get_last_lr()[0]
+            oSch.step() #<! Update learning rate
+
+        else: #<! Value of `opMode` was already validated
+            with torch.no_grad():
+                # No computational graph
+                mZ      = oModel(mX) #<! Model output
+                valLoss = hL(mZ, vY) #<! Loss
+                
+                learnRate = 0.0
+
+        with torch.no_grad():
+            # Score
+            valScore = hS(mZ, vY)
+            # Normalize so each sample has the same weight
+            epochLoss  += batchSize * valLoss.item()
+            epochScore += batchSize * valScore.item()
+            epochLr    += batchSize * learnRate
+            numSamples += batchSize
+            lLearnRate.append(learnRate)
+
+            if (oTBLogger is not None) and (opMode == NNMode.TRAIN):
+                # Logging at Iteration level for training
+                oTBLogger.iiItr += 1
+                oTBLogger.oTBWriter.add_scalar('Train Loss', valLoss.item(), oTBLogger.iiItr)
+                oTBLogger.oTBWriter.add_scalar('Train Score', valScore.item(), oTBLogger.iiItr)
+                oTBLogger.oTBWriter.add_scalar('Learning Rate', learnRate, oTBLogger.iiItr)
+
+        print(f'\r{"Train" if opMode == NNMode.TRAIN else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}, loss: {valLoss:.6f}', end = '')
+    
+    print('', end = '\r')
+            
+    return epochLoss / numSamples, epochScore / numSamples, epochLr / numSamples, lLearnRate
 
 # Training Model Loop Function
 
@@ -218,7 +311,7 @@ def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt:
             oTBWriter.add_scalar('Learning Rate', learnRate, ii)
         
         # Display (Babysitting)
-        print('Epoch '              f'{(ii + 1):4d} / ' f'{numEpoch}:', end = '')
+        print('Epoch '              f'{(ii + 1):4d} / ' f'{numEpoch}', end = '')
         print(' | Train Loss: '     f'{trainLoss          :6.3f}', end = '')
         print(' | Val Loss: '       f'{valLoss            :6.3f}', end = '')
         print(' | Train Score: '    f'{trainScr           :6.3f}', end = '')
@@ -244,6 +337,62 @@ def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt:
 
     return oModel, lTrainLoss, lTrainScore, lValLoss, lValScore, lLearnRate
 
+
+def TrainModelSch( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt: Optimizer, oSch: LRScheduler, numEpoch: int, hL: Callable, hS: Callable, oTBLogger: Optional[TBLogger] = None ) -> Tuple[nn.Module, List, List, List, List]:
+
+    lTrainLoss  = []
+    lTrainScore = []
+    lValLoss    = []
+    lValScore   = []
+    lLearnRate  = []
+
+    # Support R2
+    bestScore = -1e9 #<! Assuming higher is better
+
+    for ii in range(numEpoch):
+        startTime                               = time.time()
+        trainLoss, trainScr, trainLr, lLRate    = RunEpochSch(oModel, dlTrain, hL, hS, oOpt, oSch, opMode = NNMode.TRAIN, oTBLogger = oTBLogger) #<! Train
+        valLoss,   valScr, *_                   = RunEpochSch(oModel, dlVal, hL, hS, opMode = NNMode.INFERENCE)    #<! Score Validation
+        epochTime                               = time.time() - startTime
+
+        # Aggregate Results
+        lTrainLoss.append(trainLoss)
+        lTrainScore.append(trainScr)
+        lValLoss.append(valLoss)
+        lValScore.append(valScr)
+        lLearnRate.extend(lLRate)
+
+        if oTBLogger is not None:
+            oTBLogger.iiEpcoh += 1
+            oTBLogger.oTBWriter.add_scalars('Loss (Epoch)', {'Train': trainLoss, 'Validation': valLoss}, ii)
+            oTBLogger.oTBWriter.add_scalars('Score (Epoch)', {'Train': trainScr, 'Validation': valScr}, ii)
+            oTBLogger.oTBWriter.add_scalar('Learning Rate (Epoch)', trainLr, ii)
+            oTBLogger.oTBWriter.flush()
+        
+        # Display (Babysitting)
+        print('Epoch '              f'{(ii + 1):4d} / ' f'{numEpoch}', end = '')
+        print(' | Train Loss: '     f'{trainLoss          :6.3f}', end = '')
+        print(' | Val Loss: '       f'{valLoss            :6.3f}', end = '')
+        print(' | Train Score: '    f'{trainScr           :6.3f}', end = '')
+        print(' | Val Score: '      f'{valScr             :6.3f}', end = '')
+        print(' | Epoch Time: '     f'{epochTime          :5.2f}', end = '')
+
+        # Save best model ("Early Stopping")
+        if valScr > bestScore:
+            bestScore = valScr
+            print(' | <-- Checkpoint!', end = '')
+            try:
+                dCheckpoint = {'Model' : oModel.state_dict(), 'Optimizer' : oOpt.state_dict(), 'Scheduler': oSch.state_dict()}
+                torch.save(dCheckpoint, 'BestModel.pt')
+            except:
+                print(' | <-- Failed!', end = '')
+        print(' |')
+    
+    # Load best model ("Early Stopping")
+    dCheckpoint = torch.load('BestModel.pt')
+    oModel.load_state_dict(dCheckpoint['Model'])
+
+    return oModel, lTrainLoss, lTrainScore, lValLoss, lValScore, lLearnRate
 
 # Auxiliary Blocks
 
