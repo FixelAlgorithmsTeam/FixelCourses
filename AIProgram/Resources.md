@@ -83,6 +83,10 @@ This file is a curated list of resources related to the course.
 ## Deep Learning
 
  - [Eberhard Karls University of Tubingen - Deep Learning](https://uni-tuebingen.de/en/fakultaeten/mathematisch-naturwissenschaftliche-fakultaet/fachbereiche/informatik/lehrstuehle/autonomous-vision/lectures/deep-learning).
+ - [Kolmogorov Arnold Networks](https://github.com/KindXiaoming/pykan) - Kolmogorov Arnold Networks (KANs) are promising alternatives of Multi Layer Perceptrons (MLPs). KANs have strong mathematical foundations just like MLPs: MLPs are based on the universal approximation theorem, while KANs are based on Kolmogorov Arnold representation theorem.
+ - [Torch Examples for Auto Encoders](https://github.com/davidstutz/torch-examples).
+ - [The Mathematics of Variational Auto Encoders](https://davidstutz.de/the-mathematics-of-variational-auto-encoders).
+
 
 ### Computer Vision
 
@@ -102,8 +106,25 @@ This file is a curated list of resources related to the course.
     - [Densely Connected Networks (DenseNet)](https://d2l.ai/chapter_convolutional-modern/densenet.html).
     - [EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks](https://scribe.rip/92941c5bfb95).
  - [LightLy](https://github.com/lightly-ai/lightly) - A python library for self-supervised learning on images.
+ - Features Visualization
+    - [Visualizing and Understanding Convolutional Networks](https://arxiv.org/abs/1311.2901).
+    - [Fabio M. Graetz - How to Visualize Convolutional Features in 40 Lines of Code](https://scribe.rip/70b7d87b0030).
+    - [A New Method to Visualize Deep Neural Networks](https://arxiv.org/abs/1603.02518).
+    - [Distill - Feature Visualization](https://distill.pub/2017/feature-visualization).
+ - 
+
 
 ### Natural Language Processing (NLP)
+
+
+### Transfer Learning and Domain Adaptation
+
+ - [Wikipedia - Domain adaptation](https://en.wikipedia.org/wiki/Domain_adaptation).
+ - [Domain Adaptation in Computer Vision: Everything You Need to Know](https://www.v7labs.com/blog/domain-adaptation-guide).
+ - [Kate Saenko - Domain Adaptation for Deep Learning](https://ece.engin.umich.edu/wp-content/uploads/2019/09/4142.pdf).
+ - [Aviv Rosenberg - Transfer learning & Domain adaptation | Deep Learning on Computational Accelerators](https://www.youtube.com/watch?v=MIsSuWsZtKE).  
+   From [Technion CS236781: Deep Learning](https://vistalab-technion.github.io/cs236781).
+ - 
 
 
 ### PyTorch
@@ -111,8 +132,17 @@ This file is a curated list of resources related to the course.
  - [PyTorch Segmentation Models](https://github.com/qubvel/segmentation_models.pytorch) - Python library with Pre Trained Neural Networks for Image Segmentation based on PyTorch.
  - [Captum](https://github.com/pytorch/captum) - Model interpretability and understanding for PyTorch.
 
+## Data Sets
 
-### Miscellaneous
+ - [KMNIST](https://github.com/rois-codh/kmnist) - Repository for Kuzushiji-MNIST, Kuzushiji-49 and Kuzushiji-Kanji.
+ - [MNIST-C: A Robustness Benchmark for Computer Vision](https://arxiv.org/abs/1906.02337).  
+   See also [Short Science - MNIST-C: A Robustness Benchmark for Computer Vision](https://shortscience.org/paper?bibtexKey=journals/corr/abs-1906-02337).
+ - 
+
+
+
+
+## Miscellaneous
 
  - [Visual LaTeX Editor](https://latex.codecogs.com/eqneditor/editor.php).
  - [OpenML](https://openml.org) - Machine Learning data sets. Accessible from _SciKit Learn_.
