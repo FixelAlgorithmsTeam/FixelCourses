@@ -184,6 +184,7 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
 def RunEpochSch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable, oOpt: Optional[Optimizer] = None, oSch: Optional[LRScheduler] = None, opMode: NNMode = NNMode.TRAIN, oTBLogger: Optional[TBLogger] = None ) -> Tuple[float, float]:
     """
     Runs a single Epoch (Train / Test) of a model.  
+    Supports per iteration (Batch) scheduling. 
     Input:
         oModel      - PyTorch `nn.Module` object.
         dlData      - PyTorch `Dataloader` object.
@@ -275,7 +276,33 @@ def RunEpochSch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callab
 
 # Training Model Loop Function
 
-def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt: Optimizer, numEpoch: int, hL: Callable, hS: Callable, oSch: Optional[LRScheduler] = None, oTBWriter: Optional[SummaryWriter] = None) -> Tuple[nn.Module, List, List, List, List]:
+def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt: Optimizer, numEpoch: int, hL: Callable, hS: Callable, *, oSch: Optional[LRScheduler] = None, oTBWriter: Optional[SummaryWriter] = None) -> Tuple[nn.Module, List, List, List, List]:
+    """
+    Trains a model given test and validation data loaders.  
+    Input:
+        oModel      - PyTorch `nn.Module` object.
+        dlTrain     - PyTorch `Dataloader` object (Training).
+        dlVal       - PyTorch `Dataloader` object (Validation).
+        oOpt        - PyTorch `Optimizer` object.
+        numEpoch    - Number of epochs to run.
+        hL          - Callable for the Loss function.
+        hS          - Callable for the Score function.
+        oSch        - PyTorch `Scheduler` (`LRScheduler`) object.
+        oTBWriter   - PyTorch `SummaryWriter` object (TensorBoard).
+    Output:
+        lTrainLoss     - Scalar of the loss.
+        lTrainScore    - Scalar of the score.
+        lValLoss    - Scalar of the score.
+        lValScore    - Scalar of the score.
+        lLearnRate    - Scalar of the score.
+    Remarks:
+      - The `oDataSet` object returns a Tuple of (mX, vY) per batch.
+      - The `hL` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
+        It should return a Tuple of `valLoss` (Scalar of the loss) and `mDz` (Gradient by the loss).
+      - The `hS` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
+        It should return a scalar `valScore` of the score.
+      - The optimizer is required for training mode.
+    """
 
     lTrainLoss  = []
     lTrainScore = []
