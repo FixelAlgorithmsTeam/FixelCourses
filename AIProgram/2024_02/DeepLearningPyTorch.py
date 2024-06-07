@@ -16,7 +16,8 @@ import torch.nn            as nn
 import torch.nn.functional as F
 from torch.optim.optimizer import Optimizer
 from torch.optim.lr_scheduler import LRScheduler
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import default_collate
 from torch.utils.tensorboard import SummaryWriter
 import torchvision
 from torchvision.datasets.folder import IMG_EXTENSIONS, pil_loader
@@ -107,6 +108,16 @@ def InitWeightsKaiNorm( oLayer: nn.Module, tuLyrClas: Tuple = (nn.Linear, nn.Con
     if isinstance(oLayer, tuLyrClas):
         nn.init.kaiming_normal_(oLayer.weight.data)
 
+
+def GenDataLoaders( dsTrain: Dataset, dsVal: Dataset, batchSize: int, *, numWorkers: int = 0, CollateFn: Callable = default_collate, dropLast: bool = True, PersWork: bool = False ) -> Tuple[DataLoader, DataLoader]:
+
+    if numWorkers == 0: 
+        PersWork = False
+
+    dlTrain = torch.utils.data.DataLoader(dsTrain, shuffle = True, batch_size = 1 * batchSize, num_workers = numWorkers, collate_fn = CollateFn, drop_last = dropLast, persistent_workers = PersWork)
+    dlVal   = torch.utils.data.DataLoader(dsVal, shuffle = False, batch_size = 2 * batchSize, num_workers = numWorkers, persistent_workers = PersWork)
+
+    return dlTrain, dlVal
 
 def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable, oOpt: Optional[Optimizer] = None, opMode: NNMode = NNMode.TRAIN ) -> Tuple[float, float]:
     """
