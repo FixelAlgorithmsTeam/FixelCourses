@@ -47,6 +47,8 @@ Contains list of projects for the choice of the students.
    Replicate the results of state of the art Denoising algorithm.
  - Facility Entrance System  
    Build employees data set, recognize. Improve over time.
+ - [Flood Area Segmentation](https://www.kaggle.com/datasets/faizalkarim/flood-area-segmentation).  
+   See [Semantic Segmentation for Flood Recognition Using PyTorch](https://debuggercafe.com/semantic-segmentation-for-flood-recognition).
  - 
 
 ### Signal Processing

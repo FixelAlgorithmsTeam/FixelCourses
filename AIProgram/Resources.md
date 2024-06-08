@@ -33,6 +33,7 @@ This file is a curated list of resources related to the course.
  - [Free Python Books](https://github.com/pamoroso/free-python-books) - A curated list of _free_ Python books.
  - [CalmCode](https://calmcode.io) - Code. Simply. Clearly. Calmly. Video tutorials for modern ideas and open source tools. 
  - [Python 3 Quick Tutorial](https://gist.github.com/kenjyco/69eeb503125035f21a9d).
+ - [Andrew Glassner's Quick Guide to Python](https://www.glassner.com/writing/tech-notes/andrews-quick-guide-to-python).
 
 ### Scientific Python
 
@@ -86,6 +87,17 @@ This file is a curated list of resources related to the course.
  - [Kolmogorov Arnold Networks](https://github.com/KindXiaoming/pykan) - Kolmogorov Arnold Networks (KANs) are promising alternatives of Multi Layer Perceptrons (MLPs). KANs have strong mathematical foundations just like MLPs: MLPs are based on the universal approximation theorem, while KANs are based on Kolmogorov Arnold representation theorem.
  - [Torch Examples for Auto Encoders](https://github.com/davidstutz/torch-examples).
  - [The Mathematics of Variational Auto Encoders](https://davidstutz.de/the-mathematics-of-variational-auto-encoders).
+ - [Simon J. D. Prince - Understanding Deep Learning](https://udlbook.github.io/udlbook).
+ - [Chris Bishop, Hugh Bishop -  Deep Learning - Foundations and Concepts](https://www.bishopbook.com).
+ - [Ian Goodfellow and Yoshua Bengio and Aaron Courville - Deep Learning](https://www.deeplearningbook.org).  
+   A [Full PDF Link](https://github.com/janishar/mit-deep-learning-book-pdf).
+ - Model Visualization Tools
+    - [NN-SVG](https://alexlenail.me/NN-SVG).
+    - [NNViz](https://github.com/LucaBonfiglioli/nnviz).
+    - [TorchLens](https://github.com/johnmarktaylor91/torchlens).
+    - [Tools to Design or Visualize Architecture of Neural Network](https://github.com/ashishpatel26/Tools-to-Design-or-Visualize-Architecture-of-Neural-Network).
+    - [Netron](https://github.com/lutzroeder/Netron).
+ - 
 
 
 ### Computer Vision
@@ -137,7 +149,7 @@ This file is a curated list of resources related to the course.
  - [KMNIST](https://github.com/rois-codh/kmnist) - Repository for Kuzushiji-MNIST, Kuzushiji-49 and Kuzushiji-Kanji.
  - [MNIST-C: A Robustness Benchmark for Computer Vision](https://arxiv.org/abs/1906.02337).  
    See also [Short Science - MNIST-C: A Robustness Benchmark for Computer Vision](https://shortscience.org/paper?bibtexKey=journals/corr/abs-1906-02337).
- - 
+ - [Wikipedia - List of Datasets in Computer Vision and Image Processing](https://en.wikipedia.org/wiki/List_of_datasets_in_computer_vision_and_image_processing).
 
 
 
@@ -150,5 +162,6 @@ This file is a curated list of resources related to the course.
    See [Hacker News Discussion](https://news.ycombinator.com/item?id=40282923).
  - [NotMNIST](https://github.com/davidflanagan/notMNIST-to-MNIST) - An MNIST like data set based on letters.
  - [Fun Datasets](https://calmcode.io/datasets) - Simple fun datasets.
+ - 
 
 

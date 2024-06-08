@@ -82,7 +82,37 @@ class TestDataSet( torchvision.datasets.VisionDataset ):
         
         return imgSample
 
+class ObjectLocalizationDataset( Dataset ):
+    def __init__( self, tX: np.ndarray, vY: np.ndarray, mB: np.ndarray, singleY: bool = True ) -> None:
 
+        if (tX.shape[0] != vY.shape[0]):
+            raise ValueError(f'The number of samples in `tX` and `vY` does not match!')
+        if (tX.shape[0] != mB.shape[0]):
+            raise ValueError(f'The number of samples in `tX` and `mB` does not match!')
+        
+        self.tX = tX
+        self.vY = vY
+        self.mB = mB
+        self.singleY = singleY #<! Return label and box, or a single vector
+        self.numSamples = tX.shape[0]
+
+    def __len__( self: Self ) -> int:
+        
+        return self.numSamples
+
+    def __getitem__( self: Self, idx: int ) -> Union[Tuple[np.ndarray, int, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
+        
+        tXi   = self.tX[idx] #<! Image
+        valYi = self.vY[idx] #<! Label
+        vBi   = self.mB[idx] #<! Bounding Box
+
+        tXi = tXi.astype(np.float32)
+        vBi = vBi.astype(np.float32)
+
+        if self.singleY:
+            return tXi, np.r_[valYi, vBi]
+        else:
+            return tXi, valYi, vBi
 
 # Auxiliary Functions
 
