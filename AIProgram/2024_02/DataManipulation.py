@@ -155,7 +155,7 @@ def GenLabeldEllipseImg( tuImgSize: Tuple[int, int], numObj: int, *, boxFormat: 
 
     mI  = np.zeros(shape = (*tuImgSize, 3)) #<! RGB Image
     vY  = np.zeros(shape = numObj, dtype = np.int_)
-    mBB = np.zeros(shape = (numObj, 4)) #<! [x, y, width, height]
+    mBB = np.zeros(shape = (numObj, 4)) #<! [x1, y1, x2, y2]
 
     for ii in range(numObj):
         cIdx    = np.random.randint(3) #<! R, G, B -> [0, 1, 2]

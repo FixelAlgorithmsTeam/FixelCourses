@@ -49,6 +49,8 @@ Contains list of projects for the choice of the students.
    Build employees data set, recognize. Improve over time.
  - [Flood Area Segmentation](https://www.kaggle.com/datasets/faizalkarim/flood-area-segmentation).  
    See [Semantic Segmentation for Flood Recognition Using PyTorch](https://debuggercafe.com/semantic-segmentation-for-flood-recognition).
+ - [Visual Object Tracking](https://github.com/DavidZhangdw/Visual-Tracking-Development).
+   - [OSTrack](https://github.com/botaoye/OSTrack).
  - 
 
 ### Signal Processing

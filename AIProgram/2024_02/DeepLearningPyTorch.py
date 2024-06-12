@@ -63,7 +63,6 @@ class TestDataSet( torchvision.datasets.VisionDataset ):
     def __init__(self, root: str = None, transforms: Callable[..., Any] | None = None, transform: Callable[..., Any] | None = None, target_transform: Callable[..., Any] | None = None) -> None:
         super().__init__(root, transforms, transform, target_transform)
 
-
         lF = os.listdir(root)
         lFiles = [fileName for fileName in lF if (os.path.isfile(os.path.join(root, fileName)) and (os.path.splitext(os.path.join(root, fileName))[1] in IMG_EXTENSIONS))]
 
