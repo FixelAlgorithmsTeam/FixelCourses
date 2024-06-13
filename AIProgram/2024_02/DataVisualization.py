@@ -359,7 +359,7 @@ def PlotDendrogram( dfX: Union[np.ndarray, pd.DataFrame], linkageMethod: str, va
 
     return hA
 
-def PlotBox( mI: np.ndarray, boxLabel: int, vBox: np.ndarray, *, hA: Optional[plt.Axes] = None, boxScore: Optional[float] = None ) -> plt.Axes:
+def PlotBox( mI: np.ndarray, boxLabel: int, vBox: np.ndarray, *, hA: Optional[plt.Axes] = None, labelText: str = '_' ) -> plt.Axes:
     # Assumes data in YOLO Format
     
     if hA is None:
@@ -370,24 +370,18 @@ def PlotBox( mI: np.ndarray, boxLabel: int, vBox: np.ndarray, *, hA: Optional[pl
     hA.imshow(mI, extent = [0, 1, 1, 0]) #<! "Normalized Image"
     hA.grid(False)
 
-    PlotBBox(hA, boxLabel, vBox, boxScore)
+    PlotBBox(hA, boxLabel, vBox, labelText)
 
     return hA
 
-def PlotBBox( hA: plt.Axes, boxLabel: int, vBox: np.ndarray, boxScore: Optional[float] = None ) -> plt.Axes:
+def PlotBBox( hA: plt.Axes, boxLabel: int, vBox: np.ndarray, labelText: str = '_' ) -> plt.Axes:
     # Assumes data in YOLO Format
+    # Legend Text: https://stackoverflow.com/questions/24680981
 
     edgeColor = hA._get_lines.get_next_color()
 
-    if boxScore is not None:
-        labelText = f'Score: {boxScore:.0%}'
-    else:
-        labelText = '_' #<! https://stackoverflow.com/questions/24680981
     rectPatch = Rectangle((vBox[0] - (vBox[2] / 2), vBox[1] - (vBox[3] / 2)), vBox[2], vBox[3], linewidth = 2, edgecolor = edgeColor, facecolor = (0, 0, 0, 0), label = labelText) #<! Requires the alpha component in the face color
     hA.add_patch(rectPatch)
     hA.text(vBox[0] - (vBox[2] / 2), vBox[1] - (vBox[3] / 2), s = boxLabel, color = 'w', verticalalignment = 'bottom', bbox = {'color': edgeColor}, fontdict = {'size': 16})
-    
-    if boxScore is not None:
-        hA.legend() #<! No need for legend unless there is a `Rectangle()`
 
     return hA
