@@ -97,7 +97,8 @@ This file is a curated list of resources related to the course.
     - [TorchLens](https://github.com/johnmarktaylor91/torchlens).
     - [Tools to Design or Visualize Architecture of Neural Network](https://github.com/ashishpatel26/Tools-to-Design-or-Visualize-Architecture-of-Neural-Network).
     - [Netron](https://github.com/lutzroeder/Netron).
- - 
+ - [TorchDrift: Drift Detection for PyTorch](https://torchdrift.org) - A data and concept drift library for PyTorch. It lets you monitor your PyTorch models to see if they operate within spec.
+ - [What Does It Mean that Deep Learning is NoN Parametric](https://lernapparat.de/statistics-deep-learning-nonparametric) - The regularization point of view on a Neural Network.
 
 
 ### Computer Vision
@@ -123,10 +124,25 @@ This file is a curated list of resources related to the course.
     - [Fabio M. Graetz - How to Visualize Convolutional Features in 40 Lines of Code](https://scribe.rip/70b7d87b0030).
     - [A New Method to Visualize Deep Neural Networks](https://arxiv.org/abs/1603.02518).
     - [Distill - Feature Visualization](https://distill.pub/2017/feature-visualization).
+ - Object Detection
+    - [R-CNN, Fast R-CNN, Faster R-CNN, YOLO — Object Detection Algorithms](https://scribe.rip/36d53571365e).
+    - Lilian Weng - Object Detection:
+      - [Part 1: Gradient Vector, HOG, and SS](https://lilianweng.github.io/posts/2017-10-29-object-recognition-part-1).
+      - [Part 2: CNN, DPM and Overfeat](https://lilianweng.github.io/posts/2017-12-15-object-recognition-part-2).
+      - [Part 3: R-CNN Family](https://lilianweng.github.io/posts/2017-12-31-object-recognition-part-3).
+      - [Part 4: Fast Detection Models](https://lilianweng.github.io/posts/2018-12-27-object-recognition-part-4).
+    - [mAP (mean Average Precision) for Object Detection](https://scribe.rip/45c121a31173).
+ - Image Segmentation
+    - [Segmentation Models for PyTorch](https://github.com/qubvel/segmentation_models.pytorch).
+    - [Jermey Jordan - An Overview of Semantic Image Segmentation](https://www.jeremyjordan.me/semantic-segmentation).
  - 
 
 
 ### Natural Language Processing (NLP)
+
+ - [Thinking Like Transformers](https://arxiv.org/abs/2106.06981) - Building operational language to imitate transformers.   
+   See [ICML 2021 Talk](https://slideslive.com/38959389), [Edinburgh 2021 Talk](https://www.youtube.com/watch?v=H-x_upYg-JY).
+ - 
 
 
 ### Transfer Learning and Domain Adaptation
@@ -150,6 +166,11 @@ This file is a curated list of resources related to the course.
  - [MNIST-C: A Robustness Benchmark for Computer Vision](https://arxiv.org/abs/1906.02337).  
    See also [Short Science - MNIST-C: A Robustness Benchmark for Computer Vision](https://shortscience.org/paper?bibtexKey=journals/corr/abs-1906-02337).
  - [Wikipedia - List of Datasets in Computer Vision and Image Processing](https://en.wikipedia.org/wiki/List_of_datasets_in_computer_vision_and_image_processing).
+ - [EMNIST](https://arxiv.org/abs/1702.05373) - An extension of MNIST to handwritten letters.  
+   The [Dataset page](https://www.westernsydney.edu.au/icns/resources/reproducible_research3/publication_support_materials2/emnist).
+ - [The Street View House Numbers (SVHN) Dataset](http://ufldl.stanford.edu/housenumbers).
+ - [Pharmaceutical Drugs and Vitamins Dataset V2](https://www.kaggle.com/datasets/vencerlanz09/pharmaceutical-drugs-and-vitamins-dataset-v2).
+ - [Motion based Segmentation and Recognition Dataset](http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid).
 
 
 

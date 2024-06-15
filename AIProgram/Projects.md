@@ -26,7 +26,7 @@ Contains list of projects for the choice of the students.
    Build employees data set, recognize. Improve over time.
  - [Detecting Early Alzheimer](https://www.kaggle.com/code/hyunseokc/detecting-early-alzheimer-s).
  - Finding all label errors in MNIST and Fashion MNIST.  
-   See [Finding Label Issues in Image Classification Datasets](https://cleanlab.ai/blog/label-errors-image-datasets), [Identifying Mislabeled Instances in Classification Datasets](https://arxiv.org/abs/1912.05283).
+   See [Finding Label Issues in Image Classification Datasets](https://cleanlab.ai/blog/label-errors-image-datasets), [Identifying Mislabeled Instances in Classification Datasets](https://arxiv.org/abs/1912.05283), [2.56% Test Error on CIFAR-10 using PyTorch and AutoAugment](https://davidstutz.de/2-percent-test-error-on-cifar10-using-pytorch-autoagument).
  - 
 
 
