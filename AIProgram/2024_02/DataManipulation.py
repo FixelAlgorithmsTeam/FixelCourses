@@ -175,6 +175,7 @@ def GenLabeldEllipseImg( tuImgSize: Tuple[int, int], numObj: int, *, boxFormat: 
         yTop    = np.min(vR)
         yBottom = np.max(vR)
 
+        # PASCAL VOC format
         vY[ii]     = cIdx       #<! Label
         mBB[ii, 0] = xLeft      #<! x Min
         mBB[ii, 1] = yTop       #<! y Min
