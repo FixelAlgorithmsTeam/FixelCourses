@@ -113,6 +113,41 @@ class ObjectLocalizationDataset( Dataset ):
         else:
             return tXi, valYi, vBi
 
+class ObjectDetectionDataset( Dataset ):
+    def __init__( self, tX: np.ndarray, lY: List[np.ndarray], lB: List[np.ndarray], hDataTrans: Optional[Callable] = None ) -> None:
+
+        if (tX.shape[0] != len(lY)):
+            raise ValueError(f'The number of samples in `tX` and `lY` does not match!')
+        if (tX.shape[0] != len(lB)):
+            raise ValueError(f'The number of samples in `tX` and `lB` does not match!')
+        
+        self.tX = tX
+        self.lY = lY
+        self.lB = lB
+        self.numSamples = tX.shape[0]
+        self.hDataTrans = hDataTrans
+
+    def __len__( self: Self ) -> int:
+        
+        return self.numSamples
+
+    def __getitem__( self: Self, idx: int ) -> Union[Tuple[np.ndarray, int, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
+        
+        tXi = self.tX[idx] #<! Image
+        vYi = self.lY[idx] #<! Labels
+        mBi = self.lB[idx] #<! Bounding Boxes
+
+        tXi = tXi.astype(np.float32)
+        vYi = vYi.astype(np.float32)
+        mBi = mBi.astype(np.float32)
+
+        mYi = np.c_[vYi, mBi]
+
+        if self.hDataTrans is not None:
+            tXi, mYi = self.hDataTrans(tXi, mYi)
+        
+        return tXi, mYi
+
 # Auxiliary Functions
 
 def ResetModelWeights( oModel: nn.Module ) -> None:
@@ -492,3 +527,142 @@ class ResidualBlock( nn.Module ):
         tY = self.oReLU2(tY)
 		
         return tY
+    
+
+class YoloGrid( nn.Module ):
+    def __init__( self, gridSize: int ) -> None:
+        super(YoloGrid, self).__init__()
+        
+        self.gridSize = gridSize
+            
+    def forward( self: Self, tX: torch.Tensor, tB: torch.Tensor ) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        Converts YOLO bounding box into a target grid.  
+        Input:
+            tX          - Image (C x H x W).
+            tB          - Bounding Box (D x 5).
+        Output:
+            tX          - Image (C x H x W).
+            tY          - Target (6 x S x S).
+        Remarks:
+          - The grid size is `S x S`.
+          - Input target: tB[ii, :] -> [cls, x, y, W, H].
+          - Output target: tY[:, ii, jj] -> [prob, x, y, W, H, cls].
+        """
+        
+        D        = tB.shape[0] #<! Number of Boxes
+        S        = self.gridSize
+        mProb    = torch.zeros(1, S, S)
+        mLabel   = torch.zeros(1, S, S)
+        mBBoxOut = torch.zeros(4, S, S)
+        
+        if D > 0:
+            vCls            = tB[:, :1].T
+            mXYWH           = tB[:, 1:] * S
+            vX, vY, vW ,vH  = mXYWH.T
+            vCx             = vX.floor().long() #<! Cell x index
+            vCy             = vY.floor().long() #<! Cell y index
+            vX             -= vCx               #<! Cell x
+            vY             -= vCy               #<! Cell y
+            
+            mProb[0, vCy, vCx]      = 1.0
+            mLabel[0, vCy, vCx]     = vCls
+            mBBoxOut[:, vCy, vCx]   = torch.stack([vX, vY, vW, vH])
+        
+        tY = torch.cat([mProb, mBBoxOut, mLabel])
+		
+        return tX, tY
+
+class YoloBox( nn.Module ):
+    def __init__( self, gridSize: int ) -> None:
+        super(YoloBox, self).__init__()
+
+        self.gridSize = gridSize
+            
+    def forward( self: Self, tX: torch.Tensor, tY: torch.Tensor ) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        Converts YOLO target grid into a bounding box.  
+        Input:
+            tX          - Image (C x H x W).
+            tY          - Target (6 x S x S).
+        Output:
+            tX          - Image (C x H x W).
+            tB          - Bounding Box (D x 5).
+        Remarks:
+          - The grid size is `S x S`.
+          - Input target: tB[ii, :] -> [cls, x, y, W, H].
+          - Output target: tY[:, ii, jj] -> [prob, x, y, W, H, cls].
+        """
+
+        if ((tY.shape[1] != self.gridSize) or (tY.shape[2] != self.gridSize)):
+            raise ValueError('The dimensions of the grid size does not match the dimensions of `tY`')
+        
+        S        = self.gridSize
+        vG       = torch.arange(S)
+        mXX, mYY = torch.meshgrid(vG, vG, indexing = 'xy')
+
+        mProb  = tY[:, [0], :, :]
+        mXYWH  = tY[:, 1:5, :, :].clone()
+        mLabel = tY[:, [5], :, :]
+
+        mXYWH[:, 0, :, :] += mXX[None, :, :]
+        mXYWH[:, 1, :, :] += mYY[None, :, :]
+        
+        tB = torch.cat([mProb, mLabel, mXYWH], dim = 1)   #<! mBBox.shape = (N, 6,  5, 5)
+        tB = tB.permute(0, 2, 3, 1).reshape(-1, S * S, 6) #<! mBBox.shape = (N, 25, 6)
+		
+        return tX, tB
+
+class NetToTgt( nn.Module ):
+    def __init__( self, gridSize: int, numCls: int ) -> None:
+        super(NetToTgt, self).__init__()
+
+        self.gridSize = gridSize
+        self.numCls   = numCls
+            
+    def forward( self: Self, tX: torch.Tensor, tY: torch.Tensor ) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        Converts net (Model) output to YOLO Grid format.  
+        Input:
+            tX          - Image (N x C x H x W).
+            tY          - Target (N x (5 + numCls) x S x S).
+        Output:
+            tX          - Image (C x H x W).
+            tB          - Bounding Box (D x 5).
+        Remarks:
+          - The grid size is `S x S`.
+          - Input target: tB[ii, :] -> [cls, x, y, W, H].
+          - Output target: tY[:, ii, jj] -> [prob, x, y, W, H, cls].
+        """
+
+        # TODO: Complete!
+
+        if ((tY.shape[1] != self.gridSize) or (tY.shape[2] != self.gridSize)):
+            raise ValueError('The dimensions of the grid size does not match the dimensions of `tY`')
+        
+        S        = self.gridSize
+        vG       = torch.arange(S)
+        mXX, mYY = torch.meshgrid(vG, vG, indexing = 'xy')
+
+        mProb  = tY[:, [0], :, :]
+        mXYWH  = tY[:, 1:5, :, :].clone()
+        mLabel = tY[:, [5], :, :]
+
+        mXYWH[:, 0, :, :] += mXX[None, :, :]
+        mXYWH[:, 1, :, :] += mYY[None, :, :]
+        
+        tB = torch.cat([mProb, mLabel, mXYWH], dim = 1)   #<! mBBox.shape = (N, 6,  5, 5)
+        tB = tB.permute(0, 2, 3, 1).reshape(-1, S * S, 6) #<! mBBox.shape = (N, 25, 6)
+		
+        return tX, tB
+
+class ToTensor( nn.Module ):
+    def __init__( self ) -> None:
+        super(ToTensor, self).__init__()
+            
+    def forward( self: Self, *args ) -> Tuple[torch.Tensor]:
+        """
+        Converts input to Tensor.  
+        """
+		
+        return tuple(torch.tensor(itm) for itm in args)

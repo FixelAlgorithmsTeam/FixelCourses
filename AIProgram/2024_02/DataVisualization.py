@@ -359,8 +359,8 @@ def PlotDendrogram( dfX: Union[np.ndarray, pd.DataFrame], linkageMethod: str, va
 
     return hA
 
-def PlotBox( mI: np.ndarray, boxLabel: int, vBox: np.ndarray, *, hA: Optional[plt.Axes] = None, labelText: str = '_' ) -> plt.Axes:
-    # Assumes data in YOLO Format
+def PlotBox( mI: np.ndarray, vLabel: Union[int, np.ndarray], mBox: np.ndarray, *, hA: Optional[plt.Axes] = None, lLabelText: Optional[List] = None ) -> plt.Axes:
+    # Assumes data in YOLO Format: [x, y, w, h] (Center, Height, Width)
     
     if hA is None:
         dpi = 72
@@ -370,7 +370,15 @@ def PlotBox( mI: np.ndarray, boxLabel: int, vBox: np.ndarray, *, hA: Optional[pl
     hA.imshow(mI, extent = [0, 1, 1, 0]) #<! "Normalized Image"
     hA.grid(False)
 
-    PlotBBox(hA, boxLabel, vBox, labelText)
+    mBox = np.atleast_2d(mBox)
+    vLabel = np.atleast_1d(vLabel)
+    numObj = mBox.shape[0]
+    for ii in range(numObj):
+        if lLabelText is not None:
+            labelText = lLabelText[ii]
+        else:
+            labelText = '_'
+        PlotBBox(hA, vLabel[ii], mBox[ii], labelText)
 
     return hA
 
@@ -383,5 +391,6 @@ def PlotBBox( hA: plt.Axes, boxLabel: int, vBox: np.ndarray, labelText: str = '_
     rectPatch = Rectangle((vBox[0] - (vBox[2] / 2), vBox[1] - (vBox[3] / 2)), vBox[2], vBox[3], linewidth = 2, edgecolor = edgeColor, facecolor = (0, 0, 0, 0), label = labelText) #<! Requires the alpha component in the face color
     hA.add_patch(rectPatch)
     hA.text(vBox[0] - (vBox[2] / 2), vBox[1] - (vBox[3] / 2), s = boxLabel, color = 'w', verticalalignment = 'bottom', bbox = {'color': edgeColor}, fontdict = {'size': 16})
+    hA.plot(vBox[0], vBox[1], 'x', mew = 5, ms = 10, color = edgeColor)
 
     return hA
