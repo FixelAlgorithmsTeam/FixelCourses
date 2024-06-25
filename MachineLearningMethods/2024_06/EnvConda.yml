@@ -1,0 +1,29 @@
+name: MLMethods
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - blas=*=mkl
+  - libblas=*=*mkl
+  - numpy
+  - scipy
+  - pandas
+  - numba
+  - scikit-learn
+  - xgboost
+  - lightgbm
+  - umap-learn
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - cvxpy
+  - scikit-image
+  - matplotlib
+  - seaborn
+  - plotly
+  - graphviz
+  - pydot
+  - distinctipy
+  - rich
+  - autograd
+  - gdown
