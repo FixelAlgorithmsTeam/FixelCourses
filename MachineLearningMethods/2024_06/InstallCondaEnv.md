@@ -24,14 +24,14 @@ This guide is mainly Windows users though the main steps can be replicated in `m
 This is a basic instruction how to install the course environment under Anaconda (Or any `conda` managed distribution).  
 It is assumed that the Windows OS is used.
 
-1. Install the [MiniForge](https://conda-forge.org/miniforge/).  
+1. Install the [MiniForge](https://conda-forge.org/miniforge).  
    It is better to download the `Mamba` based versions: `Mambaforge-xxxx`. 
 2. Download the environment specification file from: [The `conda` environment file](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/MachineLearningMethods/2024_06/EnvConda.yml).  
    Save it as `EnvConda.yml`.
 3. Open `Conda Prompt (conda)`. You should see something like `(base) ...` on the terminal:
 ![](https://i.imgur.com/AGDV0WF.png)
 4. Navigate to the folder where `EnvConda.yml` is located.
-5. Run the command: `conda create --file EnvTechnionAiProg.yml`. It should take a while.
+5. Run the command: `conda env create --file EnvTechnionAiProg.yml`. It should take a while.
 6. Once it is finished, run `conda activate MLMethods`. You should see `(base)` changes into `(MLMethods)`.
 7. Open VS Code (Run `code` on command line).
 8. Open the folder of the notebooks of the course.
