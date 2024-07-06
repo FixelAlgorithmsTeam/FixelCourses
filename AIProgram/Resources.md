@@ -135,7 +135,7 @@ This file is a curated list of resources related to the course.
  - Image Segmentation
     - [Segmentation Models for PyTorch](https://github.com/qubvel/segmentation_models.pytorch).
     - [Jermey Jordan - An Overview of Semantic Image Segmentation](https://www.jeremyjordan.me/semantic-segmentation).
- - 
+ - [What is Average Precision in Object Detection & Localization Algorithms](https://scribe.rip/3f330efe697b).
 
 
 ### Natural Language Processing (NLP)

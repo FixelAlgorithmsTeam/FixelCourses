@@ -26,9 +26,12 @@ shape:
   vertex_fill_color: [0, 255, 0, 255]
   # selecting / hovering
   select_line_color: [255, 255, 255, 255]
-  select_fill_color: [0, 255, 0, 155]
+  select_fill_color: [0, 255, 0, 64]
   hvertex_fill_color: [255, 255, 255, 255]
   point_size: 8
+
+ai:
+  default: 'EfficientSam (accuracy)'
 
 # main
 flag_dock:
@@ -62,7 +65,7 @@ fit_to_content:
 # canvas
 epsilon: 10.0
 canvas:
-  fill_drawing: false
+  fill_drawing: true
   # None: do nothing
   # close: close polygon
   double_click: close
@@ -77,6 +80,7 @@ canvas:
     point: false
     linestrip: false
     ai_polygon: false
+    ai_mask: false
 
 shortcuts:
   close: Ctrl+W
@@ -114,3 +118,7 @@ shortcuts:
   edit_label: Ctrl+E
   toggle_keep_prev_mode: Ctrl+P
   remove_selected_point: [Meta+H, Backspace]
+
+  show_all_polygons: null
+  hide_all_polygons: null
+  toggle_all_polygons: T

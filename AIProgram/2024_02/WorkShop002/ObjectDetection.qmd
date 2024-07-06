@@ -595,8 +595,8 @@ Use known models until the community marks a newer version as **consensus** (Cur
  - Gather a large enough data set of relevant images.  
    The size should match the difficulty of the task.  
    When using _Transfer Learning_ smaller dataset can be used.
- - Labelling  
-   Apply labelling on the data if required.
+ - Labeling  
+   Apply labeling on the data if required.
  - Validate the Dataset  
    Validate all images are qualified and annotations are accurate.  
    For large dataset one might sample.
@@ -666,23 +666,25 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
     * Analysis per class / weighted by classes.
 :::
 
-# Test Case - Ball and Players Detection
+# Test Case - Ball and Referee Detection
 
 ## The Task {.unlisted}
 
 :::{.incremental}
- * Given an HD Image (`1920x1080`) of a _Football_ (Soccer) game:
+ * Given an HD Image (`1920x1080x3`) of a _Football_ (Soccer) game:
     * Detect the Ball.
-    * Detect the Players.
-
-:::{.callout-caution icon=false}
-
-#### [{{< iconify logos python >}}]{style="color: #02b875;"} Coding Task
-
-Create a `conda` environment based on [`EnvObjectDetection.yml`]().
-
+    * Detect the **Referee**.  
+      Mind **Referee** vs. _Assistant Referee_.
 :::
 
+. . .
+
+:::{.callout-caution icon=false}
+#### [{{< iconify logos python >}}]{style="color: #02b875;"} Coding Task
+
+ * Download the Workshop files from [Fixel Courses](https://github.com/FixelAlgorithmsTeam/FixelCourses).  
+   The files are located in `AIProgram/2024_02/WorkShop002`.
+ * Create a `conda` environment based on [`EnvObjectDetection.yml`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_02/WorkShop002/EnvObjectDetection.yml).
 :::
 
 ## The Data {.unlisted}
@@ -692,19 +694,76 @@ Create a `conda` environment based on [`EnvObjectDetection.yml`]().
  * The Test Set: 50 Images.
 :::
 
+. . .
+
+:::{.callout-caution icon=false}
+#### [{{< iconify logos python >}}]{style="color: #02b875;"} Coding Task
+
+ * Run the script `0002Dataset.py`.
+ * Ensure the data in the folder `Data`.
+ * The output should be:
+    * 250 `png` files in `Data\Train`.
+    * 50 `png` files in `Data\Test`.
+:::
+
 ## The Model {.unlisted}
 
 :::{.incremental}
- * The Model: []`Ultralytics YOLOv8n`](https://github.com/ultralytics/ultralytics).
+ * The Model: [`Ultralytics YOLOv8n`](https://github.com/ultralytics/ultralytics).
  * Set for _Object Detection_.
  * Image Input Size: `640x640`.
- * [Grid Size](https://github.com/ultralytics/ultralytics/issues/8863): `[80x80, 40x40, 20x20]`. See [Defaults YOLOv8 Grid Size](https://stackoverflow.com/questions/75904407)
+ * [Grid Size](https://github.com/ultralytics/ultralytics/issues/8863): `[80x80, 40x40, 20x20]`.  
+   See [Defaults YOLOv8 Grid Size](https://stackoverflow.com/questions/75904407)
  * Number of Parameters: `3.2e6`.
 :::
 
-## Labeling {.unlisted}
+. . .
 
-## Generating Data {.unlisted}
+:::{.callout-note title="The Model Size"}
+
+The choice of the smallest model (`n`) is due to the simplicity of the task and the constrained time for training.
+
+:::
+
+## Labeling {.unlisted auto-animate="true"}
+
+:::{.incremental}
+ * The labeling will done using the `LabelMe` JSON format.
+ * The classes are: [`Ball`, `Referee`].  
+   Mind the _capitalization_ of the letters.
+ * Don't label if the object is partial due being at the edge of the image.
+ * Do label if the object is partially occluded.
+ * Use Rectangle Polygon (Bounding Box by `Ctrl + R`).
+ * The box should be as tight as possible.  
+   Use _Zoom In_.
+:::
+
+## Labeling {.unlisted auto-animate="true"}
+
+:::{style="font-size: 60%;"}
+ * The labeling will done using the `LabelMe` JSON format.
+ * The classes are: [`Ball`, `Referee`].  
+   Mind the _capitalization_ of the letters.
+ * Don't label if the object is partial due being at the edge of the image.
+ * Do label if the object is partially occluded.
+ * Use Rectangle Polygon (Bounding Box).
+ * The box should be as tight as possible.  
+   Use _Zoom In_.
+:::
+
+. . .
+
+:::{.callout-caution icon=false}
+#### [{{< iconify logos python >}}]{style="color: #02b875;"} Coding Task
+
+ * Download [LabelMe](https://github.com/labelmeai/labelme).  
+   Use the pre compiled single file executables form `Releases`.
+ * Put the [`labelmerc`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_02/WorkShop002/labelmerc) in `$USERFOLDER` / `$HOME`.
+ * Run the program, load the folder and label your assigned files.
+ * Upload the JSON files as instructed.
+:::
+
+## Pre Processing the Data {.unlisted}
 
 ## Training {.unlisted}
 
