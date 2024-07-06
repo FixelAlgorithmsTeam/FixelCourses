@@ -1,0 +1,714 @@
+---
+title: "Object Detection with YOLO"
+subtitle: "Workshop"
+author: "Royi Avital"
+editor:
+  render-on-save: false
+execute:
+  freeze: true
+format: 
+  revealjs:
+    theme: [dark, Custom.scss]
+    width: 1200
+    height: 800
+    footer: "[Technion - The School of Continuing Education](https://cont-edu.technion.ac.il)"
+    logo: "https://i.imgur.com/8Eg8S2J.png"
+    toc: true
+    toc-title: Agenda
+    toc-depth: 2
+    margin: 0.05
+    navigation-mode: vertical
+    html-math-method: mathjax
+    include-in-header:
+      - text: |
+          <script>
+          MathJax = {
+            loader: {load: ['[tex]/color', '[tex]/html']},
+            tex: {packages: {'[+]': ['autoload', 'color', html]}},
+            options: {
+              menuOptions: {
+                settings: {
+                  assistiveMml: false
+                }
+              }
+            }
+          };
+          </script>
+
+revealjs-plugins:
+  - attribution
+filters:
+  - roughnotation
+---
+
+# Object Detection
+
+{{< include MathJaXMacros.qmd >}}
+
+<!-- It seems colors must be defined locally -->
+$$
+\definecolor{BoldRed}{rgb}{0.9, 0.2, 0.2}
+$$
+
+## Introduction
+
+:::{.incremental}
+ * Consider the _Object Localization_ task:
+    * {{< iconify oui ml-classification-job >}} Classification (**What** is the object).
+    * {{< iconify carbon chart-logistic-regression >}} Regression (**Where** is the object).
+:::
+
+. . .
+
+![](https://i.imgur.com/TxANE5V.png)
+
+## Bounding Box Conventions
+
+![](https://i.imgur.com/R9niyMe.png)
+
+. . .
+
+:::: {.columns}
+
+::: {.column width="33%"}
+![](https://i.imgur.com/CRNt79z.png)
+:::
+
+::: {.column width="33%"}
+![](https://i.imgur.com/3l5HQfO.png)
+:::
+
+::: {.column width="33%"}
+![](https://i.imgur.com/hre29YX.png)
+:::
+
+::::
+
+## The IoU Score
+
+![](https://i.imgur.com/1Fw9TsY.png)
+
+. . .
+
+:::{.incremental}
+
+ * IoU: 
+ $$\operatorname{IoU} \left( \MyClr{green}{{B}_{i}}, \MyClr{red}{{B}_{j}} \right) = \frac{ \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \cap \MyClr{red}{{B}_{j}} \right) }{ \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \cup \MyClr{red}{{B}_{j}} \right) }$$
+
+ * A score of $\MyClr{yellow}{\operatorname{IoU} > 0.5}$ is considered reasonable.
+
+:::
+
+## The Loss Function {.unlisted}
+
+:::{.incremental}
+ * The _IoU_ gradient vanishes everywhere.  
+   Hence it can not be used as the _loss function_.
+ * The common loss is a composition of regression and classification:
+$$ \MyClr{yellow}{\ell} \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}}, \MyClr{cyan}{\boldsymbol{y}} } = \MyClr{magenta}{ {\lambda}_{\text{MSE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } + \MyClr{magenta}{ {\lambda}_{\text{CE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{CR}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } $$
+
+ * Where
+    * Regression Loss: $\MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } = \MyNormTwo{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}} - \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} }^{2}$.
+    * Classification Loss: $\MyClr{yellow}{ {\ell}_{\text{CE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } = - \MyClr{cyan}{\boldsymbol{y}_{\text{label}}}^{T} \log \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}} }$.
+
+:::
+
+## The Loss Function {.unlisted}
+
+ * The _IoU_ gradient vanishes everywhere.  
+   Hence it can not be used as the _loss function_.
+ * The common loss is a composition of regression and classification:
+$$ \MyClr{yellow}{\ell} \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}}, \MyClr{cyan}{\boldsymbol{y}} } = \MyClr{magenta}{ {\lambda}_{\text{MSE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } + \MyClr{magenta}{ {\lambda}_{\text{CE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{CR}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } $$
+
+ * Where
+    * Regression Loss: $\MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } = \MyNormTwo{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}} - \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} }^{2}$.
+
+. . .
+
+:::{.callout-important title="The Objective"}
+
+In practice one should use the Log Euclidean loss for the _height_ and _width_ in order to optimize small cases as well.
+
+:::
+
+## The Loss Function {.unlisted}
+
+ * The _IoU_ gradient vanishes everywhere.  
+   Hence it can not be used as the _loss function_.
+ * The common loss is a composition of regression and classification:
+$$ \MyClr{yellow}{\ell} \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}}, \MyClr{cyan}{\boldsymbol{y}} } = \MyClr{magenta}{ {\lambda}_{\text{MSE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } + \MyClr{magenta}{ {\lambda}_{\text{CE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{CR}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } $$
+
+. . .
+
+:::{.callout-note title="The Objective"}
+
+There are variants of the _IoU_ to make it loss friendly. See [PyTorch Vision's `complete_box_iou_loss`](https://pytorch.org/vision/stable/generated/torchvision.ops.complete_box_iou_loss.html).
+
+:::
+
+
+## The Task {auto-animate=true}
+
+:::{.incremental}
+ - The assumption of _Object Localization_: _A single object within the image_.
+ - In [_Object Detection_](https://en.wikipedia.org/wiki/Object_detection) the assumptions is relaxed:
+    - There might be no object.
+    - There might be several objects per class.
+    - There might be several classes.
+ - There are several approaches to solve the task.
+:::
+
+## The Task {.unlisted auto-animate=true}
+
+:::{style="font-size: 70%;"}
+ - In _Object Detection_ the assumptions is relaxed:
+    - There might be no object.
+    - There might be several objects per class.
+    - There might be several classes.
+:::
+
+. . .
+
+![](https://i.imgur.com/AGQaauN.png){height=400}
+[**Credit**: [Farid at @ai_fast_track](https://x.com/ai_fast_track/status/1453368771285032971)]{style="font-size: 40%;"}
+
+## The Task {.unlisted auto-animate=true}
+
+:::{style="font-size: 70%;"}
+ - In _Object Detection_ the assumptions is relaxed:
+    - There might be no object.
+    - There might be several objects per class.
+    - There might be several classes.
+:::
+
+. . .
+
+![](https://i.imgur.com/8oqg3Du.png){height=400}
+[**Credit**: Optimized Convolutional Neural Network Architectures for Efficient On Device Vision based Object Detection]{style="font-size: 40%;"}
+
+## The Task {.unlisted auto-animate="true"}
+
+:::{.incremental}
+ - The YOLO (**Y**ou **O**nly **L**ook **O**nce) like approach:
+    - Divide the image into $\MyClr{yellow}{S \times S}$ grid.
+    - Mark the center of each object.
+ - Each _cell_ should detect an object **if its center falls in it**.
+:::
+
+## The Task {.unlisted auto-animate="true"}
+
+:::{style="font-size: 50%;"}
+ - The YOLO (**Y**ou **O**nly **L**ook **O**nce) like approach:
+    - Divide the image into $\MyClr{yellow}{S \times S}$ grid.
+    - Mark the center of each object.
+ - Each _cell_ should detect an object **if its center falls in it**.
+:::
+
+![](https://i.imgur.com/SsozGhW.png){height=500}
+
+## The Task {.unlisted auto-animate="true"}
+
+:::{}
+ - The YOLO (**Y**ou **O**nly **L**ook **O**nce) like approach:
+    - Divide the image into $\MyClr{yellow}{S \times S}$ grid.
+    - Mark the center of each object.
+ - Each _cell_ should detect an object **if its center falls in it**.
+:::
+
+:::{.callout-note title="Limitations"}
+
+ - The number of objects is limited to $\MyClr{yellow}{{S}^{2}}$ objects.
+ - One object per cell.
+
+:::
+
+:::{.callout-tip title="Anchors"}
+
+Anchors, a prior for the object size and orientation, are a way to mitigate those limitations.
+
+:::
+
+## Post Processing {.unlisted auto-animate="true"}
+
+:::{}
+ - Most models will detect the same object multiple times.
+ - Each detection will have different score and box parameters. 
+ - Filtration is done using _Non Maximum Suppression_ per class.
+:::
+
+. . .
+
+![](https://i.imgur.com/qXtcUsn.png){#tight-fig fig-align="center" height="450px"}
+
+## Post Processing {.unlisted auto-animate="true"}
+
+:::{}
+ - Most models will detect the same object multiple times.
+ - Each detection will have different score and box parameters. 
+ - Filtration is done using _Non Maximum Suppression_ per class.
+:::
+
+![](https://i.imgur.com/Q6vlhc4.png){#tight-fig fig-align="center" height="450px"}
+
+## Post Processing {.unlisted auto-animate="true"}
+
+:::{}
+ - Filtration is done using _Non Maximum Suppression_ per class.
+:::
+
+![](https://i.imgur.com/sQHQ41R.png){#tight-fig fig-align="center" height="450px"}
+
+## Post Processing {.unlisted auto-animate="true"}
+
+:::{}
+ - Filtration is done using _Non Maximum Suppression_ per class.
+:::
+
+:::: {.columns}
+
+::: {.column width="50%" .fragment .fade-left}
+![](https://i.imgur.com/bK806yS.png)
+:::
+
+::: {.column width="50%" .fragment .fade-right}
+![](https://i.imgur.com/TUits4H.png)
+:::
+
+::::
+
+
+# Data
+
+## The Data Set
+
+:::{.incremental style="font-size: 80%;"} 
+ - The _RAW_ data set should be built with
+    - Images: Real World / Synthetic / Specific / General.
+    - Labels: Bounding Box, Label.
+ - There are several known datasets:
+    - [COCO Dataset](https://cocodataset.org) - Common Objects in Context. Originally by Microsoft. Labeled for many tasks (Segmentation, KeyPoints, etc...).
+    - [PASCAL VOC](http://host.robots.ox.ac.uk/pascal/VOC) - PASCAL Visual Object Classes. 
+    - [DOTA](https://captain-whu.github.io/DOTA) - Large scale dataset for object detection in aerial images.
+    - [Visual Genome](https://homes.cs.washington.edu/~ranjay/visualgenome) - Includes description per box.
+    - [KITTI Vision Benchmark](https://www.cvlibs.net/datasets/kitti) - A data set optimized for autonomous driving.
+ - The datasets are usually used fro pre training of models and evaluation of architectures.
+:::
+
+## Labels (Annotations) {.unlisted auto-animate="true"}
+
+:::{.incremental} 
+ - There are several standards of labels for _object detection_:
+    - COCO Style: `[x, y, width, height]`.
+    - PASCAL VOC Style: `[x_min, y_min, x_max, y_max]`.
+    - YOLO Style: `[x_center, y_center, width, height]`.
+ - There are standards for archive and for the training.  
+   Usually differs in the normalization of the units.
+ - Some standard allows easier computation.
+:::
+
+## Labels (Annotations) {.unlisted auto-animate="true"}
+
+:::{style="font-size: 100%;"} 
+ - There are several standards of labels for _object detection_:
+    - COCO Style: `[x, y, width, height]`.
+    - PASCAL VOC Style: `[x_min, y_min, x_max, y_max]`.
+    - YOLO Style: `[x_center, y_center, width, height]`.
+:::
+
+:::: {.columns}
+
+::: {.column width="33%"}
+![](https://i.imgur.com/HMaU62v.jpeg)
+:::
+
+::: {.column width="33%"}
+![](https://i.imgur.com/kN7qo8j.jpeg)
+:::
+
+::: {.column width="33%"}
+![](https://i.imgur.com/Pv46Cxh.jpeg)
+:::
+
+::::
+
+[**Credit**: [A Quick Reference for Bounding Boxes in Object Detection](https://medium.com/@rajdeepsingh/a-quick-reference-for-bounding-boxes-in-object-detection-f02119ddb76b)]{style="font-size: 40%;"}
+
+## Labels (Annotations) {.unlisted auto-animate="true"}
+
+:::{style="font-size: 50%;"} 
+ - There are several standards of labels for _object detection_:
+    - COCO Style: `[x, y, width, height]`.
+    - PASCAL VOC Style: `[x_min, y_min, x_max, y_max]`.
+    - YOLO Style: `[x_center, y_center, width, height]`.
+:::
+
+:::: {.columns}
+
+::: {.column width="33%"}
+![](https://i.imgur.com/HMaU62v.jpeg)
+:::
+
+::: {.column width="33%"}
+![](https://i.imgur.com/kN7qo8j.jpeg)
+:::
+
+::: {.column width="33%"}
+![](https://i.imgur.com/Pv46Cxh.jpeg)
+:::
+
+::::
+
+:::{.callout-tip icon=false}
+
+#### [{{< iconify fluent chat-bubbles-question-24-regular >}}]{style="color: #02b875;"} Question
+
+Which format is the most efficient for calculation of the _IoU_ score?
+
+:::
+
+## Labels (Annotations) {.unlisted auto-animate="true"}
+
+:::{style="font-size: 50%;"} 
+ - There are several standards of labels for _object detection_:
+    - COCO Style: `[x, y, width, height]`.
+    - PASCAL VOC Style: `[x_min, y_min, x_max, y_max]`.
+    - YOLO Style: `[x_center, y_center, width, height]`.
+:::
+
+:::: {.columns}
+
+::: {.column width="33%"}
+![](https://i.imgur.com/HMaU62v.jpeg)
+:::
+
+::: {.column width="33%"}
+![](https://i.imgur.com/kN7qo8j.jpeg)
+:::
+
+::: {.column width="33%"}
+![](https://i.imgur.com/Pv46Cxh.jpeg)
+:::
+
+::::
+
+:::{.callout-caution icon=false}
+
+#### [{{< iconify logos python >}}]{style="color: #02b875;"} Coding Task
+
+Write a code to convert between each format.
+
+:::
+
+## Labels (Annotations) {.unlisted auto-animate="true"}
+
+:::{style="font-size: 50%;"} 
+ - There are several standards of labels for _object detection_:
+    - COCO Style: `[x, y, width, height]`.
+    - PASCAL VOC Style: `[x_min, y_min, x_max, y_max]`.
+    - YOLO Style: `[x_center, y_center, width, height]`.
+:::
+
+:::: {.columns}
+
+::: {.column width="33%"}
+![](https://i.imgur.com/HMaU62v.jpeg)
+:::
+
+::: {.column width="33%"}
+![](https://i.imgur.com/kN7qo8j.jpeg)
+:::
+
+::: {.column width="33%"}
+![](https://i.imgur.com/Pv46Cxh.jpeg)
+:::
+
+::::
+
+:::{.callout-tip}
+
+Read more about the formats on [Albumentations - Bounding Boxes Augmentation for Object Detection](https://albumentations.ai/docs/getting_started/bounding_boxes_augmentation/)
+
+:::
+
+
+## Labeling {auto-animate="true"}
+
+:::{.incremental} 
+ - Labeling is the process of generating a label given an image.  
+   Easily becomes a **large scale operation** which require _synchronization_ and _quality assurance_.
+ - It is useful for:  
+    - Generating a Data Set  
+      A data set for a specific task not included in available datasets.  
+      Usually as part of a _Transfer Learning_ process.
+    - Extending a Data Set  
+      Tweaking the performance of a model by adding cases where it performs less the required. Used in _Active Learning_ process.
+:::
+
+## Labeling {.unlisted auto-animate="true"}
+
+:::{style="font-size: 50%;"}
+ - Labeling is the process of generating a label given an image.  
+   Easily becomes a **large scale operation** which require _synchronization_ and _quality assurance_.
+ - It is useful for:  
+    - Generating a Data Set.
+    - Extending a Data Set.
+:::
+
+:::{.incremental style="font-size: 75%;"} 
+ - Common tools:
+    - [RoboFlow Annotate](https://roboflow.com) - Online platform for annotation and training with AI based assistance.
+    - [V7 Labes](https://www.v7labs.com) - Online labeling and data set management.
+    - [Super Annotate](https://www.superannotate.com) - Large scale data annotations.
+    - [LabelMe](https://github.com/labelmeai/labelme) - A _free_ local Python based annotation tool.
+    - [RectLabel](https://rectlabel.com) - A local (**MacOS only**, 9.99$ / Year) tool.
+:::
+
+. . .
+
+:::{.callout-tip title="Polygons"}
+Using a general polygon instead of a _rectangle_ one could use the labeling for segmentation.
+:::
+
+## Labeling {.unlisted}
+
+:::{.incremental style="font-size: 80%;"} 
+ - Guidelines for annotations:
+    - Set common standards and qualify them.
+    - Document the standards with examples of edge cases.
+    - Use the tightest bounding boxes.
+ - Policy Decisions:
+    - Include partial objects?
+    - Include occluded objects?
+    - Set a minimum size of an object?
+    - Multiple Labels for ambiguous objects?
+:::
+
+. . .
+
+:::{.callout-tip title="Treat as Code"}
+For large scale labeling, embrace a process of labels review as done for code.
+:::
+
+# Models
+
+## Object Detection Models {.unlisted auto-animate="true"}
+
+:::{.incremental style="font-size: 90%;"} 
+ - Classification for object detection models:
+    - Two Stages (Proposal based): Extract candidate _RoI_, Classify & Regress the RoI.
+    - One Stage: Based on a single output of a label based on _Classification_ and _Regression_. Usually per Anchor / Grid Cell.
+:::
+
+. . .
+
+![](https://i.imgur.com/Bqayv5X.png){#tight-fig fig-align="center" height="350px"}
+
+## Object Detection Models {.unlisted auto-animate="true"}
+
+:::{} 
+ - Classification for object detection models:
+    - Two Stages (Proposal based): Extract candidate _RoI_, Classify & Regress the RoI.
+    - One Stage: Based on a single output of a label based on _Classification_ and _Regression_. Usually per Anchor / Grid Cell.
+:::
+
+:::{.callout-note title="Resources"}
+ - [Object Detection with Deep Learning: A Review](https://arxiv.org/abs/1807.05511).
+ - [Object Detection Using Deep Learning, CNNs and Vision Transformers: A Review](https://ieeexplore.ieee.org/document/10098596).
+ - Review of Object Detection Approaches (by Lilian Weng): [Part 1: Gradient Vector, HOG, and SS](https://lilianweng.github.io/posts/2017-10-29-object-recognition-part-1), [Part 2: CNN, DPM and Overfeat](https://lilianweng.github.io/posts/2017-12-15-object-recognition-part-2), [Part 3: R-CNN Family](https://lilianweng.github.io/posts/2017-12-31-object-recognition-part-3), [Part 4: Fast Detection Models](https://lilianweng.github.io/posts/2018-12-27-object-recognition-part-4).
+:::
+
+## Object Detection Models {.unlisted auto-animate="true"}
+
+:::{.incremental} 
+ - Guidelines: 
+    - The 2 Stages models and ViT based models are the most accurate, yet usually slowest.
+    - The YOLO based models are the fastest. Commonly used in edge devices or where _real time_ performance are crucial.
+    - The SSD based models are usually a balance and ranked in the middle with respect to speed and accuracy.
+ - There are common libraries for training: [Facebook Detectron](https://github.com/facebookresearch/detectron2), [Ultralytics](https://github.com/ultralytics/ultralytics), [Lightning Bolts](https://github.com/Lightning-Universe/lightning-bolts).
+:::
+
+## YOLO Models {.unlisted auto-animate="true"}
+
+:::{.incremental} 
+ - The YOLO (You Only Look Once) models are the most popular models for object detection.
+ - The original dynasty included: `YOLOv1`, `YOLOv2` and `YOLOv3`.
+ - Once it becomes popular many models have embraced the name.
+ - The main concept is based on a Grid + Anchors.
+:::
+
+. . .
+
+:::{.callout-tip title="Anchor Free YOLO"}
+There are variants of YOLO which are anchor free:
+
+ - `YOLOv1` - As the anchors are improvement of the following models.
+ - [YOLOX](https://github.com/Megvii-BaseDetection/YOLOX) - [YOLOX: Exceeding YOLO Series in 2021](https://arxiv.org/abs/2107.08430).
+ - [`YOLOv8`](https://github.com/ultralytics/ultralytics/issues/3362) (See [Forget the Hassles of Anchor Boxes with FCOS](https://scribe.rip/fc0e25622e1c)).
+:::
+
+## YOLO Models {.unlisted auto-animate="true"}
+
+:::{} 
+ - The YOLO (You Only Look Once) models are based on a Grid + Anchors.
+ - Each cell output $\MyClr{magenta}{B}$ detections (For $\MyClr{magenta}{B}$ anchors).
+:::
+
+. . .
+
+![](https://i.imgur.com/q4FQFkf.png){#tight-fig fig-align="center" height="450px"}
+
+
+## YOLO Models {.unlisted auto-animate="true"}
+
+:::{.incremental} 
+ - The dynasty of YOLO is extended frequently with the latest model being [`YOLOv10`](https://github.com/THU-MIG/yolov10).
+ - The current most common model is [`YOLOv8`](https://github.com/ultralytics/ultralytics). Mainly due the popular framework built by `Ultralytics`.
+ - Newer models mostly improves the run time given a size while moderately improving the performance.
+ - Most modern models are practically very good in real life tasks.
+:::
+
+. . .
+
+:::{.callout-caution title="YOLO Versions"}
+Sequential version **does not guarantee** better performance.  
+Use known models until the community marks a newer version as **consensus** (Currently `YOLOv8`).
+:::
+
+## YOLO Models {.unlisted auto-animate="true"}
+
+:::{} 
+ - The dynasty of YOLO is extended frequently with the latest model being [`YOLOv10`](https://github.com/THU-MIG/yolov10).
+:::
+
+:::{.callout-note title="YOLO Resources"}
+ - [A Comprehensive Review of YOLO Architectures in Computer Vision: From YOLOv1 to YOLOv8 and YOLO-NAS](https://arxiv.org/abs/2304.00501).
+ - [Statistical Analysis of Design Aspects of Various YOLO Based Deep Learning Models for Object Detection](https://link.springer.com/article/10.1007/s44196-023-00302-w).
+ - [Brief Summary of `YOLOv8` Model Structure](https://github.com/ultralytics/ultralytics/issues/189).
+ - [The `YOLOv8` Model File (YMAL)](https://github.com/ultralytics/ultralytics/issues/3523).
+:::
+
+# Training
+
+## Pre Process {.unlisted}
+
+:::{.incremental style="font-size: 80%;"} 
+ - Gather a large enough data set of relevant images.  
+   The size should match the difficulty of the task.  
+   When using _Transfer Learning_ smaller dataset can be used.
+ - Labelling  
+   Apply labelling on the data if required.
+ - Validate the Dataset  
+   Validate all images are qualified and annotations are accurate.  
+   For large dataset one might sample.
+ - Processing of Images  
+   Some processing of the images might be done offline.  
+   For instance, removing color to make the model only structure sensitive.  
+   Resizing can also be done in offline to reduce the overhead.  
+ - Processing of Labels  
+   Conversion of standards, filtering classes, etc...
+:::
+
+## Train the Model {.unlisted}
+
+:::{.incremental style="font-size: 80%;"} 
+ - Choose the Model  
+   Select the model to be used according to the task.  
+   Currently stick with `YOLOv8`.
+ - Choose the Head (Task)  
+   Modern YOLO models can do object detection, segmentation and key points detection.
+ - Select the Hyper Parameters.
+   Select the size of the model according to run time and training time constraints. In case of a doubt, start with the smallest.
+ - Code the Scripts  
+   Build the scripts for training.   
+   Separate the scripts for data pre processing, training and evaluation.
+:::
+
+# Evaluation
+
+## Score {.unlisted auto-animate="true"}
+
+:::{#tight-div .incremental}
+ * By definition the problem is _imbalanced_ (Background).
+ * The most common score is the _Mean Average Precision_ (mAP).
+:::
+
+. . .
+
+:::{#tight-math}
+$$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{TP}_{\text{c}} + \text{FP}_{\text{c}} } $$
+:::
+
+![](https://i.imgur.com/H3clPrk.png){#tight-fig fig-align="center" height="400px"}
+
+## Score {.unlisted auto-animate="true"}
+
+:::{#tight-div}
+ * The most common score is the _Mean Average Precision_ (mAP).
+:::
+
+:::{#tight-math}
+$$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{TP}_{\text{c}} + \text{FP}_{\text{c}} } $$
+:::
+
+. . .
+
+![](https://i.imgur.com/vPavBI6.png){#tight-fig fig-align="center" height="450px"}
+
+## Real World Measures {.unlisted}
+
+:::{.incremental}
+ * While `mAP` is not ideal, it is common ("Bets we have").
+ * In some cases one might want to analyze different aspects:
+    * Performance on specific type of objects.  
+      For instance, small objects.
+    * Analyze classification errors (Confusion Matrix).
+    * Analyze regression errors: Size, Locations (Biases).
+    * Analysis per class / weighted by classes.
+:::
+
+# Test Case - Ball and Players Detection
+
+## The Task {.unlisted}
+
+:::{.incremental}
+ * Given an HD Image (`1920x1080`) of a _Football_ (Soccer) game:
+    * Detect the Ball.
+    * Detect the Players.
+
+:::{.callout-caution icon=false}
+
+#### [{{< iconify logos python >}}]{style="color: #02b875;"} Coding Task
+
+Create a `conda` environment based on [`EnvObjectDetection.yml`]().
+
+:::
+
+:::
+
+## The Data {.unlisted}
+
+:::{.incremental}
+ * The Training Set: 250 Images.
+ * The Test Set: 50 Images.
+:::
+
+## The Model {.unlisted}
+
+:::{.incremental}
+ * The Model: []`Ultralytics YOLOv8n`](https://github.com/ultralytics/ultralytics).
+ * Set for _Object Detection_.
+ * Image Input Size: `640x640`.
+ * [Grid Size](https://github.com/ultralytics/ultralytics/issues/8863): `[80x80, 40x40, 20x20]`. See [Defaults YOLOv8 Grid Size](https://stackoverflow.com/questions/75904407)
+ * Number of Parameters: `3.2e6`.
+:::
+
+## Labeling {.unlisted}
+
+## Generating Data {.unlisted}
+
+## Training {.unlisted}
+
+## Results {.unlisted}
+
+
+

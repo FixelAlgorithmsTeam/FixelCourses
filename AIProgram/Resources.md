@@ -171,8 +171,7 @@ This file is a curated list of resources related to the course.
  - [The Street View House Numbers (SVHN) Dataset](http://ufldl.stanford.edu/housenumbers).
  - [Pharmaceutical Drugs and Vitamins Dataset V2](https://www.kaggle.com/datasets/vencerlanz09/pharmaceutical-drugs-and-vitamins-dataset-v2).
  - [Motion based Segmentation and Recognition Dataset](http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid).
-
-
+ - [DAVIS: Densely Annotated VIdeo Segmentation](https://davischallenge.org).
 
 
 ## Miscellaneous
@@ -183,6 +182,7 @@ This file is a curated list of resources related to the course.
    See [Hacker News Discussion](https://news.ycombinator.com/item?id=40282923).
  - [NotMNIST](https://github.com/davidflanagan/notMNIST-to-MNIST) - An MNIST like data set based on letters.
  - [Fun Datasets](https://calmcode.io/datasets) - Simple fun datasets.
+ - [ML Visuals](https://github.com/dair-ai/ml-visuals) - A collaborative effort to improve science communication by providing free visuals and figures.
  - 
 
 
