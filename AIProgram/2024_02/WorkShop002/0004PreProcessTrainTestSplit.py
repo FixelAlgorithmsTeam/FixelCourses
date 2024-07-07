@@ -166,8 +166,6 @@ for ii, imgFileName in enumerate(lFile):
     shutil.copy(os.path.join(tilesFolderPath, lblFileName), lblFolderPath)
 
 
-
-
 # %% Display Results
 
 

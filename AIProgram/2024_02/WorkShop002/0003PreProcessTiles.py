@@ -14,6 +14,8 @@
 # 
 # | Version | Date       | User        |Content / Changes                                                                         |
 # |---------|------------|-------------|------------------------------------------------------------------------------------------|
+# | 1.0.001 | 07/07/2024 | Royi Avital | Fixed issue with LabelMe which does not guarantee `[x_min, y_min, x_max, y_max]`         |
+# |         |            | Royi Avital | Disabled the contrast check in SciKit Image `imsave()`                                   |
 # | 1.0.000 | 06/07/2024 | Royi Avital | First version                                                                            |
 # |         |            |             |                                                                                          |
 
@@ -113,6 +115,25 @@ def ConvertPascalVocYolo( vBoxVoc: np.ndarray, imgW: int, imgH: int ) -> np.ndar
 
     return np.array([boxCenterX / imgW, boxCenterY / imgH, boxWidth / imgW, boxHeight / imgH])
 
+def ConvertRectPascalVoc( mBox: np.ndarray ) -> np.ndarray:
+    # https://github.com/labelmeai/labelme/issues/552
+    # LabelMe Doesn't guarantee [x_min, y_min, x_max, y_max] (Works like the actual annotation).
+    # This function convert it into such case.
+    
+    mB = np.copy(mBox)
+    xMin = np.min(mBox[:, 0], axis = 0)
+    xMax = np.max(mBox[:, 0], axis = 0)
+    yMin = np.min(mBox[:, 1], axis = 0)
+    yMax = np.max(mBox[:, 1], axis = 0)
+
+    mB[0, 0] = xMin
+    mB[0, 1] = yMin
+    mB[1, 0] = xMax
+    mB[1, 1] = yMax
+    
+    return mB
+
+
 def PlotBox( mI: np.ndarray, vLabel: Union[int, np.ndarray], mBox: np.ndarray, *, hA: Optional[plt.Axes] = None, lLabelText: Optional[List] = None ) -> plt.Axes:
     # Assumes data in YOLO Format: [x, y, w, h] (Center, Height, Width)
     
@@ -157,6 +178,7 @@ lblFileExt  = 'json'
 yoloFileExt = 'txt'
 
 lTileSize = [640, 640]
+# TODO: Make the grid 3 x 5 (As the referee can be ~120 pixels high)
 lRow      = [0, 440] #<! Row to start at
 lCol      = [0, 320, 640, 960, 1280] #<! Column to start at
 
@@ -208,6 +230,7 @@ for ii, fullFileName in enumerate(lFile):
                 lblClsStr = dLbl['label']
                 lblCls = D_CLS[lblClsStr]
                 mBox = np.array(dLbl['points']) #<! [[xmin, ymin], [xmax, ymax]]
+                mBox = ConvertRectPascalVoc(mBox)
                 tileFileName = fileName + f'Tile{tileIdx:03d}'
 
                 boxInTile = np.all(np.logical_and( mBox[0] >= mTile[0], mBox[1] < mTile[1] ))
@@ -215,7 +238,11 @@ for ii, fullFileName in enumerate(lFile):
                     tileFileNameLbl = tileFileName + '.' + yoloFileExt
                     tileFileNameImg = tileFileName + '.' + imgFileExt
                     mBoxTile = mBox - np.array([colIdx, rowIdx])[None, :] #<! Coordinates in Tile
-                    vBoxYolo = ConvertPascalVocYolo(mBoxTile.flat, lTileSize[1], lTileSize[0])
+                    vBoxYolo = ConvertPascalVocYolo(mBoxTile.flat, lTileSize[1], lTileSize[0]) #<! TODO: Check for negative values
+                    if np.any(vBoxYolo < 0.0):
+                        print(fullFileName)
+                        print(np.ravel(mBox))
+                        print((colIdx, rowIdx))
                     with open(os.path.join(tilesFolderPath, tileFileNameLbl), 'a') as hFile:
                         print(f'{lblCls} {vBoxYolo[0]:0.5f} {vBoxYolo[1]:0.5f} {vBoxYolo[2]:0.5f} {vBoxYolo[3]:0.5f}', file = hFile)
                     
@@ -223,7 +250,7 @@ for ii, fullFileName in enumerate(lFile):
                         imgFile = True
                         mI = ski.io.imread(os.path.join(dataFolderPath, fullFileName))
                         mT = mI[rowIdx:(rowIdx + lTileSize[0]), colIdx:(colIdx + lTileSize[1]), :]
-                        ski.io.imsave(os.path.join(tilesFolderPath, tileFileNameImg), mT)
+                        ski.io.imsave(os.path.join(tilesFolderPath, tileFileNameImg), mT, check_contrast = False)
 
 
 # %% Display Results
