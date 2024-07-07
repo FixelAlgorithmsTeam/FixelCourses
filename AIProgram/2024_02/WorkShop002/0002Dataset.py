@@ -115,23 +115,25 @@ shutil.unpack_archive(os.path.join(dataFolderPath, fileName), dataFolderPath)
 
 # %% Train Test Split
 
-testFolderPath  = os.path.join(dataFolderPath, TEST_FOLDER_NAME)
-trainFolderPath = os.path.join(dataFolderPath, TRAIN_FOLDER_NAME)
+# Ultralytics have different structure
 
-if not (os.path.isdir(testFolderPath)):
-    os.mkdir(testFolderPath)
+# testFolderPath  = os.path.join(dataFolderPath, TEST_FOLDER_NAME)
+# trainFolderPath = os.path.join(dataFolderPath, TRAIN_FOLDER_NAME)
 
-if not (os.path.isdir(trainFolderPath)):
-    os.mkdir(trainFolderPath)
+# if not (os.path.isdir(testFolderPath)):
+#     os.mkdir(testFolderPath)
 
-lFiles = [fileName for fileName in os.listdir(dataFolderPath) if fileName.endswith(fileExt)]
+# if not (os.path.isdir(trainFolderPath)):
+#     os.mkdir(trainFolderPath)
 
-for ii, fileName in enumerate(lFiles):
-    filePath = os.path.join(dataFolderPath, fileName)
-    if (ii < 250):
-        os.replace(filePath, os.path.join(trainFolderPath, fileName))
-    else:
-        os.replace(filePath, os.path.join(testFolderPath, fileName))
+# lFiles = [fileName for fileName in os.listdir(dataFolderPath) if fileName.endswith(fileExt)]
+
+# for ii, fileName in enumerate(lFiles):
+#     filePath = os.path.join(dataFolderPath, fileName)
+#     if (ii < 250):
+#         os.replace(filePath, os.path.join(trainFolderPath, fileName))
+#     else:
+#         os.replace(filePath, os.path.join(testFolderPath, fileName))
 
 
 # %% Display Results

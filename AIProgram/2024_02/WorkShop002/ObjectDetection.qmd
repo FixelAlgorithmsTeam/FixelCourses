@@ -18,6 +18,7 @@ format:
     toc-depth: 2
     margin: 0.05
     navigation-mode: vertical
+    chalkboard: true
     html-math-method: mathjax
     include-in-header:
       - text: |
@@ -40,6 +41,11 @@ revealjs-plugins:
 filters:
   - roughnotation
 ---
+
+<!-- 
+TODO:
+3. See Defaults YOLOv8 Grid Size.
+-->
 
 # Object Detection
 
@@ -92,7 +98,7 @@ $$
 
 :::{.incremental}
 
- * IoU: 
+ * IoU (Intersection over Union): 
  $$\operatorname{IoU} \left( \MyClr{green}{{B}_{i}}, \MyClr{red}{{B}_{j}} \right) = \frac{ \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \cap \MyClr{red}{{B}_{j}} \right) }{ \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \cup \MyClr{red}{{B}_{j}} \right) }$$
 
  * A score of $\MyClr{yellow}{\operatorname{IoU} > 0.5}$ is considered reasonable.
@@ -105,7 +111,7 @@ $$
  * The _IoU_ gradient vanishes everywhere.  
    Hence it can not be used as the _loss function_.
  * The common loss is a composition of regression and classification:
-$$ \MyClr{yellow}{\ell} \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}}, \MyClr{cyan}{\boldsymbol{y}} } = \MyClr{magenta}{ {\lambda}_{\text{MSE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } + \MyClr{magenta}{ {\lambda}_{\text{CE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{CR}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } $$
+$$ \MyClr{yellow}{\ell} \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}}, \MyClr{cyan}{\boldsymbol{y}} } = \MyClr{magenta}{ {\lambda}_{\text{MSE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } + \MyClr{magenta}{ {\lambda}_{\text{CE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{CE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } $$
 
  * Where
     * Regression Loss: $\MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } = \MyNormTwo{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}} - \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} }^{2}$.
@@ -118,7 +124,7 @@ $$ \MyClr{yellow}{\ell} \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}}, \MyClr{
  * The _IoU_ gradient vanishes everywhere.  
    Hence it can not be used as the _loss function_.
  * The common loss is a composition of regression and classification:
-$$ \MyClr{yellow}{\ell} \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}}, \MyClr{cyan}{\boldsymbol{y}} } = \MyClr{magenta}{ {\lambda}_{\text{MSE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } + \MyClr{magenta}{ {\lambda}_{\text{CE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{CR}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } $$
+$$ \MyClr{yellow}{\ell} \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}}, \MyClr{cyan}{\boldsymbol{y}} } = \MyClr{magenta}{ {\lambda}_{\text{MSE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } + \MyClr{magenta}{ {\lambda}_{\text{CE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{CE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } $$
 
  * Where
     * Regression Loss: $\MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } = \MyNormTwo{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}} - \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} }^{2}$.
@@ -136,13 +142,16 @@ In practice one should use the Log Euclidean loss for the _height_ and _width_ i
  * The _IoU_ gradient vanishes everywhere.  
    Hence it can not be used as the _loss function_.
  * The common loss is a composition of regression and classification:
-$$ \MyClr{yellow}{\ell} \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}}, \MyClr{cyan}{\boldsymbol{y}} } = \MyClr{magenta}{ {\lambda}_{\text{MSE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } + \MyClr{magenta}{ {\lambda}_{\text{CE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{CR}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } $$
+$$ \MyClr{yellow}{\ell} \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}}, \MyClr{cyan}{\boldsymbol{y}} } = \MyClr{magenta}{ {\lambda}_{\text{MSE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } + \MyClr{magenta}{ {\lambda}_{\text{CE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{CE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } $$
+
+ * Where
+    * Classification Loss: $\MyClr{yellow}{ {\ell}_{\text{CE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } = - \MyClr{cyan}{\boldsymbol{y}_{\text{label}}}^{T} \log \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}} }$.
 
 . . .
 
 :::{.callout-note title="The Objective"}
 
-There are variants of the _IoU_ to make it loss friendly. See [PyTorch Vision's `complete_box_iou_loss`](https://pytorch.org/vision/stable/generated/torchvision.ops.complete_box_iou_loss.html).
+There are _loss_ friendly variants of the _IoU_. See [PyTorch Vision's `complete_box_iou_loss`](https://pytorch.org/vision/stable/generated/torchvision.ops.complete_box_iou_loss.html).
 
 :::
 
@@ -230,7 +239,7 @@ Anchors, a prior for the object size and orientation, are a way to mitigate thos
 
 ## Post Processing {.unlisted auto-animate="true"}
 
-:::{}
+:::{.incremental}
  - Most models will detect the same object multiple times.
  - Each detection will have different score and box parameters. 
  - Filtration is done using _Non Maximum Suppression_ per class.
@@ -267,11 +276,11 @@ Anchors, a prior for the object size and orientation, are a way to mitigate thos
 :::: {.columns}
 
 ::: {.column width="50%" .fragment .fade-left}
-![](https://i.imgur.com/bK806yS.png)
+![](https://i.imgur.com/bK806yS.png){#tight-fig fig-align="center" height="550px"}
 :::
 
 ::: {.column width="50%" .fragment .fade-right}
-![](https://i.imgur.com/TUits4H.png)
+![](https://i.imgur.com/TUits4H.png){#tight-fig fig-align="center" height="550px"}
 :::
 
 ::::
@@ -286,7 +295,8 @@ Anchors, a prior for the object size and orientation, are a way to mitigate thos
     - Images: Real World / Synthetic / Specific / General.
     - Labels: Bounding Box, Label.
  - There are several known datasets:
-    - [COCO Dataset](https://cocodataset.org) - Common Objects in Context. Originally by Microsoft. Labeled for many tasks (Segmentation, KeyPoints, etc...).
+    - [COCO Dataset](https://cocodataset.org) - Common Objects in Context.  
+    Originally by Microsoft. Labeled for many tasks (Segmentation, KeyPoints, etc...).
     - [PASCAL VOC](http://host.robots.ox.ac.uk/pascal/VOC) - PASCAL Visual Object Classes. 
     - [DOTA](https://captain-whu.github.io/DOTA) - Large scale dataset for object detection in aerial images.
     - [Visual Genome](https://homes.cs.washington.edu/~ranjay/visualgenome) - Includes description per box.
@@ -332,6 +342,35 @@ Anchors, a prior for the object size and orientation, are a way to mitigate thos
 ::::
 
 [**Credit**: [A Quick Reference for Bounding Boxes in Object Detection](https://medium.com/@rajdeepsingh/a-quick-reference-for-bounding-boxes-in-object-detection-f02119ddb76b)]{style="font-size: 40%;"}
+
+## Labels (Annotations) {.unlisted auto-animate="true"}
+
+:::{style="font-size: 50%;"} 
+ - There are several standards of labels for _object detection_:
+    - COCO Style: `[x, y, width, height]`.
+    - PASCAL VOC Style: `[x_min, y_min, x_max, y_max]`.
+    - YOLO Style: `[x_center, y_center, width, height]`.
+:::
+
+:::: {.columns}
+
+::: {.column width="33%"}
+![](https://i.imgur.com/HMaU62v.jpeg)
+:::
+
+::: {.column width="33%"}
+![](https://i.imgur.com/kN7qo8j.jpeg)
+:::
+
+::: {.column width="33%"}
+![](https://i.imgur.com/Pv46Cxh.jpeg)
+:::
+
+::::
+
+:::{.callout-note}
+The YOLO style is normalized by image dimensions.
+:::
 
 ## Labels (Annotations) {.unlisted auto-animate="true"}
 
@@ -457,7 +496,7 @@ Read more about the formats on [Albumentations - Bounding Boxes Augmentation for
 :::{.incremental style="font-size: 75%;"} 
  - Common tools:
     - [RoboFlow Annotate](https://roboflow.com) - Online platform for annotation and training with AI based assistance.
-    - [V7 Labes](https://www.v7labs.com) - Online labeling and data set management.
+    - [V7 Labs](https://www.v7labs.com) - Online labeling and data set management.
     - [Super Annotate](https://www.superannotate.com) - Large scale data annotations.
     - [LabelMe](https://github.com/labelmeai/labelme) - A _free_ local Python based annotation tool.
     - [RectLabel](https://rectlabel.com) - A local (**MacOS only**, 9.99$ / Year) tool.
@@ -616,7 +655,7 @@ Use known models until the community marks a newer version as **consensus** (Cur
    Currently stick with `YOLOv8`.
  - Choose the Head (Task)  
    Modern YOLO models can do object detection, segmentation and key points detection.
- - Select the Hyper Parameters.
+ - Select the Hyper Parameters  
    Select the size of the model according to run time and training time constraints. In case of a doubt, start with the smallest.
  - Code the Scripts  
    Build the scripts for training.   
@@ -657,7 +696,7 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
 ## Real World Measures {.unlisted}
 
 :::{.incremental}
- * While `mAP` is not ideal, it is common ("Bets we have").
+ * While `mAP` is not ideal, it is common ("Best we have").
  * In some cases one might want to analyze different aspects:
     * Performance on specific type of objects.  
       For instance, small objects.
@@ -713,7 +752,7 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
  * Set for _Object Detection_.
  * Image Input Size: `640x640`.
  * [Grid Size](https://github.com/ultralytics/ultralytics/issues/8863): `[80x80, 40x40, 20x20]`.  
-   See [Defaults YOLOv8 Grid Size](https://stackoverflow.com/questions/75904407)
+   See [Defaults YOLOv8 Grid Size](https://stackoverflow.com/questions/75904407).
  * Number of Parameters: `3.2e6`.
 :::
 

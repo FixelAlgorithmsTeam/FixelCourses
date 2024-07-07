@@ -85,7 +85,7 @@ TRAIN_FOLDER_NAME = 'Train'
 TILES_FOLDER_NAME = 'Tiles'
 DRIVE_FOLDER_URL  = 'https://drive.google.com/drive/u/2/folders/1wxKIDN777K8kQ4UhJMu5csSbTVXhG7G9'
 
-D_CLS = {'Ball': 0, 'Referee': 1}
+D_CLS = {'Ball': 0, 'Referee': 1, 'Referre': 1}
 L_CLS = ['Ball', 'Referee']
 
 
