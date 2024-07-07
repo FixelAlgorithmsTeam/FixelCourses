@@ -1,0 +1,15 @@
+# Train / Validation / Test sets.
+# Options:
+# 1. `dir: path/to/imgs`.
+# 2. `file: path/to/imgs.txt`.
+# 3. `list: [path/to/imgs1, path/to/imgs2, ..]`.
+
+path: ./Data   # dataset root dir
+train: images/Train         # Train images (relative to 'path')
+val: images/Validation      # Validation images (relative to 'path')
+test:                       # Test images (optional)
+
+# Classes
+names:
+  0: Ball
+  1: Referee

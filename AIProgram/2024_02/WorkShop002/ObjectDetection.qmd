@@ -690,8 +690,10 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
 ## The Data {.unlisted}
 
 :::{.incremental}
- * The Training Set: 250 Images.
- * The Test Set: 50 Images.
+ * 300 Images.
+ * Each image is a _Full HD_ RGB image (`1920x1080x3`).
+ * The images are extracted form a YouTube video (Frame).
+ * In some images there might no objects to detect. 
 :::
 
 . . .
@@ -701,9 +703,7 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
 
  * Run the script `0002Dataset.py`.
  * Ensure the data in the folder `Data`.
- * The output should be:
-    * 250 `png` files in `Data\Train`.
-    * 50 `png` files in `Data\Test`.
+ * The folder should contain 300 `png` files.
 :::
 
 ## The Model {.unlisted}
@@ -758,16 +758,25 @@ The choice of the smallest model (`n`) is due to the simplicity of the task and 
 
  * Download [LabelMe](https://github.com/labelmeai/labelme).  
    Use the pre compiled single file executables form `Releases`.
- * Put the [`labelmerc`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_02/WorkShop002/labelmerc) in `$USERFOLDER` / `$HOME`.
+ * Put the [`.labelmerc`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_02/WorkShop002/.labelmerc) in `$USERFOLDER` / `$HOME`.
  * Run the program, load the folder and label your assigned files.
  * Upload the JSON files as instructed.
 :::
 
 ## Pre Processing the Data {.unlisted}
 
+:::{.incremental}
+ * The image is relatively large (`1920x1080`).
+ * The model was trained on `640x640` images with `[80x80, 40x40, 20x20]` grids.
+ * Naive training means the data will be resized with factor `3`.
+ * The ball size (_Bounding Box_) is about ~`12x12`.  
+   After factorization it will be ~`4x4` pixels which is too low for valid performance.
+ * Solution: Tiled Detection (See [SAHI: Slicing Aided Hyper Inference](https://github.com/obss/sahi)).
+:::
+
 ## Training {.unlisted}
 
-## Results {.unlisted}
+## Inference {.unlisted}
 
 
 

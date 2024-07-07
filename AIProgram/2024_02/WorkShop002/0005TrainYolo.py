@@ -3,7 +3,7 @@
 # [![Fixel Algorithms](https://fixelalgorithms.co/images/CCExt.png)](https://fixelalgorithms.gitlab.io/)
 # 
 # # Object Detection Workshop
-# Downloads the Ball & Referee Dataset.
+# Trains a YOLO v8 Model.
 # 
 # > Notebook by:
 # > - Royi Avital RoyiAvital@fixelalgorithms.com
@@ -22,28 +22,27 @@ import numpy as np
 import scipy as sp
 import pandas as pd
 
-# Typing
-from typing import Any, Callable, Dict, Generator, List, Optional, Self, Set, Tuple, Union
-
 # Image Processing & Computer Vision
 
 # Machine Learning
 
 # Deep Learning
+from ultralytics import YOLO
+# from ultralytics.yolo.utils import get_settings
+# from ultralytics.yolo.cfg import get_cfg
 
 # Miscellaneous
 import datetime
-import gdown
 import os
 from platform import python_version
 import random
 import warnings
-import shutil
 import yaml
 
 
 # Visualization
 import matplotlib as mpl
+from matplotlib.patches import Rectangle, Circle
 import matplotlib.pyplot as plt
 
 # Jupyter
@@ -74,65 +73,54 @@ EDGE_COLOR      = 'k'
 MARKER_SIZE_DEF = 10
 LINE_WIDTH_DEF  = 2
 
-DATA_SET_FILE_NAME      = 'archive.zip'
-DATA_SET_FOLDER_NAME    = 'IntelImgCls'
-
-D_CLASSES  = {0: 'Red', 1: 'Green', 2: 'Blue'}
-L_CLASSES  = ['R', 'G', 'B']
-T_IMG_SIZE = (100, 100, 3)
-
 DATA_FOLDER_NAME  = 'Data'
 TEST_FOLDER_NAME  = 'Test'
 TRAIN_FOLDER_NAME = 'Train'
+VAL_FOLDER_NAME   = 'Validation'
+TILES_FOLDER_NAME = 'Tiles'
+IMG_FOLDER_NAME   = 'Images'
+LBL_FOLDER_NAME   = 'Labels'
 DRIVE_FOLDER_URL  = 'https://drive.google.com/drive/u/2/folders/1wxKIDN777K8kQ4UhJMu5csSbTVXhG7G9'
+
+D_CLS = {'Ball': 0, 'Referee': 1}
+L_CLS = ['Ball', 'Referee']
 
 
 # %% Local Packages
 
-
-# %% Auxiliary Functions
-
+# from AuxFun import *
 
 # %% Parameters
 
-dataFileId  = '1LW3pX_dg8oQ2Q-hixeGo6AwNxtb_DPwg'
-fileExt     = 'png'
+modelCfgFile        = 'yolov8n.yaml' #<! The name sets the scale of the model
+modelWeightsFile    = 'yolov8n.pt' #<! Download from GitHub
+dataFile            = 'DetectBall.yaml'
+
+numEpoch    = 100
+batchSize   = 12
+imgSize     = 640
+numWorkers  = 0
+ampMode     = False
 
 
-# %% Load / Generate Data
+# %% Define Model
 
-dataFolderPath = os.path.join(os.getcwd(), DATA_FOLDER_NAME)
-
-fileName = gdown.download(id = dataFileId)
-if not (os.path.isdir(dataFolderPath)):
-    os.mkdir(dataFolderPath)
-
-# Move file, replaces if already exists (https://stackoverflow.com/a/8858026)
-os.replace(fileName, os.path.join(dataFolderPath, fileName))
-
-shutil.unpack_archive(os.path.join(dataFolderPath, fileName), dataFolderPath)
+# modelYolo = YOLO(modelCfgFile, cfg = dUltraSettings) #<! Doesn't work
+modelYolo = YOLO(modelCfgFile, task = 'detect')
+modelYolo = modelYolo.load(modelWeightsFile)
 
 
-# %% Train Test Split
+# %% Train the Model
 
-testFolderPath  = os.path.join(dataFolderPath, TEST_FOLDER_NAME)
-trainFolderPath = os.path.join(dataFolderPath, TRAIN_FOLDER_NAME)
-
-if not (os.path.isdir(testFolderPath)):
-    os.mkdir(testFolderPath)
-
-if not (os.path.isdir(trainFolderPath)):
-    os.mkdir(trainFolderPath)
-
-lFiles = [fileName for fileName in os.listdir(dataFolderPath) if fileName.endswith(fileExt)]
-
-for ii, fileName in enumerate(lFiles):
-    filePath = os.path.join(dataFolderPath, fileName)
-    if (ii < 250):
-        os.replace(filePath, os.path.join(trainFolderPath, fileName))
-    else:
-        os.replace(filePath, os.path.join(testFolderPath, fileName))
+# Edit `settings.yaml` in `AppData\Roaming\Ultralytics`:
+# 1. Disable logging.
+# 2. Set `datasets_dir: .`.
+modelResults = modelYolo.train(data = dataFile, epochs = numEpoch, batch = batchSize, imgsz = imgSize, workers = numWorkers, name = 'DetectionRun', amp = ampMode)
 
 
-# %% Display Results
+# %% Validate the Model
 
+modelYolo.val()
+
+
+# %%
