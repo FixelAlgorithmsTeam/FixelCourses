@@ -228,89 +228,11 @@ How can one create an _Object Detector_ from _Image Segmentor_?
 
 ![](https://i.imgur.com/Bqayv5X.png){#tight-fig fig-align="center" height="350px"}
 
-## Object Detection Models {.unlisted auto-animate="true"}
+## U-Net {.unlisted auto-animate="true"}
 
-:::{} 
- - Classification for object detection models:
-    - Two Stages (Proposal based): Extract candidate _RoI_, Classify & Regress the RoI.
-    - One Stage: Based on a single output of a label based on _Classification_ and _Regression_. Usually per Anchor / Grid Cell.
-:::
-
-:::{.callout-note title="Resources"}
- - [Object Detection with Deep Learning: A Review](https://arxiv.org/abs/1807.05511).
- - [Object Detection Using Deep Learning, CNNs and Vision Transformers: A Review](https://ieeexplore.ieee.org/document/10098596).
- - Review of Object Detection Approaches (by Lilian Weng): [Part 1: Gradient Vector, HOG, and SS](https://lilianweng.github.io/posts/2017-10-29-object-recognition-part-1), [Part 2: CNN, DPM and Overfeat](https://lilianweng.github.io/posts/2017-12-15-object-recognition-part-2), [Part 3: R-CNN Family](https://lilianweng.github.io/posts/2017-12-31-object-recognition-part-3), [Part 4: Fast Detection Models](https://lilianweng.github.io/posts/2018-12-27-object-recognition-part-4).
-:::
-
-## Object Detection Models {.unlisted auto-animate="true"}
-
-:::{.incremental} 
- - Guidelines: 
-    - The 2 Stages models and ViT based models are the most accurate, yet usually slowest.
-    - The YOLO based models are the fastest. Commonly used in edge devices or where _real time_ performance are crucial.
-    - The SSD based models are usually a balance and ranked in the middle with respect to speed and accuracy.
- - There are common libraries for training: [Facebook Detectron](https://github.com/facebookresearch/detectron2), [Ultralytics](https://github.com/ultralytics/ultralytics), [Lightning Bolts](https://github.com/Lightning-Universe/lightning-bolts).
-:::
-
-## YOLO Models {.unlisted auto-animate="true"}
-
-:::{.incremental} 
- - The YOLO (You Only Look Once) models are the most popular models for object detection.
- - The original dynasty included: `YOLOv1`, `YOLOv2` and `YOLOv3`.
- - Once it becomes popular many models have embraced the name.
- - The main concept is based on a Grid + Anchors.
-:::
-
-. . .
-
-:::{.callout-tip title="Anchor Free YOLO"}
-There are variants of YOLO which are anchor free:
-
- - `YOLOv1` - As the anchors are improvement of the following models.
- - [YOLOX](https://github.com/Megvii-BaseDetection/YOLOX) - [YOLOX: Exceeding YOLO Series in 2021](https://arxiv.org/abs/2107.08430).
- - [`YOLOv8`](https://github.com/ultralytics/ultralytics/issues/3362) (See [Forget the Hassles of Anchor Boxes with FCOS](https://scribe.rip/fc0e25622e1c)).
-:::
-
-## YOLO Models {.unlisted auto-animate="true"}
-
-:::{} 
- - The YOLO (You Only Look Once) models are based on a Grid + Anchors.
- - Each cell output $\MyClr{magenta}{B}$ detections (For $\MyClr{magenta}{B}$ anchors).
-:::
-
-. . .
-
-![](https://i.imgur.com/q4FQFkf.png){#tight-fig fig-align="center" height="450px"}
+![](https://i.imgur.com/fwEB4Cf.png){#tight-fig fig-align="center"}
 
 
-## YOLO Models {.unlisted auto-animate="true"}
-
-:::{.incremental} 
- - The dynasty of YOLO is extended frequently with the latest model being [`YOLOv10`](https://github.com/THU-MIG/yolov10).
- - The current most common model is [`YOLOv8`](https://github.com/ultralytics/ultralytics). Mainly due the popular framework built by `Ultralytics`.
- - Newer models mostly improves the run time given a size while moderately improving the performance.
- - Most modern models are practically very good in real life tasks.
-:::
-
-. . .
-
-:::{.callout-caution title="YOLO Versions"}
-Sequential version **does not guarantee** better performance.  
-Use known models until the community marks a newer version as **consensus** (Currently `YOLOv8`).
-:::
-
-## YOLO Models {.unlisted auto-animate="true"}
-
-:::{} 
- - The dynasty of YOLO is extended frequently with the latest model being [`YOLOv10`](https://github.com/THU-MIG/yolov10).
-:::
-
-:::{.callout-note title="YOLO Resources"}
- - [A Comprehensive Review of YOLO Architectures in Computer Vision: From YOLOv1 to YOLOv8 and YOLO-NAS](https://arxiv.org/abs/2304.00501).
- - [Statistical Analysis of Design Aspects of Various YOLO Based Deep Learning Models for Object Detection](https://link.springer.com/article/10.1007/s44196-023-00302-w).
- - [Brief Summary of `YOLOv8` Model Structure](https://github.com/ultralytics/ultralytics/issues/189).
- - [The `YOLOv8` Model File (YMAL)](https://github.com/ultralytics/ultralytics/issues/3523).
-:::
 
 # Training
 
