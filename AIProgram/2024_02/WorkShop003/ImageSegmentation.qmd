@@ -66,27 +66,65 @@ $$
 
 ![](https://i.imgur.com/eBwcy4L.png){#tight-fig fig-align="center"}
 
-## Bounding Box Conventions
+## Image Segmentation Types {auto-animate="true"}
 
-![](https://i.imgur.com/R9niyMe.png)
+| Type  | Example  |
+|--------|--------|
+| Semantic  | ![](https://i.imgur.com/cnerHbN.png){#tight-fig fig-align="center" height="100px"}   |
+| Instance   | ![](https://i.imgur.com/qbAoMk3.png){#tight-fig fig-align="center" height="100px"}   |
+| Panoptic | ![](https://i.imgur.com/J99Rzpu.png){#tight-fig fig-align="center" height="100px"}   |
+
+: Segmentation Types {.striped .success}
+
+## Image Segmentation Types {.unlisted auto-animate="true"}
+
+| Type  | Example  |
+|--------|--------|
+| Semantic  | Pixel $\to$ Class   |
+| Instance   | Pixel $\to$ Object ID   |
+| Panoptic | Pixel $\to$ Class + Object ID  |
+
+: Segmentation Types {.striped .success}
+
+. . . 
+
+:::{.callout-important title="The Objective"}
+
+ - [Semantic]{style="color: magenta;"}: Pixel (**Each**) is labeled by its texture and other image related properties.
+ - Instance: Pixel is labeled as part of a predefined set of objects. Each object is uniquely identified (Can be counted).
+ - Panoptic: Pixel (**Each**) is labeled by its texture and object.
+
+:::
+
+## Image Segmentation Types {.unlisted auto-animate="true"}
+
+| Type  | Example  |
+|--------|--------|
+| Semantic  | Pixel $\to$ Class   |
+| Instance   | Pixel $\to$ Object ID   |
+| Panoptic | Pixel $\to$ Class + Object ID  |
+
+: Segmentation Types {.striped .success}
+
+. . . 
+
+:::{.callout-tip icon=false}
+
+#### [{{< iconify fluent chat-bubbles-question-24-regular >}}]{style="color: #02b875;"} Question
+
+How can one create an _Object Detector_ from _Image Segmentor_?
+
+:::
+
+## Semantic Segmentation
+
+:::{.incremental}
+ * {{< iconify pixelarticons pixelarticons >}} The model classifies **each** pixel in the image:
+:::
 
 . . .
 
-:::: {.columns}
-
-::: {.column width="33%"}
-![](https://i.imgur.com/CRNt79z.png)
-:::
-
-::: {.column width="33%"}
-![](https://i.imgur.com/3l5HQfO.png)
-:::
-
-::: {.column width="33%"}
-![](https://i.imgur.com/hre29YX.png)
-:::
-
-::::
+![](https://i.imgur.com/LHBwINh.png){#tight-fig fig-align="center" height="450px"}
 
 ## The IoU Score
 
