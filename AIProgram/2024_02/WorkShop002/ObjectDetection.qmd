@@ -296,7 +296,7 @@ Anchors, a prior for the object size and orientation, are a way to mitigate thos
     - [DOTA](https://captain-whu.github.io/DOTA) - Large scale dataset for object detection in aerial images.
     - [Visual Genome](https://homes.cs.washington.edu/~ranjay/visualgenome) - Includes description per box.
     - [KITTI Vision Benchmark](https://www.cvlibs.net/datasets/kitti) - A data set optimized for autonomous driving.
- - The datasets are usually used fro pre training of models and evaluation of architectures.
+ - The datasets are usually used for pre training of models and evaluation of architectures.
 :::
 
 ## Labels (Annotations) {.unlisted auto-animate="true"}

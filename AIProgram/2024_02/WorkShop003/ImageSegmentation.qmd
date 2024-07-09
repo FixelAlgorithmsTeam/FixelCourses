@@ -88,7 +88,7 @@ $$
 
 . . . 
 
-:::{.callout-important title="The Objective"}
+:::{.callout-important title="Interpretation"}
 
  - [Semantic]{style="color: magenta;"}: Pixel (**Each**) is labeled by its texture and other image related properties.
  - Instance: Pixel is labeled as part of a predefined set of objects. Each object is uniquely identified (Can be counted).
@@ -116,7 +116,7 @@ How can one create an _Object Detector_ from _Image Segmentor_?
 
 :::
 
-## Semantic Segmentation
+## Semantic Segmentation {auto-animate="true"}
 
 :::{.incremental}
  * {{< iconify pixelarticons pixelarticons >}} The model classifies **each** pixel in the image:
@@ -126,200 +126,71 @@ How can one create an _Object Detector_ from _Image Segmentor_?
 
 ![](https://i.imgur.com/LHBwINh.png){#tight-fig fig-align="center" height="450px"}
 
-## The IoU Score
+## Semantic Segmentation {.unlisted auto-animate="true"}
 
-![](https://i.imgur.com/1Fw9TsY.png)
+![](https://i.imgur.com/Rjpv18s.png){#tight-fig fig-align="center"}
 
-. . .
-
-:::{.incremental}
-
- * IoU (Intersection over Union): 
- $$\operatorname{IoU} \left( \MyClr{green}{{B}_{i}}, \MyClr{red}{{B}_{j}} \right) = \frac{ \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \cap \MyClr{red}{{B}_{j}} \right) }{ \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \cup \MyClr{red}{{B}_{j}} \right) }$$
-
- * A score of $\MyClr{yellow}{\operatorname{IoU} > 0.5}$ is considered reasonable.
-
-:::
-
-## The Loss Function {.unlisted}
+## The Score {auto-animate="true"}
 
 :::{.incremental}
- * The _IoU_ gradient vanishes everywhere.  
-   Hence it can not be used as the _loss function_.
- * The common loss is a composition of regression and classification:
-$$ \MyClr{yellow}{\ell} \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}}, \MyClr{cyan}{\boldsymbol{y}} } = \MyClr{magenta}{ {\lambda}_{\text{MSE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } + \MyClr{magenta}{ {\lambda}_{\text{CE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{CE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } $$
 
- * Where
-    * Regression Loss: $\MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } = \MyNormTwo{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}} - \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} }^{2}$.
-    * Classification Loss: $\MyClr{yellow}{ {\ell}_{\text{CE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } = - \MyClr{cyan}{\boldsymbol{y}_{\text{label}}}^{T} \log \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}} }$.
-
-:::
-
-## The Loss Function {.unlisted}
-
- * The _IoU_ gradient vanishes everywhere.  
-   Hence it can not be used as the _loss function_.
- * The common loss is a composition of regression and classification:
-$$ \MyClr{yellow}{\ell} \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}}, \MyClr{cyan}{\boldsymbol{y}} } = \MyClr{magenta}{ {\lambda}_{\text{MSE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } + \MyClr{magenta}{ {\lambda}_{\text{CE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{CE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } $$
-
- * Where
-    * Regression Loss: $\MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } = \MyNormTwo{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}} - \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} }^{2}$.
-
-. . .
-
-:::{.callout-important title="The Objective"}
-
-In practice one should use the Log Euclidean loss for the _height_ and _width_ in order to optimize small cases as well.
+ * Imbalanced (Background) Classification Scores:
+    - Balanced Accuracy.
+    - Recall, Precision.
+    - Dice / F1.
+    - Confusion Matrix.
+ * Object Scores
+    - IoU.
+    - mAP.
 
 :::
 
-## The Loss Function {.unlisted}
-
- * The _IoU_ gradient vanishes everywhere.  
-   Hence it can not be used as the _loss function_.
- * The common loss is a composition of regression and classification:
-$$ \MyClr{yellow}{\ell} \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}}, \MyClr{cyan}{\boldsymbol{y}} } = \MyClr{magenta}{ {\lambda}_{\text{MSE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{MSE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{bbox}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{bbox}}} } + \MyClr{magenta}{ {\lambda}_{\text{CE}} } \cdot \MyClr{yellow}{ {\ell}_{\text{CE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } $$
-
- * Where
-    * Classification Loss: $\MyClr{yellow}{ {\ell}_{\text{CE}} } \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}}, \MyClr{cyan}{\boldsymbol{y}_{\text{label}}} } = - \MyClr{cyan}{\boldsymbol{y}_{\text{label}}}^{T} \log \MyParen{ \MyClr{BoldRed}{\hat{\boldsymbol{y}}_{\text{label}}} }$.
-
-. . .
-
-:::{.callout-note title="The Objective"}
-
-There are _loss_ friendly variants of the _IoU_. See [PyTorch Vision's `complete_box_iou_loss`](https://pytorch.org/vision/stable/generated/torchvision.ops.complete_box_iou_loss.html).
-
-:::
-
-
-## The Task {auto-animate=true}
-
-:::{.incremental}
- - The assumption of _Object Localization_: _A single object within the image_.
- - In [_Object Detection_](https://en.wikipedia.org/wiki/Object_detection) the assumptions is relaxed:
-    - There might be no object.
-    - There might be several objects per class.
-    - There might be several classes.
- - There are several approaches to solve the task.
-:::
-
-## The Task {.unlisted auto-animate=true}
-
-:::{style="font-size: 70%;"}
- - In _Object Detection_ the assumptions is relaxed:
-    - There might be no object.
-    - There might be several objects per class.
-    - There might be several classes.
-:::
-
-. . .
-
-![](https://i.imgur.com/AGQaauN.png){height=400}
-[**Credit**: [Farid at @ai_fast_track](https://x.com/ai_fast_track/status/1453368771285032971)]{style="font-size: 40%;"}
-
-## The Task {.unlisted auto-animate=true}
-
-:::{style="font-size: 70%;"}
- - In _Object Detection_ the assumptions is relaxed:
-    - There might be no object.
-    - There might be several objects per class.
-    - There might be several classes.
-:::
-
-. . .
-
-![](https://i.imgur.com/8oqg3Du.png){height=400}
-[**Credit**: Optimized Convolutional Neural Network Architectures for Efficient On Device Vision based Object Detection]{style="font-size: 40%;"}
-
-## The Task {.unlisted auto-animate="true"}
-
-:::{.incremental}
- - The YOLO (**Y**ou **O**nly **L**ook **O**nce) like approach:
-    - Divide the image into $\MyClr{yellow}{S \times S}$ grid.
-    - Mark the center of each object.
- - Each _cell_ should detect an object **if its center falls in it**.
-:::
-
-## The Task {.unlisted auto-animate="true"}
+## The Score {.unlisted auto-animate="true"}
 
 :::{style="font-size: 50%;"}
- - The YOLO (**Y**ou **O**nly **L**ook **O**nce) like approach:
-    - Divide the image into $\MyClr{yellow}{S \times S}$ grid.
-    - Mark the center of each object.
- - Each _cell_ should detect an object **if its center falls in it**.
-:::
 
-![](https://i.imgur.com/SsozGhW.png){height=500}
+ * Imbalanced (Background) Classification Scores:
+    - Balanced Accuracy.
+    - Recall, Precision.
+    - Dice / F1.
+    - Confusion Matrix.
+ * Object Scores
+    - IoU.
+    - mAP.
 
-## The Task {.unlisted auto-animate="true"}
-
-:::{}
- - The YOLO (**Y**ou **O**nly **L**ook **O**nce) like approach:
-    - Divide the image into $\MyClr{yellow}{S \times S}$ grid.
-    - Mark the center of each object.
- - Each _cell_ should detect an object **if its center falls in it**.
-:::
-
-:::{.callout-note title="Limitations"}
-
- - The number of objects is limited to $\MyClr{yellow}{{S}^{2}}$ objects.
- - One object per cell.
-
-:::
-
-:::{.callout-tip title="Anchors"}
-
-Anchors, a prior for the object size and orientation, are a way to mitigate those limitations.
-
-:::
-
-## Post Processing {.unlisted auto-animate="true"}
-
-:::{.incremental}
- - Most models will detect the same object multiple times.
- - Each detection will have different score and box parameters. 
- - Filtration is done using _Non Maximum Suppression_ per class.
 :::
 
 . . .
 
-![](https://i.imgur.com/qXtcUsn.png){#tight-fig fig-align="center" height="450px"}
+:::{.callout-tip title="Resources"}
 
-## Post Processing {.unlisted auto-animate="true"}
-
-:::{}
- - Most models will detect the same object multiple times.
- - Each detection will have different score and box parameters. 
- - Filtration is done using _Non Maximum Suppression_ per class.
+ - [Understanding Evaluation Metrics in Medical Image Segmentation](https://scribe.rip/d289a373a3f).
+ - [Evaluating Image Segmentation Models](https://www.jeremyjordan.me/evaluating-image-segmentation-models).
+ - [Image Segmentation — Choosing the Correct Metric](https://scribe.rip/aa21fd5751af).
+ - [`miseval`: A Metric Library for Medical Image Segmentation EVALuation](https://github.com/frankkramer-lab/miseval).
+ - Kaggle: [All the Segmentation Metrics](https://www.kaggle.com/code/yassinealouini/all-the-segmentation-metrics), [Understanding Dice Coefficient](https://www.kaggle.com/code/yerramvarun/understanding-dice-coefficient), [Visual Guide To Understanding Segmentation Metrics](https://www.kaggle.com/code/dschettler8845/visual-guide-to-understanding-segmentation-metrics).
 :::
 
-![](https://i.imgur.com/Q6vlhc4.png){#tight-fig fig-align="center" height="450px"}
 
-## Post Processing {.unlisted auto-animate="true"}
+## The Loss Function {.unlisted}
 
-:::{}
- - Filtration is done using _Non Maximum Suppression_ per class.
+:::{.incremental}
+ * Cross Entropy Loss.
+ * Cross Entropy Loss + Label Smoothing.
+ * Balanced Cross Entropy / Focal Loss.
+ * Gradient Friendly Region / Boundary Loss.
+
 :::
 
-![](https://i.imgur.com/sQHQ41R.png){#tight-fig fig-align="center" height="450px"}
+. . .
 
-## Post Processing {.unlisted auto-animate="true"}
+:::{.callout-tip title="Resources"}
 
-:::{}
- - Filtration is done using _Non Maximum Suppression_ per class.
+ - [Loss Functions for Image Segmentation](https://github.com/JunMa11/SegLossOdyssey).
+ - [3 Common Loss Functions for Image Segmentation](https://dev.to/_aadidev/3-common-loss-functions-for-image-segmentation-545o).
+ - [Instance segmentation loss functions](https://softwaremill.com/instance-segmentation-loss-functions).
+ - [Focal Loss: An Efficient Way of Handling Class Imbalance](https://scribe.rip/4855ae1db4cb).
 :::
-
-:::: {.columns}
-
-::: {.column width="50%" .fragment .fade-left}
-![](https://i.imgur.com/bK806yS.png){#tight-fig fig-align="center" height="550px"}
-:::
-
-::: {.column width="50%" .fragment .fade-right}
-![](https://i.imgur.com/TUits4H.png){#tight-fig fig-align="center" height="550px"}
-:::
-
-::::
 
 
 # Data
@@ -329,15 +200,17 @@ Anchors, a prior for the object size and orientation, are a way to mitigate thos
 :::{.incremental style="font-size: 80%;"} 
  - The _RAW_ data set should be built with
     - Images: Real World / Synthetic / Specific / General.
-    - Labels: Bounding Box, Label.
+    - Labels: Masks (Binary), Integer Maps (Multi Class).
  - There are several known datasets:
     - [COCO Dataset](https://cocodataset.org) - Common Objects in Context.  
     Originally by Microsoft. Labeled for many tasks (Segmentation, KeyPoints, etc...).
-    - [PASCAL VOC](http://host.robots.ox.ac.uk/pascal/VOC) - PASCAL Visual Object Classes. 
-    - [DOTA](https://captain-whu.github.io/DOTA) - Large scale dataset for object detection in aerial images.
-    - [Visual Genome](https://homes.cs.washington.edu/~ranjay/visualgenome) - Includes description per box.
-    - [KITTI Vision Benchmark](https://www.cvlibs.net/datasets/kitti) - A data set optimized for autonomous driving.
- - The datasets are usually used fro pre training of models and evaluation of architectures.
+    - [PASCAL VOC2012 Segmentation](http://host.robots.ox.ac.uk/pascal/VOC).
+    - [BDD100K: A Large Scale Diverse Driving Video Database](https://bair.berkeley.edu/blog/2018/05/30/bdd).
+    - [Motion Based Segmentation and Recognition Dataset](https://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid).
+    - [The Cityscapes Dataset](https://www.cityscapes-dataset.com/).
+    - [Mapillary Vistas Dataset](https://www.mapillary.com/dataset/vistas).
+    - [ApolloScape Scene Parsing](https://apolloscape.auto/scene.html).
+ - The datasets are usually used for pre training of models and evaluation of architectures.
 :::
 
 ## Labels (Annotations) {.unlisted auto-animate="true"}
