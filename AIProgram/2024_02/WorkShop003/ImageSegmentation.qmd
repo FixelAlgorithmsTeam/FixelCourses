@@ -1,5 +1,5 @@
 ---
-title: "Object Detection with YOLO"
+title: "Image Segmentation with U-Net"
 subtitle: "Workshop"
 author: "Royi Avital"
 editor:
@@ -42,7 +42,10 @@ filters:
   - roughnotation
 ---
 
-# Object Detection
+
+# Image Segmentation
+
+![](https://i.imgur.com/3dMBM5o.png){#tight-fig fig-align="left" height="350px"}
 
 {{< include MathJaXMacros.qmd >}}
 
@@ -54,14 +57,14 @@ $$
 ## Introduction
 
 :::{.incremental}
- * Consider the _Object Localization_ task:
+ * Consider the _Image Segmentation_ task:
     * {{< iconify oui ml-classification-job >}} Classification (**What** is the object).
-    * {{< iconify carbon chart-logistic-regression >}} Regression (**Where** is the object).
+    * {{< iconify pixelarticons pixelarticons >}} Pixel Level (**Where** is the object).
 :::
 
 . . .
 
-![](https://i.imgur.com/TxANE5V.png)
+![](https://i.imgur.com/eBwcy4L.png){#tight-fig fig-align="center"}
 
 ## Bounding Box Conventions
 

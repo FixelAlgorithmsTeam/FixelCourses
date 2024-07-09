@@ -1,0 +1,30 @@
+name: ImageSegmentation
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy
+  - scipy
+  - pandas
+  - numba
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - scikit-learn
+  - kneed 
+  - pytorch
+  - pytorch-cuda=12.1
+  - pytorch-lightning
+  - torchvision
+  - torchinfo
+  - scikit-image
+  - tensorboard
+  - matplotlib
+  - seaborn
+  - plotly
+  - graphviz
+  - pydot
+  - distinctipy
+  - gdown

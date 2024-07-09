@@ -1,0 +1,68 @@
+/*-- css:variables --*/
+
+// https://github.com/mathjax/MathJax/issues/2013
+// https://github.com/mathjax/MathJax/issues/3107
+// https://github.com/mathjax/MathJax-src/blob/master/ts/input/tex/color/ColorConstants.ts
+:root {
+    --CyanMathJax: #00AEEF;
+    --MagentaMathJax: #EC008C;
+  }
+
+/*-- scss:defaults --*/
+
+/*-- scss:variables --*/
+
+// https://github.com/mathjax/MathJax-src/blob/master/ts/input/tex/color/ColorConstants.ts
+$MagentaMathJax: #EC008C;
+$CyanMathJax: #00AEEF;
+
+/*-- scss:rules --*/
+
+.reveal .slide .callout {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.callout.callout-titled.callout-style-default .callout-content p {
+    margin-top: 0.25em;
+}
+
+// Tight Image: https://stackoverflow.com/questions/6507014
+div#tight-fig { //Requires specific as " " (Space) deals with descendant
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#tight-fig p {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#tight-fig img {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#tight-div ul {
+    margin-bottom: 0.15em;
+}
+
+#tight-div li {
+	margin-top: 0.15em;
+    margin-bottom: 0.15em;
+}
+
+#tight-math p {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#tight-math mjx-container {
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+}
+
+#center-fig svg {
+    display: block;
+    margin: 0 auto;
+}
