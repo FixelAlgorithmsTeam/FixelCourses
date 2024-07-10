@@ -90,178 +90,11 @@ DATA_SET_FOLDER   = 'OxfordIIITPet'
 
 # %% Local Packages
 
-from DataLoader import AdjustMask, ImageSegmentationDataset
-from UNetModule import BuildUNet
+from DL import AdjustMask, BuildUNet, ImageSegmentationDataset
+from DL import GenDataLoaders, RunEpoch, TrainModel
 
 
 # %% Auxiliary Functions
-
-@unique
-class NNMode(Enum):
-    TRAIN     = auto()
-    INFERENCE = auto() 
-
-
-def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt: Optimizer, numEpoch: int, hL: Callable, hS: Callable, *, oSch: Optional[LRScheduler] = None, oTBWriter: Optional[SummaryWriter] = None) -> Tuple[nn.Module, List, List, List, List]:
-    """
-    Trains a model given test and validation data loaders.  
-    Input:
-        oModel      - PyTorch `nn.Module` object.
-        dlTrain     - PyTorch `Dataloader` object (Training).
-        dlVal       - PyTorch `Dataloader` object (Validation).
-        oOpt        - PyTorch `Optimizer` object.
-        numEpoch    - Number of epochs to run.
-        hL          - Callable for the Loss function.
-        hS          - Callable for the Score function.
-        oSch        - PyTorch `Scheduler` (`LRScheduler`) object.
-        oTBWriter   - PyTorch `SummaryWriter` object (TensorBoard).
-    Output:
-        lTrainLoss     - Scalar of the loss.
-        lTrainScore    - Scalar of the score.
-        lValLoss    - Scalar of the score.
-        lValScore    - Scalar of the score.
-        lLearnRate    - Scalar of the score.
-    Remarks:
-      - The `oDataSet` object returns a Tuple of (mX, vY) per batch.
-      - The `hL` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
-        It should return a Tuple of `valLoss` (Scalar of the loss) and `mDz` (Gradient by the loss).
-      - The `hS` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
-        It should return a scalar `valScore` of the score.
-      - The optimizer is required for training mode.
-    """
-
-    lTrainLoss  = []
-    lTrainScore = []
-    lValLoss    = []
-    lValScore   = []
-    lLearnRate  = []
-
-    # Support R2
-    bestScore = -1e9 #<! Assuming higher is better
-
-    learnRate = oOpt.param_groups[0]['lr']
-
-    for ii in range(numEpoch):
-        startTime           = time.time()
-        trainLoss, trainScr = RunEpoch(oModel, dlTrain, hL, hS, oOpt, opMode = NNMode.TRAIN) #<! Train
-        valLoss,   valScr   = RunEpoch(oModel, dlVal, hL, hS, oOpt, opMode = NNMode.INFERENCE) #<! Score Validation
-        if oSch is not None:
-            # Adjusting the scheduler on Epoch level
-            learnRate = oSch.get_last_lr()[0]
-            oSch.step()
-        epochTime           = time.time() - startTime
-
-        # Aggregate Results
-        lTrainLoss.append(trainLoss)
-        lTrainScore.append(trainScr)
-        lValLoss.append(valLoss)
-        lValScore.append(valScr)
-        lLearnRate.append(learnRate)
-
-        if oTBWriter is not None:
-            oTBWriter.add_scalars('Loss (Epoch)', {'Train': trainLoss, 'Validation': valLoss}, ii)
-            oTBWriter.add_scalars('Score (Epoch)', {'Train': trainScr, 'Validation': valScr}, ii)
-            oTBWriter.add_scalar('Learning Rate', learnRate, ii)
-        
-        # Display (Babysitting)
-        print('Epoch '              f'{(ii + 1):4d} / ' f'{numEpoch}', end = '')
-        print(' | Train Loss: '     f'{trainLoss          :6.3f}', end = '')
-        print(' | Val Loss: '       f'{valLoss            :6.3f}', end = '')
-        print(' | Train Score: '    f'{trainScr           :6.3f}', end = '')
-        print(' | Val Score: '      f'{valScr             :6.3f}', end = '')
-        print(' | Epoch Time: '     f'{epochTime          :5.2f}', end = '')
-
-        # Save best model ("Early Stopping")
-        if valScr > bestScore:
-            bestScore = valScr
-            try:
-                dCheckPoint = {'Model': oModel.state_dict(), 'Optimizer': oOpt.state_dict()}
-                if oSch is not None:
-                    dCheckPoint['Scheduler'] = oSch.state_dict()
-                torch.save(dCheckPoint, 'BestModel.pt')
-                print(' | <-- Checkpoint!', end = '')
-            except:
-                print(' | <-- Failed!', end = '')
-        print(' |')
-    
-    # Load best model ("Early Stopping")
-    # dCheckPoint = torch.load('BestModel.pt')
-    # oModel.load_state_dict(dCheckPoint['Model'])
-
-    return oModel, lTrainLoss, lTrainScore, lValLoss, lValScore, lLearnRate
-
-
-def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable, oOpt: Optional[Optimizer] = None, opMode: NNMode = NNMode.TRAIN ) -> Tuple[float, float]:
-    """
-    Runs a single Epoch (Train / Test) of a model.  
-    Input:
-        oModel      - PyTorch `nn.Module` object.
-        dlData      - PyTorch `Dataloader` object.
-        hL          - Callable for the Loss function.
-        hS          - Callable for the Score function.
-        oOpt        - PyTorch `Optimizer` object.
-        opMode      - An `NNMode` to set the mode of operation.
-    Output:
-        valLoss     - Scalar of the loss.
-        valScore    - Scalar of the score.
-    Remarks:
-      - The `oDataSet` object returns a Tuple of (mX, vY) per batch.
-      - The `hL` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
-        It should return a Tuple of `valLoss` (Scalar of the loss) and `mDz` (Gradient by the loss).
-      - The `hS` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
-        It should return a scalar `valScore` of the score.
-      - The optimizer is required for training mode.
-    """
-    
-    epochLoss   = 0.0
-    epochScore  = 0.0
-    numSamples  = 0
-    numBatches = len(dlData)
-
-    runDevice = next(oModel.parameters()).device #<! CPU \ GPU
-
-    if opMode == NNMode.TRAIN:
-        oModel.train(True) #<! Equivalent of `oModel.train()`
-    elif opMode == NNMode.INFERENCE:
-        oModel.eval() #<! Equivalent of `oModel.train(False)`
-    else:
-        raise ValueError(f'The `opMode` value {opMode} is not supported!')
-    
-    for ii, (mX, vY) in enumerate(dlData):
-        # Move Data to Model's device
-        mX = mX.to(runDevice) #<! Lazy
-        vY = vY.to(runDevice) #<! Lazy
-
-        batchSize = mX.shape[0]
-        
-        if opMode == NNMode.TRAIN:
-            # Forward
-            mZ      = oModel(mX) #<! Model output
-            valLoss = hL(mZ, vY) #<! Loss
-            
-            # Backward
-            oOpt.zero_grad()    #<! Set gradients to zeros
-            valLoss.backward()  #<! Backward
-            oOpt.step()         #<! Update parameters
-        else: #<! Value of `opMode` was already validated
-            with torch.no_grad():
-                # No computational graph
-                mZ      = oModel(mX) #<! Model output
-                valLoss = hL(mZ, vY) #<! Loss
-
-        with torch.no_grad():
-            # Score
-            valScore = hS(mZ, vY)
-            # Normalize so each sample has the same weight
-            epochLoss  += batchSize * valLoss.item()
-            epochScore += batchSize * valScore.item()
-            numSamples += batchSize
-
-        print(f'\r{"Train" if opMode == NNMode.TRAIN else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}, loss: {valLoss:.6f}', end = '')
-    
-    print('', end = '\r')
-            
-    return epochLoss / numSamples, epochScore / numSamples
 
 def ModelToMask( tI: torch.Tensor ) -> np.ndarray:
 
@@ -356,6 +189,26 @@ plt.plot()
 
 # %% Data Transforms
 
+class SqueezeTrns(nn.Module):
+    def __init__(self, dim: int = None) -> None:
+        super().__init__()
+
+        self.dim = dim
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        
+        return torch.squeeze(x, dim = self.dim)
+
+class SubtractConst(nn.Module):
+    def __init__(self, const: int = 0) -> None:
+        super().__init__()
+
+        self.const = const
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        
+        return x - self.const
+
 oDataTrnsImg = TorchVisionTrns.Compose([
     TorchVisionTrns.ToImage(),
     TorchVisionTrns.ToDtype(torch.float32, scale = True),
@@ -366,11 +219,13 @@ oDataTrnsImg = TorchVisionTrns.Compose([
 # Lambda functions prevent Multi Threading on Windows
 oDataTrnsAnn = TorchVisionTrns.Compose([
     TorchVisionTrns.ToImage(),
-    TorchVisionTrns.Lambda(lambda x: x - 1),
+    # TorchVisionTrns.Lambda(lambda x: x - 1),
+    SubtractConst(1),
     TorchVisionTrns.Resize(imgSize, interpolation = InterpolationMode.NEAREST),
     TorchVisionTrns.CenterCrop(imgSize),
     TorchVisionTrns.ToDtype(torch.long, scale = False),
-    TorchVisionTrns.Lambda(lambda x: torch.squeeze(x, dim = 0)),
+    # TorchVisionTrns.Lambda(lambda x: torch.squeeze(x, dim = 0)),
+    SqueezeTrns(dim = 0),
 ])
 # oDataTrnsAnn = TorchVisionTrns.Compose([
 #     TorchVisionTrns.ToImage(),
@@ -404,8 +259,14 @@ plt.plot()
 # dlTrain = torch.utils.data.DataLoader(dsTrain, shuffle = True, batch_size = 1 * batchSize, num_workers = numWork, persistent_workers = True)
 # dlVal   = torch.utils.data.DataLoader(dsVal, shuffle = False, batch_size = 2 * batchSize, num_workers = numWork, persistent_workers = True)
 
-dlTrain = torch.utils.data.DataLoader(dsTrain, shuffle = True, batch_size = 1 * batchSize, num_workers = 0, persistent_workers = False)
-dlVal   = torch.utils.data.DataLoader(dsVal, shuffle = False, batch_size = 2 * batchSize, num_workers = 0, persistent_workers = False)
+# dlTrain = torch.utils.data.DataLoader(dsTrain, shuffle = True, batch_size = 1 * batchSize, num_workers = numWork)
+# dlVal   = torch.utils.data.DataLoader(dsVal, shuffle = False, batch_size = 2 * batchSize, num_workers = numWork)
+
+# dlTrain = torch.utils.data.DataLoader(dsTrain, shuffle = True, batch_size = 1 * batchSize, num_workers = 0, persistent_workers = False)
+# dlVal   = torch.utils.data.DataLoader(dsVal, shuffle = False, batch_size = 2 * batchSize, num_workers = 0, persistent_workers = False)
+
+dlTrain, dlVal = GenDataLoaders(dsTrain, dsVal, batchSize, numWorkers = 2, dropLast = True, PersWork = True)
+
 
 # Iterate on the Loader
 # The first batch.
@@ -431,7 +292,7 @@ torchinfo.summary(oModel, (batchSize, 3, imgSize, imgSize), col_names = ['kernel
 
 # Run Device
 
-runDevice = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu') #<! The 1st CUDA device
+runDevice = torch.device('cuda:0' if torch.cuda.is_available() else ('mps' if torch.backends.mps.is_available() else 'cpu')) #<! The 1st CUDA device
 oModel    = oModel.to(runDevice) #<! Transfer model to device
 
 # Loss and Score Function
@@ -482,7 +343,7 @@ hA = vHa[2]
 hA.plot(lLearnRate, lw = 2)
 hA.set_title('Learn Rate Scheduler')
 hA.set_xlabel('Epoch')
-hA.set_ylabel('Learn Rate')
+hA.set_ylabel('Learn Rate');
 
 # %% Display Prediction
 
@@ -504,3 +365,5 @@ mP = ModelToMask(tO)
 hF = PlotMasks(np.transpose(mI.cpu().numpy(), (1, 2, 0)), mM.cpu().numpy(), mP = mP)
 plt.plot()
 
+
+# %%

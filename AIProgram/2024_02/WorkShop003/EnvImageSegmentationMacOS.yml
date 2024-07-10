@@ -4,7 +4,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.12
-  - numpy
+  - numpy=1.*
   - scipy
   - pandas
   - numba
@@ -12,9 +12,8 @@ dependencies:
   - ipykernel
   - ipywidgets
   - scikit-learn
-  - kneed 
   - pytorch
-  - pytorch-lightning
+  - torchmetrics
   - torchvision
   - torchinfo
   - scikit-image

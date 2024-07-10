@@ -3,6 +3,8 @@ import numpy as np
 
 import torch
 import torch.nn as nn
+from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import default_collate
 from torchvision.datasets.vision import VisionDataset  
 from torchvision.transforms.functional import pil_to_tensor, to_tensor
 
@@ -13,7 +15,7 @@ from PIL import Image
 import os
 import pathlib
 
-from typing import Any, Callable, List, Optional, Union, Tuple
+from typing import Any, Callable, Dict, Generator, List, Optional, Self, Set, Tuple, Union
 
 def ExtFileName( fullFileName: str ) -> str:
 
@@ -57,7 +59,10 @@ class ImageSegmentationDataset(VisionDataset):
 
         mI = np.array(Image.open(self._lImg[idx]).convert("RGB")) #<! Guarantees 3 channels
         mM = np.array(Image.open(self._lAnn[idx]).convert("L")) #<! Guarantees 1 channels
-        mM = mM - 1
+        # mM = mM - 1
+        
+        # mI = mI.astype(np.float32) / 255.0
+        # mM = mM.astype(np.int64)
 
         # if (np.ndim(mI) < 3):
         #     # Grayscale Image
@@ -78,7 +83,7 @@ class ImageSegmentationDataset(VisionDataset):
             mI = self.transform(mI)
         
         if self.target_transform is not None:
-            mM = self.target_transform(mM)
+            mM = self.target_transform(mM[:, :, None]) #<! Transforms expect HxWxC
         
         # print(f'Image Index: {idx}')
         # print(f'Image shape: {mI.shape}')
@@ -109,4 +114,27 @@ class AdjustMask(nn.Module):
     def forward(self, x):
         
         return torch.squeeze(x) - 1
+
+
+class ToTensor( nn.Module ):
+    def __init__( self ) -> None:
+        super(ToTensor, self).__init__()
+            
+    def forward( self: Self, *args ) -> Tuple[torch.Tensor]:
+        """
+        Converts input to Tensor.  
+        """
+		
+        return tuple(torch.tensor(itm) for itm in args)
+
+
+def GenDataLoaders( dsTrain: Dataset, dsVal: Dataset, batchSize: int, *, numWorkers: int = 0, CollateFn: Callable = default_collate, dropLast: bool = True, PersWork: bool = False ) -> Tuple[DataLoader, DataLoader]:
+
+    if numWorkers == 0: 
+        PersWork = False
+
+    dlTrain = torch.utils.data.DataLoader(dsTrain, shuffle = True, batch_size = 1 * batchSize, num_workers = numWorkers, collate_fn = CollateFn, drop_last = dropLast, persistent_workers = PersWork)
+    dlVal   = torch.utils.data.DataLoader(dsVal, shuffle = False, batch_size = 2 * batchSize, num_workers = numWorkers, persistent_workers = PersWork)
+
+    return dlTrain, dlVal
 
