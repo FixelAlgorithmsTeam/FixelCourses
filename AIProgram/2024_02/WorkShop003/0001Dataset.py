@@ -3,7 +3,7 @@
 # [![Fixel Algorithms](https://fixelalgorithms.co/images/CCExt.png)](https://fixelalgorithms.gitlab.io/)
 # 
 # # Image Segmentation Workshop
-# Downloads the The Oxford-IIIT Pet Dataset Dataset.
+# Downloads and arranges the The Oxford-IIIT Pet Dataset.
 # 
 # > Notebook by:
 # > - Royi Avital RoyiAvital@fixelalgorithms.com
@@ -39,6 +39,7 @@ from platform import python_version
 import random
 import warnings
 import shutil
+import urllib.request
 import yaml
 
 
@@ -74,17 +75,16 @@ EDGE_COLOR      = 'k'
 MARKER_SIZE_DEF = 10
 LINE_WIDTH_DEF  = 2
 
-DATA_SET_FILE_NAME      = 'archive.zip'
-DATA_SET_FOLDER_NAME    = 'IntelImgCls'
+L_IMG_FILE_EXT = ['.jpg', '.jpeg', '.png']
 
 D_CLASSES  = {0: 'Red', 1: 'Green', 2: 'Blue'}
 L_CLASSES  = ['R', 'G', 'B']
 T_IMG_SIZE = (100, 100, 3)
 
 DATA_FOLDER_NAME  = 'Data'
-TEST_FOLDER_NAME  = 'Test'
-TRAIN_FOLDER_NAME = 'Train'
-DRIVE_FOLDER_URL  = 'https://drive.google.com/drive/u/2/folders/1wxKIDN777K8kQ4UhJMu5csSbTVXhG7G9'
+DATA_SET_FOLDER   = 'OxfordIIITPet'
+ANN_FILE_URL      = 'https://thor.robots.ox.ac.uk/~vgg/data/pets/annotations.tar.gz'
+IMG_FILE_URL      = 'https://thor.robots.ox.ac.uk/~vgg/data/pets/images.tar.gz'
 
 
 # %% Local Packages
@@ -92,48 +92,105 @@ DRIVE_FOLDER_URL  = 'https://drive.google.com/drive/u/2/folders/1wxKIDN777K8kQ4U
 
 # %% Auxiliary Functions
 
+def DownloadUrl( fileUrl: str, fileName: str ) -> str:
+    
+    if not os.path.exists(fileName):
+        urllib.request.urlretrieve(fileUrl, fileName)
+
+    return fileName
+
+def ExtFileName( fullFileName: str ) -> str:
+
+    fileName, fileExt = os.path.splitext(fullFileName)
+
+    return fileName
+
 
 # %% Parameters
+
+annArchName = 'Annotations.tar.gz'
+imgArchName = 'Images.tar.gz'
 
 dataFileId  = '1LW3pX_dg8oQ2Q-hixeGo6AwNxtb_DPwg'
 fileExt     = 'png'
 
 
 # %% Load / Generate Data
+# Will have:
+# - Data
+#    - OxfordIIITPet
+#       - Annotations
+#       - Images
 
 dataFolderPath = os.path.join(os.getcwd(), DATA_FOLDER_NAME)
+os.makedirs(dataFolderPath, exist_ok = True)
 
-fileName = gdown.download(id = dataFileId)
-if not (os.path.isdir(dataFolderPath)):
-    os.mkdir(dataFolderPath)
+annArchPath = os.path.join(dataFolderPath, annArchName)
+imgArchPath = os.path.join(dataFolderPath, imgArchName)
 
-# Move file, replaces if already exists (https://stackoverflow.com/a/8858026)
-os.replace(fileName, os.path.join(dataFolderPath, fileName))
+if not os.path.isfile(annArchPath):
+    DownloadUrl(ANN_FILE_URL, annArchPath)
 
-shutil.unpack_archive(os.path.join(dataFolderPath, fileName), dataFolderPath)
+if not os.path.isfile(imgArchPath):
+    DownloadUrl(IMG_FILE_URL, imgArchPath)
+
+annFolderPath = os.path.join(dataFolderPath, DATA_SET_FOLDER, 'Annotations')
+imgFolderPath = os.path.join(dataFolderPath, DATA_SET_FOLDER, 'Images')
+
+if (os.path.isdir(annFolderPath)):
+    shutil.rmtree(annFolderPath)
+
+if (os.path.isdir(imgFolderPath)):
+    shutil.rmtree(imgFolderPath)
+
+os.makedirs(annFolderPath, exist_ok = True)
+os.makedirs(imgFolderPath, exist_ok = True)
+
+shutil.unpack_archive(annArchPath, annFolderPath)
+shutil.unpack_archive(imgArchPath, imgFolderPath)
+
+# Delete files
+for itmName in os.listdir(os.path.join(annFolderPath, 'annotations')):
+    if not (itmName == 'trimaps'):
+        if os.path.isfile(os.path.join(annFolderPath, 'annotations', itmName)):
+            os.remove(os.path.join(annFolderPath, 'annotations', itmName))
+        if os.path.isdir(os.path.join(annFolderPath, 'annotations', itmName)):
+            shutil.rmtree(os.path.join(annFolderPath, 'annotations', itmName))
+
+# Move valid annotations
+for itmName in os.listdir(os.path.join(annFolderPath, 'annotations', 'trimaps')):
+    if not ('._' in itmName):
+        itmPath = os.path.join(annFolderPath, 'annotations', 'trimaps', itmName)
+        shutil.copy(itmPath, annFolderPath)
+
+shutil.rmtree(os.path.join(annFolderPath, 'annotations'))
+
+# Move Images
+for itmName in os.listdir(os.path.join(imgFolderPath, 'images')):
+    fileName, fileExt = os.path.splitext(itmName)
+    if (fileExt in L_IMG_FILE_EXT):
+        itmPath = os.path.join(imgFolderPath, 'images', itmName)
+        shutil.copy(itmPath, imgFolderPath)
+
+shutil.rmtree(os.path.join(imgFolderPath, 'images'))
 
 
-# %% Train Test Split
+# %% Validate Matching File Name
+# If no matching, it will print
 
-# Ultralytics have different structure
+lAnnFileName = [ExtFileName(itmName) for itmName in os.listdir(annFolderPath)]
+lImgFileName = [ExtFileName(itmName) for itmName in os.listdir(imgFolderPath)]
 
-# testFolderPath  = os.path.join(dataFolderPath, TEST_FOLDER_NAME)
-# trainFolderPath = os.path.join(dataFolderPath, TRAIN_FOLDER_NAME)
+sAnnFileName = set(lAnnFileName)
+sImgFileName = set(lImgFileName)
 
-# if not (os.path.isdir(testFolderPath)):
-#     os.mkdir(testFolderPath)
+sDiff = sAnnFileName - sImgFileName
+if (len(sDiff) > 0):
+    print(f'Files in annotations yet not in images: {sDiff}')
 
-# if not (os.path.isdir(trainFolderPath)):
-#     os.mkdir(trainFolderPath)
-
-# lFiles = [fileName for fileName in os.listdir(dataFolderPath) if fileName.endswith(fileExt)]
-
-# for ii, fileName in enumerate(lFiles):
-#     filePath = os.path.join(dataFolderPath, fileName)
-#     if (ii < 250):
-#         os.replace(filePath, os.path.join(trainFolderPath, fileName))
-#     else:
-#         os.replace(filePath, os.path.join(testFolderPath, fileName))
+sDiff = sImgFileName - sAnnFileName
+if (len(sDiff) > 0):
+    print(f'Files in images yet not in annotations: {sDiff}')
 
 
 # %% Display Results
