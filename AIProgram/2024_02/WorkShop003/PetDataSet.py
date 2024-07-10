@@ -178,8 +178,8 @@ shutil.rmtree(os.path.join(imgFolderPath, 'images'))
 # %% Validate Matching File Name
 # If no matching, it will print
 
-lImgFileName = [ExtFileName(itmName) for itmName in os.listdir(imgFolderPath)]
 lAnnFileName = [ExtFileName(itmName) for itmName in os.listdir(annFolderPath)]
+lImgFileName = [ExtFileName(itmName) for itmName in os.listdir(imgFolderPath)]
 
 sAnnFileName = set(lAnnFileName)
 sImgFileName = set(lImgFileName)
@@ -191,7 +191,6 @@ if (len(sDiff) > 0):
 sDiff = sImgFileName - sAnnFileName
 if (len(sDiff) > 0):
     print(f'Files in images yet not in annotations: {sDiff}')
-
 
 
 # %% Display Results

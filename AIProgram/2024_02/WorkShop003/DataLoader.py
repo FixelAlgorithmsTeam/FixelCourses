@@ -2,10 +2,12 @@
 import numpy as np
 
 import torch
+import torch.nn as nn
 from torchvision.datasets.vision import VisionDataset  
 from torchvision.transforms.functional import pil_to_tensor, to_tensor
 
 import skimage as ski
+from PIL import Image
 
 # Miscellaneous
 import os
@@ -49,22 +51,38 @@ class ImageSegmentationDataset(VisionDataset):
     
     def __getitem__(self, idx: int) -> Tuple[Any, Any]:
 
-        mI = ski.io.imread(self._lImg[idx])
-        mM = ski.io.imread(self._lAnn[idx])
+        # On PyTorch 2.3.1 (Checked only on Windows) `imread()` caused issues
+        # mI = ski.io.imread(self._lImg[idx])
+        # mM = ski.io.imread(self._lAnn[idx])
 
-        if (np.ndim(mI) < 3):
-            # Grayscale Image
-            mI = mI[:, :, None]
+        mI = np.array(Image.open(self._lImg[idx]).convert("RGB")) #<! Guarantees 3 channels
+        mM = np.array(Image.open(self._lAnn[idx]).convert("L")) #<! Guarantees 1 channels
+        mM = mM - 1
 
-        if (np.size(mI, 2) == 1):
-            # Grayscale Image
-            mI = np.tile(mI, (1, 1, 3))
+        # if (np.ndim(mI) < 3):
+        #     # Grayscale Image
+        #     print('2D')
+        #     mI = mI[:, :, None]
+
+        # if (np.size(mI, 2) == 1):
+        #     # Grayscale Image
+        #     print('Gray')
+        #     mI = np.tile(mI, (1, 1, 3))
+        
+        # if (np.size(mI, 2) == 4):
+        #     # RGBA Image
+        #     print('!!!!!RGBA!!!!!')
+        #     mI = mI[:, :, :3]
         
         if self.transform is not None:
-            mI = self.transform(mM)
+            mI = self.transform(mI)
         
         if self.target_transform is not None:
             mM = self.target_transform(mM)
+        
+        # print(f'Image Index: {idx}')
+        # print(f'Image shape: {mI.shape}')
+        # print(f'Target shape: {mM.shape}')
 
         return mI, mM
 
@@ -83,4 +101,12 @@ def GenTrainTesIdx(numSamples: int, trainSize: float = 0.8, seedNum: int = 123):
     vTestIdx    = np.sort(vTestIdx)
 
     return vTrainIdx, vTestIdx
+
+class AdjustMask(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+    
+    def forward(self, x):
+        
+        return torch.squeeze(x) - 1
 

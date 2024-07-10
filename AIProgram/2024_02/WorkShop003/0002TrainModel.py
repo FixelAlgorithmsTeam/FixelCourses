@@ -90,7 +90,7 @@ DATA_SET_FOLDER   = 'OxfordIIITPet'
 
 # %% Local Packages
 
-from DataLoader import ImageSegmentationDataset
+from DataLoader import AdjustMask, ImageSegmentationDataset
 from UNetModule import BuildUNet
 
 
@@ -263,13 +263,13 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
             
     return epochLoss / numSamples, epochScore / numSamples
 
-def ModelToImg( tI: torch.Tensor ) -> np.ndarray:
+def ModelToMask( tI: torch.Tensor ) -> np.ndarray:
 
     tI = torch.squeeze(tI, dim = 0)
     mM = torch.argmin(tI, dim = 0)
     mM = mM.cpu().numpy()
 
-    return np.transpose(mM, (1, 2, 0))
+    return mM
 
 def PlotMasks( mI: np.ndarray, mM: np.ndarray, *, mP: Optional[np.ndarray] = None ) -> plt.Figure:
 
@@ -287,13 +287,13 @@ def PlotMasks( mI: np.ndarray, mM: np.ndarray, *, mP: Optional[np.ndarray] = Non
     hA.set_title('Input Image')
 
     hA = vHa[1]
-    hA.imshow(mM)
+    hA.imshow(mM, interpolation = 'nearest')
     hA.axis('off')
     hA.set_title('Input Mask')
 
     if (numImg == 3):
         hA = vHa[2]
-        hA.imshow(mP)
+        hA.imshow(mP, interpolation = 'nearest')
         hA.axis('off')
         hA.set_title('Predicted Mask')
     
@@ -311,7 +311,7 @@ vMean = [0.5, 0.5, 0.5]
 vStd  = [0.25, 0.25, 0.25]
 
 numSamplsTrain = 6000
-numSamplesVal = 1390
+numSamplesVal  = 1390
 
 lClass = ['Pet', 'Background', 'Border']
 
@@ -319,7 +319,7 @@ lClass = ['Pet', 'Background', 'Border']
 lFilterSize = [10, 20, 40] #<! Assumption: filter_size[ii + 1] == 2 * filter_size[ii]
 
 # Training
-batchSize   = 200
+batchSize   = 250
 numWork     = 2 #<! Number of workers
 nEpochs     = 45
 
@@ -363,14 +363,22 @@ oDataTrnsImg = TorchVisionTrns.Compose([
     TorchVisionTrns.CenterCrop(imgSize),
     # TorchVisionTrns.Normalize(mean = vMean, std = vStd),
 ])
+# Lambda functions prevent Multi Threading on Windows
 oDataTrnsAnn = TorchVisionTrns.Compose([
     TorchVisionTrns.ToImage(),
     TorchVisionTrns.Lambda(lambda x: x - 1),
-    TorchVisionTrns.Resize(imgSize, interpolation = InterpolationMode.NEAREST_EXACT),
+    TorchVisionTrns.Resize(imgSize, interpolation = InterpolationMode.NEAREST),
     TorchVisionTrns.CenterCrop(imgSize),
     TorchVisionTrns.ToDtype(torch.long, scale = False),
     TorchVisionTrns.Lambda(lambda x: torch.squeeze(x, dim = 0)),
 ])
+# oDataTrnsAnn = TorchVisionTrns.Compose([
+#     TorchVisionTrns.ToImage(),
+#     TorchVisionTrns.Resize(imgSize, interpolation = InterpolationMode.NEAREST),
+#     TorchVisionTrns.CenterCrop(imgSize),
+#     TorchVisionTrns.ToDtype(torch.long, scale = False),
+#     AdjustMask()
+# ])
 
 
 # Update the DS transformer
@@ -381,6 +389,14 @@ dsImgSeg.target_transform   = oDataTrnsAnn
 # %% Train Test Split
 
 dsTrain, dsVal = torch.utils.data.random_split(dsImgSeg, (numSamplsTrain, numSamplesVal))
+
+numSamples  = len(dsTrain)
+imgIdx      = random.randrange(numSamples)
+
+mI, mM = dsTrain[imgIdx]
+
+hF = PlotMasks(np.transpose(mI.cpu().numpy(), (1, 2, 0)), mM.cpu().numpy())
+plt.plot()
 
 
 # %% Data Loaders
@@ -406,7 +422,7 @@ for ii, (tX, vY) in zip(range(1), dlVal): #<! https://stackoverflow.com/question
 
 # %% Build Model
 
-oModel = BuildUNet(3, 3, lFilterSize)
+oModel = BuildUNet(3, len(lClass), lFilterSize)
 
 torchinfo.summary(oModel, (batchSize, 3, imgSize, imgSize), col_names = ['kernel_size', 'output_size', 'num_params'], device = 'cpu')
 
@@ -467,4 +483,24 @@ hA.plot(lLearnRate, lw = 2)
 hA.set_title('Learn Rate Scheduler')
 hA.set_xlabel('Epoch')
 hA.set_ylabel('Learn Rate')
+
+# %% Display Prediction
+
+oModel = BuildUNet(3, len(lClass), lFilterSize)
+dModel = torch.load('BestModel.pt') #<! Loads saved data
+oModel.load_state_dict(dModel['Model'])
+oModel = oModel.eval()
+oModel = oModel.to(runDevice)
+
+numSamples  = len(dsVal)
+imgIdx      = random.randrange(numSamples)
+
+mI, mM = dsVal[imgIdx]
+tI = mI.to(runDevice)
+tI = tI[None, :, :, :]
+tO = oModel(tI)
+mP = ModelToMask(tO)
+
+hF = PlotMasks(np.transpose(mI.cpu().numpy(), (1, 2, 0)), mM.cpu().numpy(), mP = mP)
+plt.plot()
 
