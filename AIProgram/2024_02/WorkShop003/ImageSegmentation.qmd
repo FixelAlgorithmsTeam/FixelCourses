@@ -218,15 +218,45 @@ How can one create an _Object Detector_ from _Image Segmentor_?
 
 ## Image Segmentation Models {.unlisted auto-animate="true"}
 
-:::{.incremental style="font-size: 90%;"} 
- - Classification for object detection models:
-    - Two Stages (Proposal based): Extract candidate _RoI_, Classify & Regress the RoI.
-    - One Stage: Based on a single output of a label based on _Classification_ and _Regression_. Usually per Anchor / Grid Cell.
+:::{.incremental} 
+ - The first models were based on large image classification models with different haeds.
+ - Later models used the concept of _Fully Convolutional Net_ (FCN).
+ - The next evolution step was Encoder / Decoder architectures.
+ - Modern models are based on U-Net like shape.
+:::
+
+## Image Segmentation Models {.unlisted auto-animate="true"}
+
+:::{style="font-size: 40%;"} 
+ - The first models were based on large image classification models with different haeds.
+ - Later models used the concept of _Fully Convolutional Net_ (FCN).
+ - The next evolution step was Encoder / Decoder architectures.
+ - Modern models are based on U-Net like shape.
 :::
 
 . . .
 
-![](https://i.imgur.com/Bqayv5X.png){#tight-fig fig-align="center" height="350px"}
+![](https://i.imgur.com/gQSl4Jm.png){#tight-fig fig-align="center" height="550px"}
+
+## Image Segmentation Models {.unlisted auto-animate="true"}
+
+:::{style="font-size: 100%;"} 
+ - The first models were based on large image classification models with different haeds.
+ - Later models used the concept of _Fully Convolutional Net_ (FCN).
+ - The next evolution step was Encoder / Decoder architectures.
+ - Modern models are based on U-Net like shape.
+:::
+
+. . .
+
+:::{.callout-tip title="Resources"}
+
+ - [Comparative Study of Image Segmentation Architectures Using Deep Learning](https://scribe.rip/3743875fd608).
+ - [Image Segmentation: Architectures, Losses, Datasets and Frameworks](https://neptune.ai/blog/image-segmentation).
+ - [Complete Guide to Semantic Segmentation](https://www.superannotate.com/blog/guide-to-semantic-segmentation).
+:::
+
+## UpSample Layer {.unlisted auto-animate="true"}
 
 ## U-Net {.unlisted auto-animate="true"}
 
@@ -313,15 +343,15 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
     * Analysis per class / weighted by classes.
 :::
 
-# Test Case - Ball and Referee Detection
+# Test Case - Cats & Dog Segmentation
 
 ## The Task {.unlisted}
 
 :::{.incremental}
- * Given an HD Image (`1920x1080x3`) of a _Football_ (Soccer) game:
-    * Detect the Ball.
-    * Detect the **Referee**.  
-      Mind **Referee** vs. _Assistant Referee_.
+ * Given an Image, Classify each pixel into 3 classes:
+    * Segment Dog pixels.
+    * Segment Cat pixel.
+    * Segment Background pixels.
 :::
 
 . . .
@@ -330,8 +360,8 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
 #### [{{< iconify logos python >}}]{style="color: #02b875;"} Coding Task
 
  * Download the Workshop files from [Fixel Courses](https://github.com/FixelAlgorithmsTeam/FixelCourses).  
-   The files are located in `AIProgram/2024_02/WorkShop002`.
- * Create a `conda` environment based on [`EnvObjectDetection.yml`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_02/WorkShop002/EnvObjectDetection.yml).
+   The files are located in `AIProgram/2024_02/WorkShop003`.
+ * Create a `conda` environment based on [`EnvImageSegmentation.yml`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_02/WorkShop002/EnvObjectDetection.yml).
 :::
 
 ## The Data {.unlisted}
