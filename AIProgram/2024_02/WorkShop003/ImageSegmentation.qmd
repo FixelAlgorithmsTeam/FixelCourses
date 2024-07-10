@@ -367,7 +367,7 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
 ## The Data {.unlisted}
 
 :::{.incremental}
- * 300 Images.
+ * Based on [The Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets).
  * Each image is a _Full HD_ RGB image (`1920x1080x3`).
  * The images are extracted form a YouTube video (Frame).
  * In some images there might no objects to detect. 
