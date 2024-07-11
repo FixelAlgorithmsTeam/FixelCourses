@@ -69,6 +69,7 @@ from IPython import get_ipython
 seedNum = 512
 np.random.seed(seedNum)
 random.seed(seedNum)
+torch.manual_seed(seedNum)
 
 # Matplotlib default color palette
 lMatPltLibclr = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
@@ -96,10 +97,30 @@ from DL import GenDataLoaders, RunEpoch, TrainModel
 
 # %% Auxiliary Functions
 
+class SqueezeTrns(nn.Module):
+    def __init__(self, dim: int = None) -> None:
+        super().__init__()
+
+        self.dim = dim
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        
+        return torch.squeeze(x, dim = self.dim)
+
+class SubtractConst(nn.Module):
+    def __init__(self, const: int = 0) -> None:
+        super().__init__()
+
+        self.const = const
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        
+        return x - self.const
+
 def ModelToMask( tI: torch.Tensor ) -> np.ndarray:
 
     tI = torch.squeeze(tI, dim = 0)
-    mM = torch.argmin(tI, dim = 0)
+    mM = torch.argmax(tI, dim = 0)
     mM = mM.cpu().numpy()
 
     return mM
@@ -189,26 +210,6 @@ plt.plot()
 
 # %% Data Transforms
 
-class SqueezeTrns(nn.Module):
-    def __init__(self, dim: int = None) -> None:
-        super().__init__()
-
-        self.dim = dim
-    
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        
-        return torch.squeeze(x, dim = self.dim)
-
-class SubtractConst(nn.Module):
-    def __init__(self, const: int = 0) -> None:
-        super().__init__()
-
-        self.const = const
-    
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        
-        return x - self.const
-
 oDataTrnsImg = TorchVisionTrns.Compose([
     TorchVisionTrns.ToImage(),
     TorchVisionTrns.ToDtype(torch.float32, scale = True),
@@ -243,7 +244,8 @@ dsImgSeg.target_transform   = oDataTrnsAnn
 
 # %% Train Test Split
 
-dsTrain, dsVal = torch.utils.data.random_split(dsImgSeg, (numSamplsTrain, numSamplesVal))
+oRng = torch.Generator().manual_seed(seedNum)
+dsTrain, dsVal = torch.utils.data.random_split(dsImgSeg, (numSamplsTrain, numSamplesVal), oRng)
 
 numSamples  = len(dsTrain)
 imgIdx      = random.randrange(numSamples)

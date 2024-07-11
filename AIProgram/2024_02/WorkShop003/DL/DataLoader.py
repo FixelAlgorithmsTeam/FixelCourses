@@ -39,7 +39,10 @@ class ImageSegmentationDataset(VisionDataset):
         _lAnn = [] #<! Annotations
         _lImg = [] #<! Images
 
-        for fileItm in os.listdir(self.imgFolderPath):
+        lFiles = os.listdir(self.imgFolderPath)
+        lFiles.sort() #<! Make order deterministic
+
+        for fileItm in lFiles:
             fileName, fileExt = os.path.splitext(fileItm)
             if ((fileExt[1:] in lImgFormats) and (fileName in sMatchFileName)):
                 _lImg.append(os.path.join(self.imgFolderPath, fileItm))
