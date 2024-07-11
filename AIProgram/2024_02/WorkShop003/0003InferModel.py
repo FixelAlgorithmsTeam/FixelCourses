@@ -165,7 +165,7 @@ vStd  = [0.25, 0.25, 0.25]
 
 lClass = ['Pet', 'Background', 'Border']
 
-modelFileName = 'BestModel_2024_07_11_863.pt'
+modelFileName = 'BestModel_2024_07_11_863.pt' #<! https://drive.google.com/file/d/15UZlVEjyINpYAibETZGJDdNRsVkBRvBl
 
 
 
