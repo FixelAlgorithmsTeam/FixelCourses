@@ -38,6 +38,8 @@ from torch.utils.data import DataLoader, Dataset
 from torch.utils.tensorboard import SummaryWriter
 import torchinfo
 from torchmetrics.classification import MulticlassAccuracy
+from torchmetrics.segmentation import GeneralizedDiceScore 
+from torchmetrics.segmentation import MeanIoU 
 from torchvision.transforms import InterpolationMode
 from torchvision.transforms import v2 as TorchVisionTrns
 
@@ -242,10 +244,12 @@ plt.plot()
 # %% Load Model
 
 runDevice = torch.device('cuda:0' if torch.cuda.is_available() else ('mps' if torch.backends.mps.is_available() else 'cpu')) #<! MPS or CUDA device
+runDevice = torch.device('cpu')
 
 oModel = BuildUNet(3, len(lClass), lFilterSize)
 # The saved model is mapped, by default, to the device it was.
 # Loading to a "neutral" device: CPU.
+# See: https://pytorch.org/tutorials/beginner/saving_loading_models.html#saving-loading-model-across-devices.
 dModel = torch.load(modelFileName, map_location = 'cpu') #<! Loads saved data
 oModel.load_state_dict(dModel['Model'])
 oModel = oModel.eval()
@@ -288,6 +292,37 @@ mP = ModelToMask(tO)
 
 hF = PlotMasks(np.transpose(mI.cpu().numpy(), (1, 2, 0)), mM.cpu().numpy(), mP = mP)
 plt.plot()
+
+# Validation Dice Score (F1 Like) & IoU Score
+hDiceScore = GeneralizedDiceScore(num_classes = len(lClass))
+hIoUScore  = MeanIoU(num_classes = len(lClass))
+vDiceScore = np.zeros(shape = len(vValIdx))
+vIouScore  = np.zeros(shape = len(vValIdx))
+for ii, imgIdx in enumerate(vValIdx):
+    mI, mM = dsImgSeg[imgIdx]
+    tI = mI.to(runDevice)
+    tI = tI[None, :, :, :]
+    tO = oModel(tI)
+    tO = tO.to('cpu').detach()
+    
+    if imgIdx in [6010, 4710, 1105]: #<! Fails
+        continue
+
+    vDiceScore[ii] = hDiceScore(torch.argmax(tO, dim = 1), mM[None, :, :]).item()
+    vIouScore[ii]  = hIoUScore(torch.argmax(tO, dim = 1), mM[None, :, :]).item()
+
+# Task!
+# Show the performance per class.
+
+hF, hA = plt.subplots(figsize = (12, 5))
+
+hA.plot(range(len(vValIdx)), vDiceScore, label = 'Dice Score')
+hA.plot(range(len(vValIdx)), vIouScore, label = 'Mean IoU Score')
+hA.set_title('Dice and Mean IoU Score')
+hA.set_xlabel('Image Index')
+hA.set_ylabel('Score')
+
+hA.legend();
 
 
 # %%
