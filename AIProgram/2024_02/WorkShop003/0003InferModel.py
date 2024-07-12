@@ -188,7 +188,7 @@ modelFileName = 'BestModel_2024_07_11_863.pt' #<! https://drive.google.com/file/
 # %% Load / Generate Data
 
 dsImgSeg    = ImageSegmentationDataset(dataSetPath)
-dSplitIdx   = np.load('TrainValSplit.npz')
+dSplitIdx   = np.load('BestModel_2024_07_11_863.npz') #<! TrainValSplit.npz of the run
 vTrainIdx   = dSplitIdx['vTrainIdx']
 vValIdx     = dSplitIdx['vValIdx']
 lFilterSize = dSplitIdx['lFilterSize']
@@ -241,10 +241,12 @@ plt.plot()
 
 # %% Load Model
 
-runDevice = torch.device('cuda:0' if torch.cuda.is_available() else ('mps' if torch.backends.mps.is_available() else 'cpu')) #<! The 1st CUDA device
+runDevice = torch.device('cuda:0' if torch.cuda.is_available() else ('mps' if torch.backends.mps.is_available() else 'cpu')) #<! MPS or CUDA device
 
 oModel = BuildUNet(3, len(lClass), lFilterSize)
-dModel = torch.load(modelFileName) #<! Loads saved data
+# The saved model is mapped, by default, to the device it was.
+# Loading to a "neutral" device: CPU.
+dModel = torch.load(modelFileName, map_location = 'cpu') #<! Loads saved data
 oModel.load_state_dict(dModel['Model'])
 oModel = oModel.eval()
 
