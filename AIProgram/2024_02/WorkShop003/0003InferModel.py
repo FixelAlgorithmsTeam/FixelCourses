@@ -4,6 +4,8 @@
 # 
 # # Image Segmentation Workshop
 # Use the pre trained U-Net model on the The Oxford-IIIT Pet Dataset.
+# Weights: https://drive.google.com/file/d/15UZlVEjyINpYAibETZGJDdNRsVkBRvBl
+# Parameters: https://drive.google.com/file/d/1uL08rL7IO6vv7_X-f4PjLFeyWpaArQ_m
 # 
 # > Notebook by:
 # > - Royi Avital RoyiAvital@fixelalgorithms.com
@@ -311,9 +313,7 @@ for ii, imgIdx in enumerate(vValIdx):
     vDiceScore[ii] = hDiceScore(torch.argmax(tO, dim = 1), mM[None, :, :]).item()
     vIouScore[ii]  = hIoUScore(torch.argmax(tO, dim = 1), mM[None, :, :]).item()
 
-# Task!
-# Show the performance per class.
-
+# Display Score per Image
 hF, hA = plt.subplots(figsize = (12, 5))
 
 hA.plot(range(len(vValIdx)), vDiceScore, label = 'Dice Score')
@@ -323,6 +323,10 @@ hA.set_xlabel('Image Index')
 hA.set_ylabel('Score')
 
 hA.legend();
+
+# !!Tasks:
+# - Show the performance per class.
+# - Display confusion matrix.
 
 
 # %%

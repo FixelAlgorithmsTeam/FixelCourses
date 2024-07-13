@@ -121,6 +121,7 @@ fileExt     = 'png'
 #    - OxfordIIITPet
 #       - Annotations
 #       - Images
+# Torrent alternative (If fails): https://academictorrents.com/details/b18bbd9ba03d50b0f7f479acc9f4228a408cecc1
 
 dataFolderPath = os.path.join(os.getcwd(), DATA_FOLDER_NAME)
 os.makedirs(dataFolderPath, exist_ok = True)
