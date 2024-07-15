@@ -258,6 +258,66 @@ How can one create an _Object Detector_ from _Image Segmentor_?
 
 ## UpSample Layer {.unlisted auto-animate="true"}
 
+:::{.incremental} 
+ - _Signal Processing_ style upsampling:
+    - Insert zeros.
+    - Apply _Low Pass Filter_.
+:::
+
+. . .
+
+![](https://i.imgur.com/EVj0sy0.png){#tight-fig fig-align="center"}
+
+## UpSample Layer {.unlisted auto-animate="true"}
+
+:::{} 
+ - _Signal Processing_ style upsampling:
+    - Insert zeros.
+    - Apply _Low Pass Filter_.
+:::
+
+. . .
+
+:::{.callout-note title="Generalized by Interpolation"}
+
+One could generalize the model by using any given interpolation method instead of applying _Low Pass Filter_.
+
+:::
+
+## UpSample Layer {.unlisted auto-animate="true"}
+
+:::{} 
+ - _Signal Processing_ style upsampling:
+    - Insert zeros.
+    - Apply **Interpolation**.
+:::
+
+. . .
+
+![](https://i.imgur.com/NlkWUKa.png){#tight-fig fig-align="center"}
+
+## UpSample Layer {.unlisted auto-animate="true"}
+
+:::{} 
+ - _**Image** Processing_ style upsampling:
+    - Insert zeros.
+    - Apply **Interpolation**.
+:::
+
+. . .
+
+![](https://i.imgur.com/54tvzBt.png){#tight-fig fig-align="center" height="250px"}
+
+## UpSample Layer {.unlisted auto-animate="true"}
+
+:::{.incremental} 
+ - The conventional upsampling methods are not adaptive to the loss.
+ - Hence, conceptually, in the classic method was reintroduced.
+ - The concept of _Trnasposed Convolution_ was introduced in [Fully Convolutional Networks for Semantic Segmentation](https://arxiv.org/abs/1411.4038).
+:::
+
+
+
 ## U-Net {.unlisted auto-animate="true"}
 
 ![](https://i.imgur.com/fwEB4Cf.png){#tight-fig fig-align="center"}
