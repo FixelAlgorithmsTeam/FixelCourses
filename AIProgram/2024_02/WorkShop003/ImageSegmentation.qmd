@@ -312,10 +312,59 @@ One could generalize the model by using any given interpolation method instead o
 
 :::{.incremental} 
  - The conventional upsampling methods are not adaptive to the loss.
- - Hence, conceptually, in the classic method was reintroduced.
- - The concept of _Trnasposed Convolution_ was introduced in [Fully Convolutional Networks for Semantic Segmentation](https://arxiv.org/abs/1411.4038).
+ - Conceptually, one could use learned filter coefficients (LPF).
+ - The concept of _Transposed Convolution_ was introduced in [Fully Convolutional Networks for Semantic Segmentation](https://arxiv.org/abs/1411.4038).
+ - The filter coefficients are the [`ConvTranspose2d`](https://pytorch.org/docs/stable/generated/torch.nn.ConvTranspose2d.html) layer parameters.
 :::
 
+. . .
+
+:::{.callout-note title="Adjoint Operator"}
+
+The _Convolution_ layer, as a _linear operator_ can be applied as a matrix: 
+
+:::{#tight-math}
+$$ \operatorname{Conv}_{\boldsymbol{W}} \left( \boldsymbol{x} \right) = \boldsymbol{W} \boldsymbol{x} $$
+:::
+
+The name _Transposed Convolution_ is coined as the operation is basically the _Adjoint Operator_:
+
+:::{#tight-math}
+$$ \operatorname{ConvTranspose}_{\boldsymbol{W}} \left( \boldsymbol{z} \right) = \boldsymbol{W}^{T} \boldsymbol{z} $$
+:::
+
+:::
+
+## UpSample Layer {.unlisted auto-animate="true"}
+
+:::{} 
+ - The conventional upsampling methods are not adaptive to the loss.
+ - Conceptually, one could use learned filter coefficients (LPF).
+:::
+
+. . .
+
+![](https://i.imgur.com/PDwDLG6.png){#tight-fig fig-align="center" height="350px"}
+
+:::{#tight-div}
+[**Credit**: [Dive into Deep Learning](https://d2l.ai/chapter_computer-vision/transposed-conv.html)]{style="font-size: 40%;"}
+:::
+
+## UpSample Layer {.unlisted auto-animate="true"}
+
+:::{} 
+ - The conventional upsampling methods are not adaptive to the loss.
+ - Conceptually, one could use learned filter coefficients (LPF).
+:::
+
+. . .
+
+:::{.callout-tip title="Resources"}
+
+ - [What is Transposed Convolutional Layer](https://scribe.rip/40e5e6e31c11).
+ - [Understand Transposed Convolutions](https://scribe.rip/4f5d97b2967).
+ - [Dive into Deep Learning - Computer Vision - Transposed Convolution](https://d2l.ai/chapter_computer-vision/transposed-conv.html).
+:::
 
 
 ## U-Net {.unlisted auto-animate="true"}
@@ -350,9 +399,8 @@ One could generalize the model by using any given interpolation method instead o
 :::{.incremental style="font-size: 80%;"} 
  - Choose the Model  
    Select the model to be used according to the task.  
-   Currently stick with `YOLOv8`.
- - Choose the Head (Task)  
-   Modern YOLO models can do object detection, segmentation and key points detection.
+   Currently stick with `U-Net` based models.  
+   For easy tasks, where peed matters, one could consider `YOLOv8`.
  - Select the Hyper Parameters  
    Select the size of the model according to run time and training time constraints. In case of a doubt, start with the smallest.
  - Code the Scripts  
@@ -366,41 +414,38 @@ One could generalize the model by using any given interpolation method instead o
 
 :::{#tight-div .incremental}
  * By definition the problem is _imbalanced_ (Background).
- * The most common score is the _Mean Average Precision_ (mAP).
+ * The most common score is the _Intersection over Union_ (IoU).
 :::
 
 . . .
 
 :::{#tight-math}
-$$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{TP}_{\text{c}} + \text{FP}_{\text{c}} } $$
+ $$\operatorname{IoU} \left( \MyClr{green}{{B}_{i}}, \MyClr{red}{{B}_{j}} \right) = \frac{ \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \cap \MyClr{red}{{B}_{j}} \right) }{ \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \cup \MyClr{red}{{B}_{j}} \right) }$$
 :::
 
-![](https://i.imgur.com/H3clPrk.png){#tight-fig fig-align="center" height="400px"}
+![](https://i.imgur.com/5eC3qV8.png){#tight-fig fig-align="center" height="350px" style="margin: 0px;"}
+
+:::{#tight-div}
+[**Credit**: [Learn OpenCV - Intersection over Union (IoU) in Object Detection & Segmentation](https://learnopencv.com/intersection-over-union-iou-in-object-detection-and-segmentation/)]{style="font-size: 40%;"}
+:::
 
 ## Score {.unlisted auto-animate="true"}
 
-:::{#tight-div}
- * The most common score is the _Mean Average Precision_ (mAP).
-:::
-
-:::{#tight-math}
-$$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{TP}_{\text{c}} + \text{FP}_{\text{c}} } $$
+:::{#tight-div .incremental}
+ * By definition the problem is _imbalanced_ (Background).
+ * A common score / loss is the _Dice Score_ .
 :::
 
 . . .
 
-![](https://i.imgur.com/vPavBI6.png){#tight-fig fig-align="center" height="450px"}
+:::{#tight-math}
+ $$\operatorname{IoU} \left( \MyClr{green}{{B}_{i}}, \MyClr{red}{{B}_{j}} \right) = \frac{ 2 \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \cap \MyClr{red}{{B}_{j}} \right) }{ \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \right) + \operatorname{Area} \left( \MyClr{red}{{B}_{j}} \right) }$$
+:::
 
-## Real World Measures {.unlisted}
+![](https://i.imgur.com/gKq7VEU.png){#tight-fig fig-align="center" height="350px" style="margin: 0px;"}
 
-:::{.incremental}
- * While `mAP` is not ideal, it is common ("Best we have").
- * In some cases one might want to analyze different aspects:
-    * Performance on specific type of objects.  
-      For instance, small objects.
-    * Analyze classification errors (Confusion Matrix).
-    * Analyze regression errors: Size, Locations (Biases).
-    * Analysis per class / weighted by classes.
+:::{#tight-div}
+[**Credit**: [Understanding Jaccard’s Index and Dice Coefficient in Object Detection and Image Segmentation](https://ogre51.medium.com/861c4a496b2b)]{style="font-size: 40%;"}
 :::
 
 # Test Case - Cats & Dog Segmentation
@@ -428,9 +473,9 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
 
 :::{.incremental}
  * Based on [The Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets).
- * Each image is a _Full HD_ RGB image (`1920x1080x3`).
- * The images are extracted form a YouTube video (Frame).
- * In some images there might no objects to detect. 
+ * Each image is an RGB image.
+ * Image dimensions is **non constant**.
+ * Masks are in the range `[1, 2, 3]`. 
 :::
 
 . . .
@@ -438,78 +483,15 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
 :::{.callout-caution icon=false}
 #### [{{< iconify logos python >}}]{style="color: #02b875;"} Coding Task
 
- * Run the script `0002Dataset.py`.
+ * Run the script `0001Dataset.py`.
  * Ensure the data in the folder `Data`.
- * The folder should contain 300 `png` files.
 :::
 
 ## The Model {.unlisted}
 
-:::{.incremental}
- * The Model: [`Ultralytics YOLOv8n`](https://github.com/ultralytics/ultralytics).
- * Set for _Object Detection_.
- * Image Input Size: `640x640`.
- * [Grid Size](https://github.com/ultralytics/ultralytics/issues/8863): `[80x80, 40x40, 20x20]`.  
-   See [Defaults YOLOv8 Grid Size](https://stackoverflow.com/questions/75904407).
- * Number of Parameters: `3.2e6`.
-:::
-
-. . .
-
-:::{.callout-note title="The Model Size"}
-
-The choice of the smallest model (`n`) is due to the simplicity of the task and the constrained time for training.
-
-:::
-
 ## Labeling {.unlisted auto-animate="true"}
-
-:::{.incremental}
- * The labeling will done using the `LabelMe` JSON format.
- * The classes are: [`Ball`, `Referee`].  
-   Mind the _capitalization_ of the letters.
- * Don't label if the object is partial due being at the edge of the image.
- * Do label if the object is partially occluded.
- * Use Rectangle Polygon (Bounding Box by `Ctrl + R`).
- * The box should be as tight as possible.  
-   Use _Zoom In_.
-:::
-
-## Labeling {.unlisted auto-animate="true"}
-
-:::{style="font-size: 60%;"}
- * The labeling will done using the `LabelMe` JSON format.
- * The classes are: [`Ball`, `Referee`].  
-   Mind the _capitalization_ of the letters.
- * Don't label if the object is partial due being at the edge of the image.
- * Do label if the object is partially occluded.
- * Use Rectangle Polygon (Bounding Box).
- * The box should be as tight as possible.  
-   Use _Zoom In_.
-:::
-
-. . .
-
-:::{.callout-caution icon=false}
-#### [{{< iconify logos python >}}]{style="color: #02b875;"} Coding Task
-
- * Download [LabelMe](https://github.com/labelmeai/labelme).  
-   Use the pre compiled single file executables form `Releases`.
- * Put the [`.labelmerc`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_02/WorkShop002/.labelmerc) in `$USERFOLDER` / `$HOME`.
- * Run the program, load the folder and label your assigned files.
- * Upload the JSON files as instructed.
-:::
 
 ## Pre Processing the Data {.unlisted}
-
-:::{.incremental}
- * The image is relatively large (`1920x1080`).
- * The model was trained on `640x640` images with `[80x80, 40x40, 20x20]` grids.
- * Naive training means the data will be resized with factor `3`.
- * The ball size (_Bounding Box_) is about ~`12x12`.  
-   After factorization it will be ~`4x4` pixels which is too low for valid performance.
- * Solution: Tiled Detection (See [SAHI: Slicing Aided Hyper Inference](https://github.com/obss/sahi)).
-:::
 
 ## Training {.unlisted}
 
