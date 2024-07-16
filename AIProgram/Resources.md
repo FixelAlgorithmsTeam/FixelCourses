@@ -99,6 +99,8 @@ This file is a curated list of resources related to the course.
     - [Netron](https://github.com/lutzroeder/Netron).
  - [TorchDrift: Drift Detection for PyTorch](https://torchdrift.org) - A data and concept drift library for PyTorch. It lets you monitor your PyTorch models to see if they operate within spec.
  - [What Does It Mean that Deep Learning is NoN Parametric](https://lernapparat.de/statistics-deep-learning-nonparametric) - The regularization point of view on a Neural Network.
+ - [Machine (Deep) Learning Articles](https://github.com/christianversloot/machine-learning-articles) - A set of Markdown posts on applications and theory in Machine Learning. Focused on Deep Learning.
+ - [A Guide to Convolution Arithmetic for Deep Learning](https://arxiv.org/abs/1603.07285) - A visual deep overview of the Math of Convolution operations.
 
 
 ### Computer Vision
