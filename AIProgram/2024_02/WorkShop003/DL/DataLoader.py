@@ -18,6 +18,7 @@ import pathlib
 from typing import Any, Callable, Dict, Generator, List, Optional, Self, Set, Tuple, Union
 
 def ExtFileName( fullFileName: str ) -> str:
+    # Extracts the file name without the extension
 
     fileName, fileExt = os.path.splitext(fullFileName)
 

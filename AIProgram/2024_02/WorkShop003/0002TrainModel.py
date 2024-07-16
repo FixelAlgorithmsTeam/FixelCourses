@@ -226,7 +226,7 @@ oDataTrnsAnn = TorchVisionTrns.Compose([
     TorchVisionTrns.CenterCrop(imgSize),
     TorchVisionTrns.ToDtype(torch.long, scale = False),
     # TorchVisionTrns.Lambda(lambda x: torch.squeeze(x, dim = 0)),
-    SqueezeTrns(dim = 0),
+    SqueezeTrns(dim = 0), #<! (1 x H x W) -> (H x W)
 ])
 # oDataTrnsAnn = TorchVisionTrns.Compose([
 #     TorchVisionTrns.ToImage(),

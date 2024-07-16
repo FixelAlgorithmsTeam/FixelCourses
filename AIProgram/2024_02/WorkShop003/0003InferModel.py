@@ -170,7 +170,7 @@ vStd  = [0.25, 0.25, 0.25]
 lClass = ['Pet', 'Background', 'Border']
 
 modelFileName = 'BestModel_2024_07_11_863.pt' #<! https://drive.google.com/file/d/15UZlVEjyINpYAibETZGJDdNRsVkBRvBl
-
+dataFileName  = 'BestModel_2024_07_11_863.npz' #<! https://drive.google.com/file/d/1uL08rL7IO6vv7_X-f4PjLFeyWpaArQ_m/view?usp=drive_link
 
 
 # %% [markdown]
@@ -192,7 +192,7 @@ modelFileName = 'BestModel_2024_07_11_863.pt' #<! https://drive.google.com/file/
 # %% Load / Generate Data
 
 dsImgSeg    = ImageSegmentationDataset(dataSetPath)
-dSplitIdx   = np.load('BestModel_2024_07_11_863.npz') #<! TrainValSplit.npz of the run
+dSplitIdx   = np.load(dataFileName) #<! TrainValSplit.npz of the run
 vTrainIdx   = dSplitIdx['vTrainIdx']
 vValIdx     = dSplitIdx['vValIdx']
 lFilterSize = dSplitIdx['lFilterSize']

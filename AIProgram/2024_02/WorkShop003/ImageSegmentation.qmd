@@ -470,7 +470,7 @@ $$ \operatorname{ConvTranspose}_{\boldsymbol{W}} \left( \boldsymbol{z} \right) =
 
  * Download the Workshop files from [Fixel Courses](https://github.com/FixelAlgorithmsTeam/FixelCourses).  
    The files are located in `AIProgram/2024_02/WorkShop003`.
- * Create a `conda` environment based on [`EnvImageSegmentation.yml`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_02/WorkShop002/EnvObjectDetection.yml).
+ * Create a `conda` environment based on [`EnvImageSegmentation.yml`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_02/WorkShop003/EnvImageSegmentation.yml).
 :::
 
 ## The Data {.unlisted}

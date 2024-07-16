@@ -35,7 +35,7 @@ class Down(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size = 3):
         super().__init__()
         self.maxpool_conv = nn.Sequential(
-            nn.MaxPool2d(2), #<! Applying pooling first to improve performance
+            nn.MaxPool2d(2), #<! After skip connection, do downsample
             DoubleConv(in_channels, out_channels, kernel_size = kernel_size)
         )
 
@@ -68,13 +68,12 @@ class OutConv(nn.Module):
 
 
 class BuildUNet(nn.Module):
-    def __init__(self, n_channels, n_classes, filter_size, *, kernel_size = 3, top_layer = None):
+    def __init__(self, n_channels: int, n_classes: int, filter_size: List, *, kernel_size: int = 3, top_layer: Optional[Callable] = None):
         super(BuildUNet, self).__init__()
         # Assumption: filter_size[ii + 1] == 2 * filter_size[ii]
         # TODO: fix the above assumption by sending the actual size to the Up layer.
         # TODO: Check the code for small number of filters (1).
         # TODO: Works for input with even dimensions only
-        
         
         self.n_channels     = n_channels
         self.n_classes      = n_classes
