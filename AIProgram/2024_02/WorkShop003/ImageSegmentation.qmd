@@ -219,7 +219,7 @@ How can one create an _Object Detector_ from _Image Segmentor_?
 ## Image Segmentation Models {.unlisted auto-animate="true"}
 
 :::{.incremental} 
- - The first models were based on large image classification models with different haeds.
+ - The first models were based on large image classification models with different heads.
  - Later models used the concept of _Fully Convolutional Net_ (FCN).
  - The next evolution step was Encoder / Decoder architectures.
  - Modern models are based on U-Net like shape.
@@ -228,7 +228,7 @@ How can one create an _Object Detector_ from _Image Segmentor_?
 ## Image Segmentation Models {.unlisted auto-animate="true"}
 
 :::{style="font-size: 40%;"} 
- - The first models were based on large image classification models with different haeds.
+ - The first models were based on large image classification models with different heads.
  - Later models used the concept of _Fully Convolutional Net_ (FCN).
  - The next evolution step was Encoder / Decoder architectures.
  - Modern models are based on U-Net like shape.
@@ -241,7 +241,7 @@ How can one create an _Object Detector_ from _Image Segmentor_?
 ## Image Segmentation Models {.unlisted auto-animate="true"}
 
 :::{style="font-size: 100%;"} 
- - The first models were based on large image classification models with different haeds.
+ - The first models were based on large image classification models with different heads.
  - Later models used the concept of _Fully Convolutional Net_ (FCN).
  - The next evolution step was Encoder / Decoder architectures.
  - Modern models are based on U-Net like shape.
@@ -370,6 +370,10 @@ $$ \operatorname{ConvTranspose}_{\boldsymbol{W}} \left( \boldsymbol{z} \right) =
 ## U-Net {.unlisted auto-animate="true"}
 
 ![](https://i.imgur.com/fwEB4Cf.png){#tight-fig fig-align="center"}
+
+## U-Net Blocks {.unlisted auto-animate="true"}
+
+![](https://i.imgur.com/YDcd4sw.png){#tight-fig fig-align="center"}
 
 
 

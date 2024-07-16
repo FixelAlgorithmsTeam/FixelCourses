@@ -30,12 +30,12 @@ class DoubleConv(nn.Module):
 
 
 class Down(nn.Module):
-    """Downscaling with MaxPool then double Conv"""
+    """Encoder Block - Downscaling with MaxPool then double Conv"""
 
     def __init__(self, in_channels, out_channels, kernel_size = 3):
         super().__init__()
         self.maxpool_conv = nn.Sequential(
-            nn.MaxPool2d(2),
+            nn.MaxPool2d(2), #<! Applying pooling first to improve performance
             DoubleConv(in_channels, out_channels, kernel_size = kernel_size)
         )
 
@@ -44,7 +44,7 @@ class Down(nn.Module):
 
 
 class Up(nn.Module):
-    """Upscaling then double Conv"""
+    """Decoder Block - Upscaling then double Conv"""
 
     def __init__(self, in_channels, out_channels, kernel_size = 3):
         super().__init__()
