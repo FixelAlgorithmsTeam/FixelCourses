@@ -443,7 +443,7 @@ $$ \operatorname{ConvTranspose}_{\boldsymbol{W}} \left( \boldsymbol{z} \right) =
 . . .
 
 :::{#tight-math}
- $$\operatorname{IoU} \left( \MyClr{green}{{B}_{i}}, \MyClr{red}{{B}_{j}} \right) = \frac{ 2 \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \cap \MyClr{red}{{B}_{j}} \right) }{ \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \right) + \operatorname{Area} \left( \MyClr{red}{{B}_{j}} \right) }$$
+ $$\operatorname{Dice} \left( \MyClr{green}{{B}_{i}}, \MyClr{red}{{B}_{j}} \right) = \frac{ 2 \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \cap \MyClr{red}{{B}_{j}} \right) }{ \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \right) + \operatorname{Area} \left( \MyClr{red}{{B}_{j}} \right) }$$
 :::
 
 ![](https://i.imgur.com/gKq7VEU.png){#tight-fig fig-align="center" height="350px" style="margin: 0px;"}
@@ -457,9 +457,9 @@ $$ \operatorname{ConvTranspose}_{\boldsymbol{W}} \left( \boldsymbol{z} \right) =
 ## The Task {.unlisted}
 
 :::{.incremental}
- * Given an Image, Classify each pixel into 3 classes:
-    * Segment Dog pixels.
-    * Segment Cat pixel.
+ * Given an Image, Classify each pixel into 3 classes (_Trimap_):
+    * Segment Dog / Cat (Pet) pixels.
+    * Segment Edge pixels.
     * Segment Background pixels.
 :::
 

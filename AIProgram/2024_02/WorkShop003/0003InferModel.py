@@ -169,8 +169,8 @@ vStd  = [0.25, 0.25, 0.25]
 
 lClass = ['Pet', 'Background', 'Border']
 
-modelFileName = 'BestModel_2024_07_11_863.pt' #<! https://drive.google.com/file/d/15UZlVEjyINpYAibETZGJDdNRsVkBRvBl
-dataFileName  = 'BestModel_2024_07_11_863.npz' #<! https://drive.google.com/file/d/1uL08rL7IO6vv7_X-f4PjLFeyWpaArQ_m/view?usp=drive_link
+modelFileName = 'BestModel_2024_07_11_863.pt'  #<! https://drive.google.com/file/d/15UZlVEjyINpYAibETZGJDdNRsVkBRvBl
+dataFileName  = 'BestModel_2024_07_11_863.npz' #<! https://drive.google.com/file/d/1uL08rL7IO6vv7_X-f4PjLFeyWpaArQ_m
 
 
 # %% [markdown]
@@ -275,7 +275,8 @@ imgIdx      = vTrainIdx[imgIdx]
 mI, mM = dsImgSeg[imgIdx]
 tI = mI.to(runDevice)
 tI = tI[None, :, :, :]
-tO = oModel(tI)
+with torch.inference_mode():
+    tO = oModel(tI)
 mP = ModelToMask(tO)
 
 hF = PlotMasks(np.transpose(mI.cpu().numpy(), (1, 2, 0)), mM.cpu().numpy(), mP = mP)
@@ -289,7 +290,8 @@ imgIdx      = vValIdx[imgIdx]
 mI, mM = dsImgSeg[imgIdx]
 tI = mI.to(runDevice)
 tI = tI[None, :, :, :]
-tO = oModel(tI)
+with torch.inference_mode():
+    tO = oModel(tI)
 mP = ModelToMask(tO)
 
 hF = PlotMasks(np.transpose(mI.cpu().numpy(), (1, 2, 0)), mM.cpu().numpy(), mP = mP)
@@ -304,7 +306,8 @@ for ii, imgIdx in enumerate(vValIdx):
     mI, mM = dsImgSeg[imgIdx]
     tI = mI.to(runDevice)
     tI = tI[None, :, :, :]
-    tO = oModel(tI)
+    with torch.inference_mode():
+        tO = oModel(tI)
     tO = tO.to('cpu').detach()
     
     if imgIdx in [6010, 4710, 1105]: #<! Fails

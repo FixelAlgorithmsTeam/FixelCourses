@@ -361,7 +361,8 @@ imgIdx      = random.randrange(numSamples)
 mI, mM = dsVal[imgIdx]
 tI = mI.to(runDevice)
 tI = tI[None, :, :, :]
-tO = oModel(tI)
+with torch.inference_mode():
+    tO = oModel(tI)
 mP = ModelToMask(tO)
 
 hF = PlotMasks(np.transpose(mI.cpu().numpy(), (1, 2, 0)), mM.cpu().numpy(), mP = mP)
