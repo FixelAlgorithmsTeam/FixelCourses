@@ -101,6 +101,7 @@ This file is a curated list of resources related to the course.
  - [What Does It Mean that Deep Learning is NoN Parametric](https://lernapparat.de/statistics-deep-learning-nonparametric) - The regularization point of view on a Neural Network.
  - [Machine (Deep) Learning Articles](https://github.com/christianversloot/machine-learning-articles) - A set of Markdown posts on applications and theory in Machine Learning. Focused on Deep Learning.
  - [A Guide to Convolution Arithmetic for Deep Learning](https://arxiv.org/abs/1603.07285) - A visual deep overview of the Math of Convolution operations.
+ - [Label Smoothing Mathematics](https://leimao.github.io/blog/Label-Smoothing) - A deep dive into the mathematics of Label Smoothing.
 
 
 ### Computer Vision
@@ -175,6 +176,8 @@ This file is a curated list of resources related to the course.
  - [Pharmaceutical Drugs and Vitamins Dataset V2](https://www.kaggle.com/datasets/vencerlanz09/pharmaceutical-drugs-and-vitamins-dataset-v2).
  - [Motion based Segmentation and Recognition Dataset](http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid).
  - [DAVIS: Densely Annotated VIdeo Segmentation](https://davischallenge.org).
+ - [Deep Learning — Computer Vision (CV) Using Transfer Learning (ResNet-18) in Pytorch — Skin Cancer Classification](https://scribe.rip/8d5b158893c5).
+ - [Skin Cancer ISIC](https://www.kaggle.com/datasets/nodoubttome/skin-cancer9-classesisic) - Multi Class Sking Cancer.
 
 
 ## Miscellaneous
