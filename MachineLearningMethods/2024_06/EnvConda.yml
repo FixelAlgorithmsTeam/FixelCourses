@@ -13,6 +13,7 @@ dependencies:
   - xgboost
   - lightgbm
   - umap-learn
+  - kneed
   - jupyter
   - ipykernel
   - ipywidgets
