@@ -42,7 +42,7 @@ numIn   = 1000; %<! Number of Inputs
 mA = randn(numRows, numCols);
 mB = randn(numRows, numIn);
 
-% Refernce Solution
+% Reference Solution
 mXRef = mA \ mB;
 
 mX = zeros(numCols, numIn);

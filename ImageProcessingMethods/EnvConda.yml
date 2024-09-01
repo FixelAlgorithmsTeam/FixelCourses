@@ -1,28 +1,30 @@
-name: ImageProcessingPython
+name: ImageProcessing
 channels:
-  - numba
   - conda-forge
 dependencies:
-  - python=3.11
+  - python=3.12
   - numpy
   - scipy
   - pandas
   - numba
-  - scikit-learn
-  - umap-learn
   - jupyter
   - ipykernel
   - ipywidgets
-  - matplotlib
-  - seaborn
-  - bokeh
-  - plotly
-  - graphviz
+  - cvxpy
+  - scikit-learn
   - xgboost
   - lightgbm
+  - umap-learn
+  - kneed
   - scikit-image
   - opencv
   - pillow
+  - matplotlib
+  - seaborn
+  - plotly
+  - graphviz
   - pydot
+  - distinctipy
   - rich
   - autograd
+  - gdown
