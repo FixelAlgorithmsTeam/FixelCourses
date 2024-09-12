@@ -1,0 +1,29 @@
+name: OptimizationMethods
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - blas=*=mkl
+  - libblas=*=*mkl
+  - numpy
+  - scipy
+  - pandas
+  - numba
+  - cvxpy
+  - scikit-learn
+  - xgboost
+  - lightgbm
+  - kneed
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - scikit-image
+  - matplotlib
+  - seaborn
+  - plotly
+  - graphviz
+  - pydot
+  - distinctipy
+  - rich
+  - autograd
+  - gdown
