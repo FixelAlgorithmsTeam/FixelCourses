@@ -7,5 +7,5 @@
 This folder is dedicated to the course [Optimization Methods](https://fixelalgorithms.gitlab.io/courses/optimizationmethods) by [Fixel Algorithms](https://fixelalgorithms.gitlab.io/).
 
  - [Resources](./Resources.md).
- - [Class of 2023/12](./2023_12).
- - [Class of 2024/11](./2024_11).
+ - [Class of 12/2023](./2023_12).
+ - [Class of 11/2024](./2024_11).
