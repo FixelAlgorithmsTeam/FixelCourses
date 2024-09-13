@@ -20,7 +20,7 @@ function [ vX ] = TotalLeastSquares( mA, vB, tlsThr )
 %                       Type: 'Single' / 'Double'.
 %                       Range: {1, 2, 3, 4}.
 %   - stepSize      -   Step Size.
-%                       The step size used in the defailt mode (Constant).
+%                       The step size used in the default mode (Constant).
 %                       Structure: Scalar.
 %                       Type: 'Single' / 'Double'.
 %                       Range: Positive.
@@ -31,7 +31,7 @@ function [ vX ] = TotalLeastSquares( mA, vB, tlsThr )
 %                       Type: Function Handler.
 %                       Range: NA.
 %   - paramLambda   -   Forgetting Factor.
-%                       The forgetting factor fo the sequential least
+%                       The forgetting factor of the sequential least
 %                       squares.
 %                       Structure: Scalar.
 %                       Type: 'Single' / 'Double'.

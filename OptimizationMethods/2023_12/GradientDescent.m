@@ -20,7 +20,7 @@ function [ mX ] = GradientDescent( mX, hGradFun, stepSizeMode, stepSize, hObjFun
 %                       Type: 'Single' / 'Double'.
 %                       Range: {1, 2, 3, 4}.
 %   - stepSize      -   Step Size.
-%                       The step size used in the defailt mode (Constant).
+%                       The step size used in the default mode (Constant).
 %                       Structure: Scalar.
 %                       Type: 'Single' / 'Double'.
 %                       Range: Positive.
@@ -31,7 +31,7 @@ function [ mX ] = GradientDescent( mX, hGradFun, stepSizeMode, stepSize, hObjFun
 %                       Type: Function Handler.
 %                       Range: NA.
 %   - paramAlpha    -   Step Size.
-%                       The step size used in the defailt mode (Constant).
+%                       The step size used in the default mode (Constant).
 %                       Structure: Scalar.
 %                       Type: 'Single' / 'Double'.
 %                       Range: Positive.
@@ -99,7 +99,7 @@ for ii = 2:numIterations
             paramMu = max(1e-9, paramMu);
             paramMu = paramMu / paramAlpha;
         otherwise
-            % Deafult until all modes are implemented
+            % Default until all modes are implemented
             vG(:) = paramPu * vG;
     end
     vX(:) = vX - vG; %<! vG is already scaled

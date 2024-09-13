@@ -22,12 +22,12 @@ function [ mX ] = ProxGradientDescentAccel( mX, hGradFun, hProxFun, stepSize, pa
 %                       Type: Function Handler.
 %                       Range: NA.
 %   - stepSize      -   Step Size.
-%                       The step size used in the defailt mode (Constant).
+%                       The step size used in the default mode (Constant).
 %                       Structure: Scalar.
 %                       Type: 'Single' / 'Double'.
 %                       Range: Positive.
 %   - paramLambda   -   The Lambda Parameter.
-%                       The factor of the g(x) funciton in the model.
+%                       The factor of the g(x) function in the model.
 %                       Structure: Scalar.
 %                       Type: 'Single' / 'Double'.
 %                       Range: Non Negative.
