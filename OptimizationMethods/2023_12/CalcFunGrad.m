@@ -38,7 +38,7 @@ function [ vG ] = CalcFunGrad( vX, hObjFun, diffMode, epsVal )
 % Remarks:
 %   1.  Adapt `min()`, `max()`, `abs()` and `'` in the code to work
 %       properly on complex numbers. Pay attention to all functions that
-%       use `abs()` implictly (For instance, Norms).
+%       use `abs()` implicitly (For instance, Norms).
 % TODO:
 %   1.  U.
 % Release Notes:

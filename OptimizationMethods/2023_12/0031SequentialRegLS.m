@@ -92,6 +92,7 @@ if(generateFigures == ON)
     exportgraphics(hF, ['Figure', num2str(figureIdx, figureCounterSpec), '.emf'], 'BackgroundColor', 'none');
 end
 
+
 %% Least Squares Solution
 % The reference for the sequential results.
 
@@ -136,7 +137,7 @@ if(generateFigures == ON)
 end
 
 
-%% Sequetial LS
+%% Sequential LS
 
 mXSLS = zeros(size(vX, 1), numSamples - numSamplesBatch + 1);
 

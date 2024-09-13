@@ -21,7 +21,7 @@ function [ mK ] = CreateConvMtx1D( vK, numElements, convShape )
 %   - convShape         -   Convolution Shape.
 %                           The shape of the convolution which the output
 %                           convolution matrix should represent. The
-%                           options should match MATLAB's conv2() function
+%                           options should match MATLAB's `conv2()` function
 %                           - Full / Same / Valid.
 %                           Structure: Scalar.
 %                           Type: 'Single' / 'Double'.

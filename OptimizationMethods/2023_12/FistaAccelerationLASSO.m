@@ -1,4 +1,4 @@
-% FISTA Accelerationn - Solving LASSO
+% FISTA Acceleration - Solving LASSO
 % Compares FISTA Accelerated Gradient Descent vs. vanilla Gradient Descent.
 % References:
 %   1.  

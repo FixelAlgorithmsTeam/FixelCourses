@@ -45,7 +45,7 @@ mI = mean(im2double(mI), 3); %<! Grayscale image
 
 %?%?%?
 % - Given the image dimensions and `paramK`. If each `paramK x paramK` patch
-% is a column in a matrix, what would be the matrux dimensions?
+% is a column in a matrix, what would be the matrix dimensions?
 
 mD = im2col(mI, [paramK, paramK], 'distinct'); %<! Each column is a block
 

@@ -41,7 +41,7 @@ STEP_SIZE_MODE_LINE_SEARCH  = 3;
 %% Parameters
 
 % Data
-numRows = 30; %<! Num functions
+numRows = 30; %<! Number of functions
 numCols = 5; %<! Data Dimensions
 
 % Solver
@@ -64,7 +64,7 @@ hObjFun = @(vX) max(mA * vX + vB);
 
 %% Sub Gradient Method
 % 1. Derive the subgradient of the function.
-% 2. Immplement the Sub Gradient as `hSubGradFun(vX)`.
+% 2. Implement the Sub Gradient as `hSubGradFun(vX)`.
 % 2. Implement the Sub Gradient Method. Choose the step size correctly.
 
 %----------------------------<Fill This>----------------------------%
@@ -88,7 +88,7 @@ end
 
 %% DCP Optimization
 % 1. Formulate the problem in CVX.
-%    Use vXRef for the optimal argument.
+%    Use `vXRef` for the optimal argument.
 
 % cvx_solver('SDPT3'); %<! Default
 cvx_solver('SeDuMi'); %<! Faster than 'SDPT3', yet less accurate
@@ -143,7 +143,6 @@ end
 %?%?%?
 % - Why is the objective not monotonic decreasing?
 % - What will happen if we set numRows ~= numCols? Think about the random directions.
-
 
 
 %% Auxiliary Functions

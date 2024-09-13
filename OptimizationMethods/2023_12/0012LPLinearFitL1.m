@@ -26,6 +26,7 @@ figureCounterSpec   = '%04d';
 
 generateFigures = OFF;
 
+
 %% Constants
 
 CONVOLUTION_SHAPE_FULL  = 1;
@@ -58,7 +59,6 @@ modelIntercept  = 0;
 errTol      = 1e-6;
 
 % Visualization
-
 
 
 %% Generate / Load Data

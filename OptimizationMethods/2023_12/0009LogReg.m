@@ -44,7 +44,7 @@ STEP_SIZE_MODE_LINE_SEARCH  = 3;
 % Data
 dataFileName = 'LogRegData.mat';
 
-% Numerical Differntiation
+% Numerical Differentiation
 diffMode    = DIFF_MODE_CENTRAL;
 errTol      = 1e-6;
 

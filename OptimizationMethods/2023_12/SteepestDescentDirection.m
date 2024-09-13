@@ -1,4 +1,4 @@
-% Optimization Methods - Steepset Descent Direction
+% Optimization Methods - Steepest Descent Direction
 % Shows the directions of the steepest descent under different norms.
 % Remarks:
 %   1.  sa
@@ -221,7 +221,7 @@ disp(['The Optimal Argument Is Given By - [ ', num2str(vX.'), ' ]']);
 [vD, vX, vDescentVectorL1]
 
 
-%% Quesiton 005
+%% Question 005
 
 vCondNumber = [1, 10, 100, 1000, 10000];
 vIterIdx    = [0:1000];

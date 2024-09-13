@@ -165,13 +165,13 @@ DisplayRunSummary(cLegendString{solverIdx}, hObjFun, mX(:, end), runTime);
 
 %% Solution by ADMM
 % 1. Set `hMinFun = @(vZ, vW, paramRho) ...`.  
-%    It minizes the term with regard to x.
+%    It minimizes the term with regard to x.
 %    You may assume `paramRho` is constant.
 % 2. Set `hProxFun = @(vY, paramLambda) ...`.
-%    It applies the Proximal Operator with reagrd to g().
+%    It applies the Proximal Operator with regard to g().
 
 % You may find this useful
-mDD = paramRho * (mD.' * mD); %<! In prctice, much better use operators
+mDD = paramRho * (mD.' * mD); %<! In practice, much better use operators
 mHH = mH.' * mH;
 vHy = mH.' * vY;
 mHDC = decomposition(mHH + mDD, 'chol'); %!< Assuming their null space is exclusive
@@ -264,7 +264,7 @@ if(generateFigures == ON)
 end
 
 %?%?%?
-% - How can we imporve the results?
+% - How can we improve the results?
 %   Think of the step size of the PGD vs. what's needed for Sub Gradient method.
 
 

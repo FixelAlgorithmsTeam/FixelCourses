@@ -44,7 +44,7 @@ STEP_SIZE_MODE_LINE_SEARCH  = 3;
 numRows = 20;
 numCols = numRows;
 
-% Numerical Differntiation
+% Numerical Differentiation
 diffMode    = DIFF_MODE_CENTRAL;
 errTol      = 1e-6;
 

@@ -148,7 +148,7 @@ sCvxSol.cvxOptVal = hObjFun(vX);
 %    It minimizes the term with regard to x.
 %    You may assume `paramRho` is constant.
 % 3. Set `hProxFun = @(vY, paramLambda) ...`.
-%    It applies the Proximal Operator with reagrd to g().
+%    It applies the Proximal Operator with regard to g().
 
 % You may find this useful
 mDD = speye(numSamples) + paramRho * (mD.' * mD); %<! In practice, much better use operators
@@ -264,7 +264,7 @@ end
 
 %?%?%?
 % - How will increasing λ will affect the result?
-%   Think of whta will beome more sparse.
+%   Think of what will become more sparse.
 % - Can we achieve higher order polynomial? How?
 
 

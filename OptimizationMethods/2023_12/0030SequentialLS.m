@@ -134,7 +134,7 @@ if(generateFigures == ON)
 end
 
 
-%% Sequetial LS
+%% Sequential LS
 
 mXSLS = zeros(size(vX, 1), numSamples - numSamplesBatch + 1);
 

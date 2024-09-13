@@ -172,6 +172,7 @@ disp(['The CVX Solver Status - ', cvx_status]);
 disp(['The Run Time Is Given By - ', num2str(runTime), ' [Sec]']);
 disp([' ']);
 
+
 %% PGD / PGM Solution
 
 mX = ProxGradientDescent(mX, hGradFun, hProxFun, stepSize, paramLambda);
@@ -211,7 +212,6 @@ end
 %?%?%?
 % - How can you verify the step size?
 % - Look at the values of `vXLs` vs. `vXCvx`. Are they different? Why?
-
 
 
 %% Auxiliary Functions

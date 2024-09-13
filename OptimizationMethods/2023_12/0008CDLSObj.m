@@ -1,6 +1,6 @@
 % Optimization Methods
-% Convex Optimization - Smooth Optimization - Cooridnate Descent
-% Solving a least squares porblem using Coordinate Descent.
+% Convex Optimization - Smooth Optimization - Coordinate Descent
+% Solving a least squares problem using Coordinate Descent.
 % The model is given by:
 % $$ 0.5 * || A x - y ||_2^2 $$
 % References:
@@ -43,7 +43,7 @@ STEP_SIZE_MODE_LINE_SEARCH  = 3;
 numRows = 20;
 numCols = numRows;
 
-% Numerical Differntiation
+% Numerical Differentiation
 diffMode    = DIFF_MODE_CENTRAL;
 errTol      = 1e-6;
 
@@ -95,7 +95,7 @@ disp(['The analytic implementation is verified']);
 
 %% Coordinate Descent
 % 1. Create a function called 'GradientDescent()` according to the template.
-% 2. Implemnt the adaptive step size logic (Backtracking like).
+% 2. Implement the adaptive step size logic (Backtracking like).
 
 mX = CoordinateDescent(mX, hObjFunGrad, stepSizeMode, stepSize, hObjFun);
 

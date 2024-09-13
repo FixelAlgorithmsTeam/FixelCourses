@@ -120,7 +120,7 @@ end
 
 
 
-%% Super Resolutuion by L1 Solution
+%% Super Resolution by L1 Solution
 
 
 

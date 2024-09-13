@@ -51,7 +51,7 @@ load(sudokuBoardFileName);
 numRows = BOARD_NUM_ROWS;
 
 % For Integer Programming we could just create a 2D array and impose
-% constarints and values. 
+% constraints and values. 
 % Yet to use Linear Programming we will use a binary formulation by setting
 % a 3D tensor `tX` where `[9, 9, 9] = size(tX)` and if `tX(ii, jj, kk) = 1`
 % it suggests that the value of the `ii, jj` cell on the board is `kk`.
@@ -75,13 +75,13 @@ vF = zeros(numVar, 1);
 numClues = size(mB, 1);
 numConst = 4 * (numRows ^ 2); %<! Equality to clues using lower bounds
 
-% Constarint Matrix
+% Constraint Matrix
 % mA * vX = vB;
 % Assuming `vX = tX(:)` -> Column based
 mA = zeros(numConst, numVar);
 
 conA = 0; %<! Index of the constraint
-% Columns Constraits
+% Columns Constraints
 itmIdx = 1; %<! First item in Column / Row / 3rd Dim Slice index
 for ii = 1:(numRows * numRows)
     conA = conA + 1;
@@ -92,7 +92,7 @@ end
 %?%?%?
 % Can you do it using `kron()`?
 
-% Rows Constraits
+% Rows Constraints
 itmIdx = 1; %<! First item in Column / Row / 3rd Dim Slice index
 for ii = 1:(numRows * numRows)
     conA = conA + 1;
@@ -107,7 +107,7 @@ end
 %?%?%?
 % Can you do it using `kron()`?
 
-% Depth Slice Constraits
+% Depth Slice Constraints
 itmIdx = 1; %<! First item in Column / Row / 3rd Dim Slice index
 for ii = 1:(numRows * numRows)
     conA = conA + 1;
@@ -116,7 +116,7 @@ for ii = 1:(numRows * numRows)
     itmIdx = itmIdx + 1;
 end
 
-% Sub Grid Constraits
+% Sub Grid Constraints
 itmIdx = 0; %<! First item in Column / Row / 3rd Dim Slice index
 for kk = 1:numRows
     for nn = 0:3:6
@@ -134,7 +134,7 @@ for kk = 1:numRows
     end
 end
 
-% Equality Const
+% Equality Constraints
 vB = ones(numConst, 1);
 
 vL = zeros(numVar, 1); %<! Lower Bound - 0
@@ -158,7 +158,7 @@ vX = linprog(vF, [], [], mA, vB, vL, vU, sSolverOpt);
 
 
 %% Integer Linear Programming Optimization
-% Using MATLAB's intlinprog()`
+% Using MATLAB's `intlinprog()`
 
 % vIntFlag = 1:numVar;
 % 

@@ -1,4 +1,4 @@
-% FISTA Accelerationn - Solving Linear Least Squares
+% FISTA Acceleration - Solving Linear Least Squares
 % Compares FISTA Accelerated Gradient Descent vs. vanilla Gradient Descent.
 % References:
 %   1.  

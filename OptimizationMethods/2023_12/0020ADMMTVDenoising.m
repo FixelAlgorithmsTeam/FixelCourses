@@ -124,7 +124,7 @@ sCvxSol.cvxOptVal = hObjFun(vX);
 %    It minimizes the term with regard to x.
 %    You may assume `paramRho` is constant.
 % 3. Set `hProxFun = @(vY, paramLambda) ...`.
-%    It applies the Proximal Operator with reagrd to g().
+%    It applies the Proximal Operator with regard to g().
 
 % You may find this useful
 mDD = speye(numSamples) + paramRho * (mD.' * mD); %<! In practice, much better use operators
@@ -239,7 +239,7 @@ if(generateFigures == ON)
 end
 
 %?%?%?
-% - How can we imporve the results?
+% - How can we improve the results?
 %   Think of the step size of the PGD vs. what's needed for Sub Gradient method.
 
 

@@ -1,6 +1,6 @@
 % Optimization Methods
 % SVD & Linear Least Squares - SVD Pseudo Inverse
-% Solving lineear equations using the SVD.
+% Solving linear equations using the SVD.
 % This scripts reproduce the examples in the slides.
 % References:
 %   1.  

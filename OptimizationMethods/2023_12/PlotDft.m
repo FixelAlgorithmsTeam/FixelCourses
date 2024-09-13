@@ -98,7 +98,7 @@ function [ hF, hA, hL ] = PlotDft( mX, samplingFrequency, sPlotDftOpt )
 %   -   1.3.001     18/07/2021  Royi Avital     RoyiAvital@yahoo.com
 %       *   Fixed issue with multiple signals when the legend string
 %           `plotLegend` isn't given.
-%       *   Fixed issue with `singleSideFlag` in case the samplig frequency
+%       *   Fixed issue with `singleSideFlag` in case the sampling frequency
 %           is a fraction.
 %       *   Added `removeDc` option.
 %   -   1.3.000     31/03/2021  Royi Avital     RoyiAvital@yahoo.com

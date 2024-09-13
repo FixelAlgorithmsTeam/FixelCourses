@@ -72,7 +72,6 @@ set(get(hA, 'XLabel'), 'String', {['x_1']}, 'FontSize', fontSizeAxis);
 set(get(hA, 'YLabel'), 'String', {['x_2']}, 'FontSize', fontSizeAxis);
 
 
-
 %% DCP Optimization
 % The model is given by:
 % $$ \arg \min_{c, r} r $$
@@ -120,7 +119,6 @@ set(hRectObj, 'EdgeColor', 'red', 'LineWidth', lineWidthNormal);
 hSctrObj = scatter(vC(1), vC(2), 'filled', 'DisplayName', 'Bounding Circle');
 set(hSctrObj, 'SizeData', 100, 'MarkerFaceColor', 'r');
 ClickableLegend();
-
 
 
 %% Auxiliary Functions

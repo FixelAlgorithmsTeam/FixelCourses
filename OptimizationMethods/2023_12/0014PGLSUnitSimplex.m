@@ -51,7 +51,7 @@ numSamples  = 110;
 noiseStd    = 0.075; %<! Try higher values to compare to LS
 convShape   = CONVOLUTION_SHAPE_VALID;
 
-% Numerical Differntiation
+% Numerical Differentiation
 diffMode    = DIFF_MODE_CENTRAL;
 errTol      = 1e-6;
 
@@ -69,7 +69,7 @@ numIterations   = 2500;
 % In our case the LTI system is built by an HPF filter:
 % vY = conv(vX, vH) + vN
 % where vH are the filter coefficients to estimate, vX is the data samples,
-% vN is the AWGN and vY are the givem measurements.  
+% vN is the AWGN and vY are the given measurements.  
 % In matrix form:
 % vY = mX * vH + vN
 % Here, mX is the convolution matrix built by the data samples.

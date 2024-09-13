@@ -2,7 +2,7 @@
 % SVD & Linear Least Squares - Regularized Least Squares.
 % Solving:
 % $$ \arg \min_{x} 0.5 * || A * x - y ||_2^2 + λ ||x||_2^2
-% This secript shows the ability of λ to assist with preventing overfit.
+% This script shows the ability of λ to assist with preventing overfit.
 % References:
 %   1.  
 % Remarks:

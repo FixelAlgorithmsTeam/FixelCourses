@@ -12,7 +12,7 @@ end
 
 mAx = mA * vX;
 
-% Hadmard Prodcut instead of the diagonal
+% Hadamard Product instead of the diagonal
 vG = mA.' * (CalcDerivSigmoidFun(mAx) .* (CalcSigmoidFun(mAx) - vY));
 
 

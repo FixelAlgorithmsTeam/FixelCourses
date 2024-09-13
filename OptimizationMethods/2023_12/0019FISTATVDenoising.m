@@ -124,7 +124,7 @@ sCvxSol.cvxOptVal = hObjFun(vX);
 % We will use the functions `ProxGradientDescent()` and
 % `ProxGradientDescentAccel()` to drive our Sub Gradient and Accelerated Sub
 % Gradient solutions. Since the PGD is a generalization of the Sub Gradient
-% Method with a proper choice of the Prox function it cna yiled the
+% Method with a proper choice of the Prox function it can yield the
 % required results.
 % 1. Create a function called `ProxGradientDescentAccel( mX, hGradFun, hProxFun, stepSize, paramLambda )`.   
 %    Implement the accelerated Proximal Gradient Descent in it.
@@ -240,7 +240,7 @@ if(generateFigures == ON)
 end
 
 %?%?%?
-% - How can we imporve the results?
+% - How can we improve the results?
 %   Think of the step size of the PGD vs. what's needed for Sub Gradient method.
 
 
