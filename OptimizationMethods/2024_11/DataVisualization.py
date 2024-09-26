@@ -31,15 +31,6 @@ from typing import Callable, Dict, List, Optional, Set, Tuple, Union
 # Course Packages
 
 
-# See https://docs.python.org/3/library/enum.html
-@unique
-class DiffMode(Enum):
-    # Type of data in the CSV
-    BACKWARD    = auto()
-    CENTRAL     = auto()
-    FORWARD     = auto()
-    COMPLEX     = auto()
-
 # Constants
 FIG_SIZE_DEF    = (8, 8)
 ELM_SIZE_DEF    = 50
