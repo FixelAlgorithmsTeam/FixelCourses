@@ -1,6 +1,6 @@
 # %% [markdown]
 #
-# [![Fixel Algorithms](https://fixelalgorithms.co/images/CCExt.png)](https://fixelalgorithms.gitlab.io/)
+# [![Fixel Algorithms](https://fixelalgorithms.co/images/CCExt.png)](https://fixelalgorithms.gitlab.io)
 # 
 # # Object Detection Workshop
 # Downloads the Ball & Referee Dataset.

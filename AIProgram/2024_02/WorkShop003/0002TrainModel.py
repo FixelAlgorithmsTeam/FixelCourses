@@ -1,6 +1,6 @@
 # %% [markdown]
 #
-# [![Fixel Algorithms](https://fixelalgorithms.co/images/CCExt.png)](https://fixelalgorithms.gitlab.io/)
+# [![Fixel Algorithms](https://fixelalgorithms.co/images/CCExt.png)](https://fixelalgorithms.gitlab.io)
 # 
 # # Image Segmentation Workshop
 # Trains a U-Net model on the The Oxford-IIIT Pet Dataset.

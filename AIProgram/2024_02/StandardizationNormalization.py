@@ -1,6 +1,6 @@
 # %% [markdown]
 #
-# [![Fixel Algorithms](https://fixelalgorithms.co/images/CCExt.png)](https://fixelalgorithms.gitlab.io/)
+# [![Fixel Algorithms](https://fixelalgorithms.co/images/CCExt.png)](https://fixelalgorithms.gitlab.io)
 # 
 # # Machine Learning - Feature Engineering - Standardization vs. Normalization
 # Shows the effects of standardization vs. normalization.
