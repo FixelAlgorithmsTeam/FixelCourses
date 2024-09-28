@@ -90,7 +90,7 @@ mC = mColorOrder(1:2, :); %<! Binary
 mC = repelem(mC, 2, 1); %<! Avoids a bug in `contouf()` with binary colormap
 set(hA, 'Colormap', mC);
 
-PlotClassData(mX, vY, 'plotTitle', 'Binary Vlassification Data', 'hA', hA);
+PlotClassData(mX, vY, 'plotTitle', 'Binary Classification Data', 'hA', hA);
 set(hA, 'XLim',vLim, 'YLim', vLim);
 set(get(hA, 'XLabel'), 'String', {['x_1']}, 'FontSize', fontSizeAxis);
 set(get(hA, 'YLabel'), 'String', {['x_2']}, 'FontSize', fontSizeAxis);
@@ -130,6 +130,18 @@ mW = GradientDescent(mW, hObjFunGrad, stepSizeMode, stepSize, hObjFun);
 
 
 %% Display Results
+
+hF = figure('Position', figPosLarge);
+hA = axes(hF, 'Units', 'pixels');
+mColorOrder = get(hA, 'ColorOrder');
+mC = mColorOrder(1:2, :); %<! Binary
+mC = repelem(mC, 2, 1); %<! Avoids a bug in `contouf()` with binary colormap
+set(hA, 'Colormap', mC);
+
+PlotClassData(mX(:, 2:3), vY, 'plotTitle', 'Binary Classification Data', 'hA', hA);
+set(hA, 'XLim',vLim, 'YLim', vLim);
+set(get(hA, 'XLabel'), 'String', {['x_1']}, 'FontSize', fontSizeAxis);
+set(get(hA, 'YLabel'), 'String', {['x_2']}, 'FontSize', fontSizeAxis);
 
 
 ii = 1;
