@@ -51,6 +51,7 @@ class StepSizeMode(Enum):
     # Step size policy in Gradient Descent
     ADAPTIVE    = auto()
     CONSTANT    = auto()
+    LINE_SEARCH = auto()
 
 # Constants
 
@@ -58,7 +59,7 @@ class StepSizeMode(Enum):
 # Optimization
 
 class GradientDescent():
-    def __init__( self, vX: np.ndarray, hGradFun: Callable, μ: float, /, *, stepSizeMode: StepSizeMode = StepSizeMode.CONSTANT, hObjFub: Callable = None, α: float = 0.5 ) -> None:
+    def __init__( self, vX: np.ndarray, hGradFun: Callable, μ: float, /, *, stepSizeMode: StepSizeMode = StepSizeMode.CONSTANT, hObjFun: Callable = None, α: float = 0.5 ) -> None:
         
         dataDim = len(vX)
         
@@ -66,8 +67,9 @@ class GradientDescent():
         self._hGradFun      = hGradFun
         self.μ              = μ #<! Step Size
         self._stepSizeMode  = stepSizeMode #<! Step Size Mode
-        self._hObjFub       = hObjFub #<! Objective function
+        self._hObjFun       = hObjFun #<! Objective function
         self.α              = α #<! Backtracking constant
+        self.K              = 20 #<! Maximum Backtracking iterations
 
         self.vX = np.copy(vX) #<! Current State
         self.vG = np.empty_like(vX) #<! Current Gradient
@@ -80,13 +82,15 @@ class GradientDescent():
     def _ApplyIterationAdaptive( self ) -> np.ndarray:
 
         self.vG     = self._hGradFun(self.vX)
-        currObjVal  = self._hObjFub(self.vX)
+        currObjVal  = self._hObjFun(self.vX)
         self.vZ     = self.vX - self.μ * self.vG
 
-        while(self._hObjFub(self.vZ) > currObjVal):
+        kk = 0
+        while((self._hObjFun(self.vZ) > currObjVal) and (kk < self.K)):
             # For production code, must be limited by value of `self.μ` and number iterations
             self.μ *= self.α
             self.vZ = self.vX - self.μ * self.vG
+            kk      += 1
         
         self.vG *= self.μ
         self.μ   = max(1e-9, self.μ)
@@ -106,6 +110,78 @@ class GradientDescent():
         
         self.vG  = self._hGradFun(self.vX)
         self.vX -= self.μ * self.vG
+
+        self.ii += 1
+
+        return self.vX
+    
+    def ApplyIterations( self, numIterations: int, *, logArg: bool = True ) -> Optional[List]:
+
+        if logArg:
+            lX = [None] * numIterations
+            lX[0] = np.copy(self.vX)
+        else:
+            lX = None
+        
+        for jj in range(1, numIterations):
+            vX = self.ApplyIteration()
+            if logArg:
+                lX[jj] = np.copy(vX)
+        
+        return lX
+
+class CoordinateDescent():
+    def __init__( self, vX: np.ndarray, hGradFun: Callable, μ: float, /, *, stepSizeMode: StepSizeMode = StepSizeMode.CONSTANT, hObjFun: Callable = None, α: float = 0.5 ) -> None:
+        
+        dataDim = len(vX)
+        
+        self._dataDim       = dataDim
+        self._hGradFun      = hGradFun #<! Gradient function (Coordinate)
+        self.μ              = μ #<! Step Size
+        self._stepSizeMode  = stepSizeMode #<! Step Size Mode
+        self._hObjFun       = hObjFun #<! Objective function
+        self.α              = α #<! Backtracking constant
+        self.K              = 20 #<! Maximum Backtracking iterations
+
+        self.vX = np.copy(vX) #<! Current State
+        self.vZ = np.empty_like(vX) #<! Buffer
+        self.ii = 1
+        
+        pass
+
+    # @njit
+    def _ApplyIterationAdaptive( self ) -> np.ndarray:
+
+        self.vZ[:] = self.vX
+        for jj in range(self._dataDim):
+            valG        = self._hGradFun(self.vX, jj)
+            currObjVal  = self._hObjFun(self.vX)
+            self.vZ[jj] = self.vX[jj] - self.μ * valG
+            
+            kk = 0
+            while((self._hObjFun(self.vZ) > currObjVal) and (kk < self.K)):
+                # For production code, must be limited by value of `self.μ` and number iterations
+                self.μ     *= self.α
+                self.vZ[jj] = self.vX[jj] - self.μ * valG
+                kk         += 1
+            
+            self.μ       = max(1e-9, self.μ)
+            self.vX[jj] -= self.μ * valG
+            self.μ      /= self.α
+
+        self.ii += 1
+
+        return self.vX
+    
+    # @njit
+    def ApplyIteration( self ) -> np.ndarray:
+
+        if (self._stepSizeMode == StepSizeMode.ADAPTIVE):
+            return self._ApplyIterationAdaptive()
+        
+        for jj in range(self._dataDim):
+            valG         = self._hGradFun(self.vX, jj)
+            self.vX[jj] -= self.μ * valG
 
         self.ii += 1
 
