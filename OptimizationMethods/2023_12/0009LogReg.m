@@ -139,7 +139,8 @@ mC = repelem(mC, 2, 1); %<! Avoids a bug in `contouf()` with binary colormap
 set(hA, 'Colormap', mC);
 
 PlotClassData(mX(:, 2:3), vY, 'plotTitle', 'Binary Classification Data', 'hA', hA);
-set(hA, 'XLim',vLim, 'YLim', vLim);
+set(hA, 'XLim', vLim, 'YLim', vLim);
+set(hA, 'DataAspectRatio', [1, 1, 1]);
 set(get(hA, 'XLabel'), 'String', {['x_1']}, 'FontSize', fontSizeAxis);
 set(get(hA, 'YLabel'), 'String', {['x_2']}, 'FontSize', fontSizeAxis);
 

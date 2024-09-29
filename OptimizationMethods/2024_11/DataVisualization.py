@@ -96,5 +96,53 @@ def PlotBinaryClassData( mX: np.ndarray, vY: np.ndarray, /, *, hA: Optional[plt.
     hA.legend()
     
     return hA
+
+
+def Plot2DLinearClassifier( mX: np.ndarray, vY: np.ndarray, vW: np.ndarray, mX1: np.ndarray, mX2: np.ndarray, hA: plt.Axes ) -> None:
+    """
+    Plots a binary 2D classifier.
+    Input:
+        mX          - Matrix (3, numSamples) of the data points.
+        vY          - Vector (numSamples) labels of the data.
+        vW          - Vector (3) Parameters of the classifier.
+        mX1         - Matrix (numGridPtsX1, numGridPtsX2) of the grid points (1st variable).
+        mX2         - Matrix (numGridPtsX1, numGridPtsX2) of the grid points (2nd variable).
+        hA          - Axes handler the scatter was drawn X☻on.
+    Output:
+    Remarks:
+      - The model parameters `vW` match a matrix of the form: y_i = w_1 * x_1 + w_2 * x2 - w_0.
+      - The matrices `mX1` and `mX2` are the result of `np.meshgrid()` of 2D grid.
+    """
+    b  = vW[0]
+    vW = vW[1:]
+    XX = np.column_stack([mX1.flatten(), mX2.flatten()])
+
+    if (vW[1] == 0):
+        vW[1]  = 1e-9
+        vW[0] *= 1e9
+        b     *= 1e9
+
+    vZ = (XX @ vW - b) > 0
+    ZZ = vZ.reshape(mX1.shape)
     
+    vHatY    = np.sign(mX @ vW - b)
+    accuracy = np.mean(vY == vHatY)
+
+    axisTitle = r'$f_{{w},b} \left( {x} \right) = {sign} \left( {w}^{T} {x} - b \right)$' '\n' f'Accuracy = {accuracy:.2%}'
+
+    PlotBinaryClassData(mX, vY, hA = hA, axisTitle = axisTitle)
+    v = np.array([-2, 2])
+    hA.grid(True)
+    hA.plot(v, -(vW[0] / vW[1]) * v + (b / vW[1]), color = 'k', lw = 3)
+    hA.arrow(0, 0, vW[0], vW[1], color = 'orange', width = 0.05)
+    hA.axvline(x = 0, color = 'k', lw = 1)
+    hA.axhline(y = 0, color = 'k', lw = 1)
+    hA.contourf(mX1, mX2, ZZ, colors = CLASS_COLOR, alpha = 0.2, levels = [-0.5, 0.5, 1.5], zorder = 0)
+    
+    hA.set_xlim([-2, 2])
+    hA.set_ylim([-2, 2])
+    hA.set_xlabel('$x_1$')
+    hA.set_ylabel('$x_2$')
+
+    return
 
