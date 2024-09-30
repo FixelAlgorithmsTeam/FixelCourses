@@ -204,6 +204,12 @@ class CoordinateDescent():
 
 class ProxGradientDescent():
     def __init__( self, vX: np.ndarray, hGradFun: Callable, μ: float, λ: float, /, *, hProxFun: Callable = np.array, useAccel: bool = False ) -> None:
+        """
+        Solves F(X) = f(x) + λ * g(x)
+        Where the Gradient of f is known and the prox of g is known.
+
+        hProxFun(vY, λ) -> Prox
+        """
         
         dataDim = len(vX)
         
