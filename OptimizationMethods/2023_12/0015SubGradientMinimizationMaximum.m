@@ -2,7 +2,7 @@
 % Convex Optimization - Non Smooth Optimization - Sub Gradient Method
 % Minimizing the maximum of a set of a functions.
 % The model is given by:
-% $$ \arg \min_{x} \max_{i} a_i^T + b $$
+% $$ \arg \min_{x} \max_{i} (a_i^T * x) + b $$
 % References:
 %   1.  
 % Remarks:

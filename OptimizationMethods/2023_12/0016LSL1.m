@@ -12,6 +12,8 @@
 % TODO:
 % 	1.  C
 % Release Notes Royi Avital RoyiAvital@yahoo.com
+% - 1.0.000     30/09/2024
+%   *   Using `sedumi` solver to prevent warnings.
 % - 1.0.000     30/12/2023
 %   *   First release.
 
@@ -132,6 +134,7 @@ disp(['The Gradient Operator implementation is verified']);
 
 cvx_begin('quiet')
     cvx_precision('best');
+    cvx_solver('sdpt3'); %<! `sdpt3` generates `linsolve` warning
     variables vXRef(numSamples)
     minimize(0.5 * sum_square(vXRef - vY) + vParamLambda(end) * norm(vXRef, 1)); %<! Prox
 cvx_end
