@@ -273,7 +273,78 @@ class ProxGradientDescent():
         return lX
 
 
-def ProjectL1Ball( vY: np.ndarray, /, *, ballRadius: float = 1.0 ) -> np.ndarray:
+def ProjectSimplexBall( vY: np.ndarray, /, *, ballRadius: float = 1.0, ε: float = 0.0 ) -> np.ndarray:
+    """
+    Solving the Orthogonal Projection Problem of the input vector onto the 
+    Simplex Ball using Dual Function and exact solution by solving linear 
+    equation.
+    Input:
+    - vY            -   Input Vector.
+                        Structure: Vector.
+                        Type: 'Float'.
+                        Range: (-inf, inf).
+    - ballRadius    -   Ball Radius.
+                        Sets the Radius of the Simplex Ball. For Unit
+                        Simplex set to 1.
+                        Structure: Scalar.
+                        Type: 'Float'.
+                        Range: (0, inf).
+    Output:
+    - vX            -   Output Vector.
+                        The projection of the Input Vector onto the Simplex
+                        Ball.
+                        Structure: Vector.
+                        Type: 'Float'.
+                        Range: (-inf, inf).
+    References
+    1.  A
+    Remarks:
+    1.  The solver finds 2 points which one is positive and the other is
+        negative. Then, since the objective function is linear, finds the
+        exact point where the linear function has value of zero.
+    TODO:
+      1.  U.
+    Release Notes:
+      -   1.0.000     02/10/2024  Royi Avital
+          *   First release version.
+    """
+    
+    if ((np.fabs((np.sum(vY) - ballRadius)) <= ε) and (np.all(vY >= 0))):
+        # The input is already within the Ball.
+        vX = np.copy(vY)
+        return vX
+    
+    vZ = np.sort(vY)
+    
+    vλ    = np.r_[vZ[0] - ballRadius, vZ, vZ[-1] + ballRadius] #<! The range guarantees at least one positive and one negative value
+    hObjFun = lambda λ: np.sum( np.maximum(vY - λ, 0) ) - ballRadius
+    
+    vObjVal = np.zeros_like(vλ)
+    
+    for ii, valλ in enumerate(vλ):
+        vObjVal[ii] = hObjFun(valλ)
+    
+    if (np.any(vObjVal == 0)):
+        λ = vλ[vObjVal == 0][0] #<! In case more than a single value gets zero
+    else:
+        # Working on when an Affine Function have the value zero
+        valX1Idx = np.flatnonzero(vObjVal > 0)[-1]
+        valX2Idx = np.flatnonzero(vObjVal < 0)[0]
+        
+        valX1 = vλ[valX1Idx]
+        valX2 = vλ[valX2Idx]
+        valY1 = vObjVal[valX1Idx]
+        valY2 = vObjVal[valX2Idx]
+        
+        paramA      = (valY2 - valY1) / (valX2 - valX1)
+        paramB      = valY1 - (paramA * valX1)
+        λ = -paramB / paramA
+        
+    vX = np.maximum(vY - λ, 0)
+
+    return vX
+
+def ProjectL1Ball( vY: np.ndarray, /, *, ballRadius: float = 1.0, ε: float = 0.0 ) -> np.ndarray:
     """
     Solving the Orthogonal Projection Problem of the input vector onto the L1 
     Ball using Dual Function and exact solution by solving linear equation.
@@ -304,11 +375,11 @@ def ProjectL1Ball( vY: np.ndarray, /, *, ballRadius: float = 1.0 ) -> np.ndarray
     TODO:
       1.  U.
     Release Notes:
-      -   1.0.000     14/04/2020  Royi Avital
+      -   1.0.000     02/10/2024  Royi Avital
           *   First release version.
     """
     
-    if (np.linalg.norm(vY, 1) <= ballRadius):
+    if ((np.linalg.norm(vY, 1) - ballRadius) <= ε):
         # The input is already within the L1 Ball.
         vX = np.copy(vY)
         return vX
