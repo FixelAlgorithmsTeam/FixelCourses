@@ -31,6 +31,9 @@ function [ vX ] = ProjectL1Ball( vY, ballRadius )
 % TODO:
 %   1.  U.
 % Release Notes:
+%   -   1.0.001     02/10/2024  Royi Avital
+%       *   Fix the case `paramLambda` becomes a vector if not a single
+%           unique value is verified.
 %   -   1.0.000     14/04/2020  Royi Avital
 %       *   First release version.
 % ----------------------------------------------------------------------------------------------- %
@@ -60,7 +63,8 @@ for ii = 1:(numElements + 2)
 end
 
 if(any(vObjVal == 0))
-    paramLambda = vParamLambda(vObjVal == 0);
+    paramLambda = vParamLambda(vObjVal == 0); %<! Might be more than 1 case
+    paramLambda = paramLambda(1); %<! Guarantees scalar in case more than 1 element vanishes
 else
     % Working on when an Affine Function have the value zero
     valX1Idx = find(vObjVal > 0, 1, 'last');
