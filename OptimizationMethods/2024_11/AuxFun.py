@@ -60,9 +60,97 @@ class StepSizeMode(Enum):
 # Optimization
 
 class GradientDescent():
-    def __init__( self, vX: np.ndarray, hGradFun: Callable, μ: float, /, *, stepSizeMode: StepSizeMode = StepSizeMode.CONSTANT, hObjFun: Callable = None, α: float = 0.5 ) -> None:
+    """
+    Gradient Descent Solver with Constant or Adaptive Step Size Option.
+
+    This class implements the standard gradient descent algorithm with support for adaptive step size 
+    adjustment (Backtracking line search) based on the objective function value, or a constant step size mode.
+
+    Parameters:
+    -----------
+    vX : np.ndarray
+        Initial point (starting state) of the optimization.
+        Structure: Vector (1D array).
+        Type: `float` or `double`.
+
+    hGradFun : Callable
+        Function that computes the gradient of the objective function `f(x)`. This should take the current 
+        iterate `vX` as input and return the gradient at that point.
+        Type: `Callable[[np.ndarray], np.ndarray]`.
+
+    μ : float
+        Initial step size (Learning Rate) for the gradient descent update. It can be fixed or adjusted adaptively 
+        based on the chosen `stepSizeMode`.
+
+    stepSizeMode : StepSizeMode, optional
+        The mode for step size control. Options are:
+        - `StepSizeMode.CONSTANT`: The step size remains constant at its initial value `μ` throughout the iterations.
+        - `StepSizeMode.ADAPTIVE`: The step size is adjusted using backtracking line search, ensuring sufficient 
+          decrease in the objective function.
+        Default: `StepSizeMode.CONSTANT`.
+
+    hObjFun : Callable, optional
+        Objective function `f(x)`, used in the case of adaptive step size. If `stepSizeMode` is `ADAPTIVE`, 
+        this function is required to evaluate the current value of `f(x)` for backtracking. If not provided, 
+        the constant step size mode will be used.
+        Type: `Optional[Callable[[np.ndarray], float]]`.
+        Default: `None`.
+
+    α : float, optional
+        The reduction factor for step size in each iteration of backtracking. Must be in the range (0, 1).
+        Only used when `stepSizeMode` is `ADAPTIVE`.
+        Default: `0.5`.
+
+    Attributes:
+    -----------
+    vX : np.ndarray
+        Current state (iterate) of the optimization process.
+    
+    vG : np.ndarray
+        Latest calculation gradient.
+
+    ii : int
+        Iteration counter, tracks the current iteration number.
+
+    μ : float
+        The current step size used in the gradient descent update, which may change if adaptive mode is used.
+
+    α : float
+        Backtracking line search constant used for reducing step size in adaptive mode.
+
+    K : int
+        Maximum number of backtracking iterations allowed for step size reduction.
+
+    Methods:
+    --------
+    ApplyIteration() -> np.ndarray:
+        Applies one iteration of the gradient descent algorithm. Depending on the step size mode, it either 
+        performs a constant step update or an adaptive update with backtracking line search.
+
+    ApplyIterations(numIterations: int, *, logArg: bool = True) -> Optional[List[np.ndarray]]:
+        Applies a specified number of iterations of the gradient descent algorithm. Optionally logs 
+        the intermediate states.
+
+    Notes:
+    ------
+    - The adaptive step size mode performs backtracking line search to ensure sufficient decrease in the objective 
+      function. This is useful for cases where the objective function has sharp gradients or is not well-behaved 
+      with a fixed step size.
+    - If adaptive mode is used, it is essential to provide a valid objective function `hObjFun` to evaluate the 
+      objective values during backtracking.
+
+    References:
+    -----------
+    1. Nocedal, J., & Wright, S. J. (2006). Numerical Optimization. Springer Science & Business Media.
+    2. Boyd, S., & Vandenberghe, L. (2004). Convex Optimization. Cambridge University Press.
+    """
+
+    def __init__( self, vX: np.ndarray, hGradFun: Callable[[np.ndarray], np.ndarray], μ: float, /, *, stepSizeMode: StepSizeMode = StepSizeMode.CONSTANT, hObjFun: Optional[Callable[[np.ndarray], float]] = None, α: float = 0.5 ) -> None:
         
         dataDim = len(vX)
+
+        if ((stepSizeMode == StepSizeMode.ADAPTIVE) and (hObjFun is None)):
+            raise ValueError(f'If `stepSizeMode` is ste to adaptive, an objective function must be supplied')
         
         self._dataDim       = dataDim
         self._hGradFun      = hGradFun
@@ -116,7 +204,7 @@ class GradientDescent():
 
         return self.vX
     
-    def ApplyIterations( self, numIterations: int, *, logArg: bool = True ) -> Optional[List]:
+    def ApplyIterations( self, numIterations: int, *, logArg: bool = True ) -> Optional[List[np.ndarray]]:
 
         if logArg:
             lX = [None] * numIterations
@@ -132,9 +220,104 @@ class GradientDescent():
         return lX
 
 class CoordinateDescent():
-    def __init__( self, vX: np.ndarray, hGradFun: Callable, μ: float, /, *, stepSizeMode: StepSizeMode = StepSizeMode.CONSTANT, hObjFun: Callable = None, α: float = 0.5 ) -> None:
+    """
+    Coordinate Descent Solver with Adaptive Step Size Option.
+
+    This class implements the coordinate descent algorithm, where optimization is performed one coordinate at a time, 
+    allowing for flexible step size control (constant or adaptive). The algorithm adjusts each coordinate based on the 
+    gradient with respect to that coordinate, making it suitable for sparse optimization problems or when the 
+    objective function is separable.
+
+    Parameters:
+    -----------
+    vX : np.ndarray
+        Initial point (starting state) of the optimization. This is the initial guess for the solution.
+        Structure: Vector (1D array).
+        Type: `float` or `double`.
+
+    hGradFun : Callable[[np.ndarray], np.ndarray]
+        Function that computes the gradient of the objective function `f(x)` with respect to a single coordinate.
+        This function should take two inputs: the current iterate `vX` and the index of the coordinate, and return 
+        the gradient at that coordinate.
+        Type: `Callable[[np.ndarray, int], float]`.
+
+    μ : float
+        Initial step size (Learning Rate) for the coordinate-wise gradient update. It can be fixed or adjusted adaptively 
+        depending on the chosen `stepSizeMode`.
+
+    stepSizeMode : StepSizeMode, optional
+        The mode for step size control. Options are:
+        - `StepSizeMode.CONSTANT`: The step size remains constant at its initial value `μ` throughout the iterations.
+        - `StepSizeMode.ADAPTIVE`: The step size is adjusted using backtracking line search based on the objective 
+          function values, ensuring sufficient decrease in the objective function.
+        Default: `StepSizeMode.CONSTANT`.
+
+    hObjFun : Callable[[np.ndarray], float], optional
+        Objective function `f(x)`, used in the case of adaptive step size. If `stepSizeMode` is set to `ADAPTIVE`, 
+        this function is required to evaluate the current value of `f(x)` for backtracking. If not provided, 
+        the constant step size mode will be used.
+        Type: `Callable[[np.ndarray], float]`.
+        Default: `None`.
+
+    α : float, optional
+        Reduction factor for step size during backtracking. Must be in the range (0, 1). This parameter is used 
+        only when `stepSizeMode` is `ADAPTIVE`.
+        Default: `0.5`.
+
+    Attributes:
+    -----------
+    vX : np.ndarray
+        Current state (iterate) of the optimization process.
+    
+    vZ : np.ndarray
+        Buffer used to store updated coordinate values during each iteration.
+
+    ii : int
+        Iteration counter, which tracks the current iteration number.
+
+    μ : float
+        The current step size used in the coordinate-wise gradient update, which may change if adaptive mode is used.
+
+    α : float
+        Backtracking line search constant used for reducing the step size in adaptive mode.
+
+    K : int
+        Maximum number of backtracking iterations allowed for step size reduction in adaptive mode.
+
+    Methods:
+    --------
+    ApplyIteration() -> np.ndarray:
+        Applies one iteration of the coordinate descent algorithm. Depending on the step size mode, it either 
+        performs a constant step update or an adaptive update with backtracking line search for each coordinate.
+
+    ApplyIterations(numIterations: int, *, logArg: bool = True) -> Optional[List[np.ndarray]]:
+        Applies a specified number of iterations of the coordinate descent algorithm. Optionally logs the 
+        intermediate states.
+
+    Notes:
+    ------
+    - The adaptive step size mode performs backtracking line search to ensure sufficient decrease in the objective 
+      function. This is useful in cases where a constant step size may not be optimal, such as when the objective 
+      function has sharp gradients or poorly conditioned coordinates.
+    - If adaptive mode is used, it is essential to provide a valid objective function `hObjFun()` to evaluate the 
+      objective values during backtracking.
+    - Coordinate Descent is often more efficient for problems where the objective function is separable or when 
+      gradient computation is costly.
+
+    References:
+    -----------
+    1. Nesterov, Y. (2012). Efficiency of coordinate descent methods on huge-scale optimization problems. 
+       SIAM Journal on Optimization, 22(2), 341-362.
+    2. Tseng, P., & Yun, S. (2009). A coordinate gradient descent method for nonsmooth separable minimization. 
+       Mathematical Programming, 117(1), 387-423.
+    """
+
+    def __init__( self, vX: np.ndarray, hGradFun: Callable[[np.ndarray], np.ndarray], μ: float, /, *, stepSizeMode: StepSizeMode = StepSizeMode.CONSTANT, hObjFun: Optional[Callable[[np.ndarray], float]] = None, α: float = 0.5 ) -> None:
         
         dataDim = len(vX)
+
+        if ((stepSizeMode == StepSizeMode.ADAPTIVE) and (hObjFun is None)):
+            raise ValueError(f'If `stepSizeMode` is ste to adaptive, an objective function must be supplied')
         
         self._dataDim       = dataDim
         self._hGradFun      = hGradFun #<! Gradient function (Coordinate)
@@ -188,7 +371,7 @@ class CoordinateDescent():
 
         return self.vX
     
-    def ApplyIterations( self, numIterations: int, *, logArg: bool = True ) -> Optional[List]:
+    def ApplyIterations( self, numIterations: int, *, logArg: bool = True ) -> Optional[List[np.ndarray]]:
 
         if logArg:
             lX = [None] * numIterations
@@ -204,7 +387,92 @@ class CoordinateDescent():
         return lX
 
 class ProxGradientDescent():
-    def __init__( self, vX: np.ndarray, hGradFun: Callable, μ: float, λ: float, /, *, hProxFun: Callable = np.array, useAccel: bool = False ) -> None:
+    """
+    Proximal Gradient Descent Solver for Composite Objective Functions.
+
+    This class solves composite objective functions of the form:
+
+        F(x) = f(x) + λ * g(x)
+
+    where `f(x)` is a smooth function with a known gradient and `g(x)` is a function with a known proximal operator (Usually non smooth). 
+    The proximal gradient descent method is used to minimize this objective function, and an accelerated version (FISTA style) 
+    is optionally available for faster convergence.
+
+    Parameters:
+    -----------
+    vX : np.ndarray
+        Initial point (starting state) of the optimization.
+        Structure: Vector (1D array).
+        Type: `float` or `double`.
+
+    hGradFun : Callable
+        Function that computes the gradient of `f(x)`. This should take the current iterate `vX` as input 
+        and return the gradient at that point.
+        Structure: Function.
+        Type: `Callable[[np.ndarray], np.ndarray]`.
+
+    μ : float
+        Step size (learning rate) used in the gradient descent update. It controls how large the step in 
+        the direction of the gradient should be.
+        Range: (0, ∞).
+
+    λ : float
+        Regularization parameter controlling the weight of the non-smooth term `g(x)` in the objective function.
+        Range: (0, ∞).
+
+    hProxFun : Callable, optional
+        The proximal operator of the non-smooth function `g(x)`. It takes the argument `vY` and returns 
+        the proximal map of `g` with respect to `λ`. By default, the identity function is used (i.e., no prox applied).
+        Structure: Function.
+        Type: `Callable[[np.ndarray, float], np.ndarray]`.
+        Default: `lambda vX, λ: vX` (No prox function).
+
+    useAccel : bool, optional
+        If True, the accelerated proximal gradient descent algorithm (FISTA) is used, otherwise 
+        standard proximal gradient descent is applied.
+        Default: `False`.
+
+    Attributes:
+    -----------
+    vX : np.ndarray
+        Current state (iterate) of the optimization process.
+    
+    vG : np.ndarray
+        Current iteration gradient at the point used for calculation.
+
+    vV : np.ndarray
+        Buffer vector used for momentum acceleration in FISTA.
+
+    ii : int
+        Iteration counter, tracks the current iteration number.
+
+    useAccel : bool
+        Indicates whether the FISTA acceleration is enabled (`True`) or standard gradient descent is used (`False`).
+
+    Methods:
+    --------
+    ApplyIteration() -> np.ndarray:
+        Applies one iteration of the proximal gradient descent algorithm. If acceleration is enabled, FISTA is used.
+
+    ApplyIterations(numIterations: int, *, logArg: bool = True) -> Optional[List[np.ndarray]]:
+        Applies a specified number of iterations of the proximal gradient descent algorithm. Optionally logs 
+        the intermediate states.
+
+    Notes:
+    ------
+    - The accelerated method implemented here follows the FISTA algorithm, where momentum is applied using a linear 
+      combination of previous iterates.
+    - The `ApplyIterations()` method allows the user to perform multiple iterations at once and optionally store 
+      the intermediate results for further analysis.
+
+    References:
+    -----------
+    1. Beck, A., & Teboulle, M. (2009). A Fast Iterative Shrinkage Thresholding Algorithm for Linear Inverse Problems. 
+       SIAM Journal on Imaging Sciences, 2(1), 183-202.
+    2. Parikh, N., & Boyd, S. (2014). Proximal Algorithms. Foundations and Trends® in Optimization, 1(3), 127-239.
+    """
+
+    def __init__( self, vX: np.ndarray, hGradFun: Callable[[np.ndarray], np.ndarray], μ: float, λ: float, /, *, hProxFun: Callable[[np.ndarray, float], np.ndarray] = lambda vX, λ: vX, useAccel: bool = False ) -> None:
         """
         Solves F(X) = f(x) + λ * g(x)
         Where the Gradient of f is known and the prox of g is known.
@@ -258,7 +526,7 @@ class ProxGradientDescent():
 
         return self.vX
     
-    def ApplyIterations( self, numIterations: int, *, logArg: bool = True ) -> Optional[List]:
+    def ApplyIterations( self, numIterations: int, *, logArg: bool = True ) -> Optional[List[np.ndarray]]:
 
         if logArg:
             lX = [None] * numIterations
@@ -420,7 +688,6 @@ def ProjectL1Ball( vY: np.ndarray, /, *, ballRadius: float = 1.0, ε: float = 0.
 # Type hints for SP Sparse: https://stackoverflow.com/questions/71501140
 # @njit 
 def GenConvMtx1D( vK: np.ndarray, numElements: int, /, *, convMode: ConvMode = ConvMode.FULL ) -> sp.sparse.csr.csr_matrix:
-
     """
     Generates a Convolution Matrix for 1D Kernel (The Vector vK) with support
     for different convolution shapes (Full / Same / Valid). The matrix is
@@ -623,7 +890,7 @@ def MakeSignal( signalType: Literal['Blocks', 'Bumps', 'Chirps', 'Cusp', 'Cusp2'
 
 # Visualization
 
-def DisplayRunSummary( solverName: str, hObjFun: Callable, vX: np.ndarray, runTime: float, cvxpyStatus: Optional[bool] = None ) -> None:
+def DisplayRunSummary( solverName: str, hObjFun: Callable[[np.ndarray], float], vX: np.ndarray, runTime: float, cvxpyStatus: Optional[bool] = None ) -> None:
 
     print('')
     print(f'{solverName} Solution Summary:' )
@@ -637,7 +904,7 @@ def DisplayRunSummary( solverName: str, hObjFun: Callable, vX: np.ndarray, runTi
 
     return
 
-def DisplayCompaisonSummary( dSolverData: Dict[str, Dict], hObjFun: Callable, /, *, figSize: Tuple[int, int] = (12, 9), refSolverName: str = 'CVXPY', ε: float = 1e-8 ) -> plt.Figure:
+def DisplayCompaisonSummary( dSolverData: Dict[str, Dict], hObjFun: Callable[[np.ndarray], float], /, *, figSize: Tuple[int, int] = (12, 9), refSolverName: str = 'CVXPY', ε: float = 1e-8 ) -> plt.Figure:
 
     refSolver  = False
     numSolvers = len(dSolverData)
@@ -660,8 +927,11 @@ def DisplayCompaisonSummary( dSolverData: Dict[str, Dict], hObjFun: Callable, /,
 
 
             mX = dSolData['mX']
-            lObjErr = [20 * np.log10(max(abs(hObjFun(mX[:, ii]) - objValRef), ε) / objValRef) for ii in range(np.size(mX, 1))]
-            lArgErr = [20 * np.log10(max(np.linalg.norm(mX[:, ii] - vXRef), ε) / xNormRef) for ii in range(np.size(mX, 1))]
+            # lObjErr = [20 * np.log10(max(abs(hObjFun(mX[ii]) - objValRef), ε) / objValRef) for ii in range(np.size(mX, 0))]
+            # lArgErr = [20 * np.log10(max(np.linalg.norm(mX[ii] - vXRef), ε) / xNormRef) for ii in range(np.size(mX, 0))]
+
+            lObjErr = 20 * np.log10(np.maximum(np.abs(np.apply_along_axis(hObjFun, 1, mX) - objValRef), ε) / objValRef)
+            lArgErr = 20 * np.log10(np.maximum(np.linalg.norm(mX - vXRef[None, :], axis = 1), ε) / xNormRef)
 
             hA = vHA.flat[0] #<! Objective Value
             hA.plot(lObjErr, lw = 2, label = solName)
