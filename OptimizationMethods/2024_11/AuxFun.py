@@ -19,12 +19,13 @@ from numba import njit
 # Auxiliary
 
 # Visualization
+import matplotlib.pyplot as plt
 
 # Miscellaneous
 from enum import auto, Enum, unique
 
 # Typing
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, List, Literal, Optional, Set, Tuple, Union
 
 # Course Packages
 
@@ -541,5 +542,159 @@ def GenConvMtx1D( vK: np.ndarray, numElements: int, /, *, convMode: ConvMode = C
     mK = sp.sparse.csr_matrix((vV, (vI, vJ)), shape = (outputSize, numCols))
     
     return mK
+
+# Data
+
+def MakeSignal( signalType: Literal['Blocks', 'Bumps', 'Chirps', 'Cusp', 'Cusp2', 
+                                    'Doppler', 'Gabor', 'Gaussian', 'HeaviSine', 'HiSine', 
+                                    'HypChirps', 'Leopold', 'LinChirp', 'LinChirps', 'LoSine', 
+                                    'MishMash', 'Piece-Polynomial', 'Piece-Regular', 'QuadChirp', 
+                                    'Ramp', 'Riemann', 'SineOneOverX', 'Sing', 'SmoothCusp', 'TwoChirp', 
+                                    'WernerSorrows'], numSamples: int ) -> np.ndarray:
+    """
+    MakeSignal -- Make artificial signal
+    Usage: `sig = MakeSignal(signalType, numSamples)`
+    
+    Inputs
+        - signalType: string, type of signal to generate
+        - numSamples: int, desired signal length
+    
+    Outputs
+        - sig: 1D signal (numpy array)
+    
+    Remarks:
+     - 'Leopold': Kronecker.
+     - 'Piece-Polynomial': Piece Wise 3rd degree polynomial.
+     - 'Piece-Regular': Piece Wise Smooth.
+     - Code with assistance of ClaudeAI and ChatGPT.
+    References
+     - Various articles of D.L. Donoho and I.M. Johnstone.
+    """
+
+    vT = np.arange(1, numSamples + 1) / numSamples
+    if signalType == 'Blocks':
+        pos = [0.10,  0.13,  0.15,  0.23,  0.25,  0.40,  0.44, 0.65,  0.76,  0.78,  0.81]
+        hgt = [4.00, -5.00,  3.00, -4.00,  5.00, -4.20,  2.10, 4.30, -3.10,  2.10, -4.20]
+        vS = np.zeros_like(vT)
+        for jj in range(len(pos)):
+            vS += (1 + np.sign(vT - pos[jj])) * (hgt[jj] / 2 )
+    elif signalType == 'Bumps':
+        pos = [0.10,  0.13,  0.15,  0.23,  0.25,  0.40,  0.44, 0.65,  0.76,  0.78,  0.81]
+        hgt = [4.00,  5.00,  3.00,  4.00,  5.00,  4.20,  2.10, 4.30,  3.10,  5.10,  4.20]
+        wth = [0.005, 0.005, 0.006, 0.01, 0.01, 0.03, 0.01, 0.01, 0.005, 0.008, 0.005]
+        vS = np.zeros_like(vT)
+        for jj in range(len(pos)):
+            vS += hgt[jj] / np.power(1 + np.abs((vT - pos[jj]) / wth[jj]), 4)
+    elif signalType == 'Chirps':
+        t = vT * 10 * np.pi
+        f1 = np.cos(t**2 * numSamples / 1024)
+        a = 30 * numSamples / 1024
+        t = vT * np.pi
+        f2 = np.cos(a * (t**3))
+        f2 = f2[::-1]  # reverse
+        ix = 20 * np.linspace(-numSamples, numSamples, 2 * numSamples + 1) / numSamples
+        g = np.exp(-np.square(ix) * 4 * numSamples / 1024)
+        i1 = slice(numSamples // 2, numSamples // 2 + numSamples)
+        i2 = slice(numSamples // 8, numSamples // 8 + numSamples)
+        j = vT
+        f3 = g[i1] * np.cos(50 * np.pi * j * numSamples / 1024)
+        f4 = g[i2] * np.cos(350 * np.pi * j * numSamples / 1024)
+        vS = f1 + f2 + f3 + f4
+        envelope = np.ones(numSamples)
+        envelope[:numSamples // 8] = (1 + np.sin(-np.pi/2 + np.linspace(0, np.pi, numSamples//8))) / 2
+        envelope[7*numSamples//8:] = envelope[numSamples//8-1::-1]
+        vS = vS * envelope
+    elif signalType == 'Cusp':
+        vS = np.sqrt(np.abs(vT - 0.37))
+    elif signalType == 'Cusp2':
+        N = 64
+        i1 = np.arange(1, N + 1) / N
+        x = (1 - np.sqrt(i1)) + (i1 / 2) - 0.5
+        M = 8 * N
+        vS = np.zeros(M)
+        vS[int(M - 1.5*N):int(M - 0.5*N)] = x
+        vS[int(M - 2.5*N + 1):int(M - 1.5*N + 1)] = x[::-1]
+        vS[3*N:4*N] = 0.5 * np.ones(N)
+    elif signalType == 'Doppler':
+        vS = np.sqrt(vT * (1 - vT)) * np.sin((2 * np.pi * 1.05) / (vT + 0.05))
+    
+    
+    return vS
+
+# Visualization
+
+def DisplayRunSummary( solverName: str, hObjFun: Callable, vX: np.ndarray, runTime: float, cvxpyStatus: Optional[bool] = None ) -> None:
+
+    print('')
+    print(f'{solverName} Solution Summary:' )
+    if cvxpyStatus is not None:
+        print(f' - The {solverName} Solver Status         : {cvxpyStatus}')
+    
+    print(f' - The Optimal Value Is Given By   : {hObjFun(vX)}')
+    print(f' - The Optimal Argument Is Given By: {np.array_str(vX, max_line_width = np.inf)}') #<! https://stackoverflow.com/a/49437904
+    print(f' - The Run Time Is Given By        : {runTime:0.3f} [Sec]')
+    print(' ')
+
+    return
+
+def DisplayCompaisonSummary( dSolverData: Dict[str, Dict], hObjFun: Callable, /, *, figSize: Tuple[int, int] = (12, 9), refSolverName: str = 'CVXPY', ε: float = 1e-8 ) -> plt.Figure:
+
+    refSolver  = False
+    numSolvers = len(dSolverData)
+    
+    if refSolverName in dSolverData.keys():
+        vXRef       = dSolverData[refSolverName]['vX']
+        xNormRef    = max(np.linalg.norm(vXRef), ε)
+        objValRef   = max(dSolverData[refSolverName]['objVal'], ε)
+
+        refSolver   = True
+        numSolvers -= 1 #<! Compare solvers to reference
+
+    if refSolver:
+        # Show the objective value over the iterations
+        hF, vHA = plt.subplots(nrows = 2, ncols = 1, figsize = figSize)
+
+        for solName, dSolData in dSolverData.items():
+            if solName == refSolverName:
+                continue
+
+
+            mX = dSolData['mX']
+            lObjErr = [20 * np.log10(max(abs(hObjFun(mX[:, ii]) - objValRef), ε) / objValRef) for ii in range(np.size(mX, 1))]
+            lArgErr = [20 * np.log10(max(np.linalg.norm(mX[:, ii] - vXRef), ε) / xNormRef) for ii in range(np.size(mX, 1))]
+
+            hA = vHA.flat[0] #<! Objective Value
+            hA.plot(lObjErr, lw = 2, label = solName)
+            # hA.set_xlabel('Iteration Index') $<! No need, shared with the one below
+            hA.set_ylabel('Relative Error [dB]')
+            hA.set_title(f'Objective Value of the Solvers Compared to {refSolverName}')
+            hA.legend()
+
+            hA = vHA.flat[1] #<! Objective Value
+            hA.plot(lArgErr, lw = 2, label = solName)
+            hA.set_xlabel('Iteration Index')
+            hA.set_ylabel('Relative Error [dB]')
+            hA.set_title(f'Argument of the Solvers Compared to {refSolverName}')
+            hA.legend()
+
+    else:
+        # Show the objective value over the iterations
+        hF, hA = plt.subplots(figsize = figSize)
+
+        for solName, dSolData in dSolverData.items():
+
+            mX = dSolData['mX']
+            lObjVal = [hObjFun(mX[:, ii]) for ii in range(np.size(mX, 1))]
+
+            hA.plot(lObjVal, lw = 2, label = solName)
+        
+        hA.legend()
+        hA.set_xlabel('Iteration Index')
+        hA.set_ylabel('Objective Value')
+        hA.set_title('Objective Value of the Solvers')
+        hA.legend()
+
+    return hF
+    
 
 
