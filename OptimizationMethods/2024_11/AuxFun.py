@@ -473,12 +473,6 @@ class ProxGradientDescent():
     """
 
     def __init__( self, vX: np.ndarray, hGradFun: Callable[[np.ndarray], np.ndarray], μ: float, λ: float, /, *, hProxFun: Callable[[np.ndarray, float], np.ndarray] = lambda vX, λ: vX, useAccel: bool = False ) -> None:
-        """
-        Solves F(X) = f(x) + λ * g(x)
-        Where the Gradient of f is known and the prox of g is known.
-
-        hProxFun(vY, λ) -> Prox
-        """
         
         dataDim = len(vX)
         
@@ -521,6 +515,156 @@ class ProxGradientDescent():
         self.vG  = self._hGradFun(self.vX)
         self.vX -= self.μ * self.vG
         self.vX  = self._hProxFun(self.vX, self.μ * self.λ)
+
+        self.ii += 1
+
+        return self.vX
+    
+    def ApplyIterations( self, numIterations: int, *, logArg: bool = True ) -> Optional[List[np.ndarray]]:
+
+        if logArg:
+            lX = [None] * numIterations
+            lX[0] = np.copy(self.vX)
+        else:
+            lX = None
+        
+        for jj in range(1, numIterations):
+            vX = self.ApplyIteration()
+            if logArg:
+                lX[jj] = np.copy(vX)
+        
+        return lX
+
+class ADMM():
+    """
+    Alternating Direction Method of Multipliers (ADMM) for Solving Composite Optimization Problems.
+
+    This class implements the ADMM algorithm to solve problems of the form:
+
+        F(x) = f(x) + λ * g(P * x)    ->    f(x) + λ * g(z), subject to P * x - z = 0
+
+    Where:
+    - `f(x)` is a function that is easily minimized (e.g., least squares).
+    - `g(z)` is a function that has an efficient proximal mapping.
+    - `P` is a linear operator (matrix) that transforms `x` into `z`.
+
+    ADMM splits the problem into subproblems that alternately minimize over `x` and `z`, with a dual update for the constraint violation.  
+    This method is well suited for large scale or distributed optimization problems where the objective is separable or involves a linear constraint.
+
+    Parameters:
+    -----------
+    vX : np.ndarray
+        Initial point (starting state) for the variable `x`.
+        Structure: Vector (1D array).
+        Type: `float` or `double`.
+
+    hMinFun : Callable[[np.ndarray, np.ndarray, float], np.ndarray]
+        A function that minimizes the function `f(x)` and a quadratic penalty term `(ρ / 2) * || P * x - z + w ||_2^2`.
+        This function should take three arguments: the current values of `z`, the dual variable `w`, and the penalty parameter `ρ`, 
+        and return the next `x` value that minimizes `f(x) + (ρ / 2) * || P * x - z + w ||_2^2`.
+
+    hProxFun : Callable[[np.ndarray, float], np.ndarray]
+        A function that computes the proximal mapping of `g(z)` with respect to the current value of `P * x + w`.
+        This function should take two inputs: the current value of `P * x + w`, and the scaled penalty parameter `λ / ρ`, 
+        and return the next `z` value that minimizes `λ * g(z) + (ρ / 2) * || P * x - z + w ||_2^2`.
+
+    mP : np.ndarray
+        The linear operator (matrix) that transforms the variable `x` into `z`, i.e., the matrix `P` in the constraint `Px - z = 0`.
+
+    ρ : float, optional
+        Penalty parameter for the augmented Lagrangian. This parameter controls the tradeoff between the primal and dual residuals 
+        in the optimization. Larger values of `ρ` put more emphasis on satisfying the constraint `P * x - z = 0`.
+        Range: (0, inf).
+        Default: `1.0`.
+
+    λ : float, optional
+        The regularization parameter that weights the term `g(z)` in the objective function. 
+        Range: (0, inf).
+        Default: `1.0`.
+
+    Attributes:
+    -----------
+    vX : np.ndarray
+        Current state (iterate) of the variable `x`.
+    
+    vZ : np.ndarray
+        Current state (iterate) of the variable `z`, introduced to split the problem.
+
+    vW : np.ndarray
+        Dual variable (Lagrangian multiplier) associated with the constraint `P * x - z = 0`. 
+        This is updated in each iteration to ensure convergence.
+
+    ρ : float
+        The current value of the penalty parameter.
+
+    λ : float
+        The regularization parameter for the objective function.
+
+    ii : int
+        Iteration counter, tracking the current number of iterations.
+
+    Methods:
+    --------
+    ApplyIteration() -> np.ndarray:
+        Performs one iteration of the ADMM algorithm, which consists of the following steps:
+        1. Minimize with respect to `x` by solving the subproblem for `f(x)`.
+        2. Minimize with respect to `z` using the proximal mapping for `g(z)`.
+        3. Update the dual variable `w`.
+
+    ApplyIterations(numIterations: int, *, logArg: bool = True) -> Optional[List[np.ndarray]]:
+        Applies a specified number of iterations of the ADMM algorithm. Optionally logs the intermediate states for 
+        each iteration.
+        Parameters:
+        - `numIterations`: The number of ADMM iterations to run.
+        - `logArg`: Whether to store and return the intermediate values of `x` during the iterations.
+          If `True`, a list of all intermediate `x` values will be returned.
+          Default: `True`.
+
+    Notes:
+    ------
+    - ADMM is an efficient and flexible method for solving optimization problems that involve separable objectives and 
+      linear constraints.
+    - The algorithm alternates between minimizing `x` and `z`, which allows for parallelization or distributed 
+      computation in some applications.
+    - Convergence is typically achieved when the primal and dual residuals (measures of constraint violation and dual 
+      update) become sufficiently small.
+
+    References:
+    -----------
+    1. Boyd, S., Parikh, N., Chu, E., Peleato, B., & Eckstein, J. (2011). Distributed Optimization and Statistical Learning via the Alternating Direction Method of Multipliers. Foundations and Trends® in Machine Learning, 3(1), 1-122.
+    2. Gabay, D., & Mercier, B. (1976). A dual algorithm for the solution of nonlinear variational problems via finite element approximation. Computers & Mathematics with Applications, 2(1), 17-40.
+    """
+
+    def __init__( self, vX: np.ndarray, hMinFun: Callable[[np.ndarray, np.ndarray, float], np.ndarray], hProxFun: Callable[[np.ndarray, float], np.ndarray], mP: np.ndarray, /, *, ρ: float = 1.0, λ: float = 1.0 ) -> None:
+        """
+        Solves the model: F(x) = f(x) + λ g(P * x) -> f(x) + λ g(z), subject to Px - z = 0
+        Where:
+         - f(x) + Least Squares is easy to solve.
+         - g(z) has efficient Proximal Mapping.
+        """
+        
+        dataDim = len(vX)
+        
+        self._dataDim = dataDim
+        self._hMinFun = hMinFun   #<! Solves \arg \min_x f(x) + (ρ / 2) * || P * x - z + w ||_2^2
+        self._hProxFun = hProxFun #<! Solves \arg \min_z λ * g(z) + (ρ / 2) * || P * x - z + w ||_2^2
+        self._mP = mP #<! Linear Model Px - z = 0
+        self.ρ = ρ #<! Penalty coefficient
+        self.λ = λ #<! Parameter Lambda
+
+        self.vX  = np.copy(vX) #<! Current State
+        self.vZ  = np.empty(np.size(mP, 0)) #<! Separable variable
+        self.vW  = np.empty(np.size(mP, 0)) #<! Dual Variable (Lagrangian Multiplier)
+        self.ii  = 1
+        
+        pass
+    
+    # @njit
+    def ApplyIteration( self ) -> np.ndarray:
+        
+        self.vX  = self._hMinFun(self.vZ, self.vW, self.ρ) #<! Minimizing for x
+        self.vZ  = self._hProxFun(self.mP @ self.vX + self.vW, self.λ / self.ρ) #<! Minimizing for z
+        self.vW += self.mP @ self.vX - self.vZ #<! Dual variable update
 
         self.ii += 1
 
