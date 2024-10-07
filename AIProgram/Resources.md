@@ -8,7 +8,7 @@ This file is a curated list of resources related to the course.
 
 ## Essentials
 
-### Maths
+### Mathematics
 
  - [Nick Higham's _What Is_ Series](https://nhigham.com/index-of-what-is-articles).
  - [Matrix Calculus for Machine Learning and Beyond](https://github.com/mitmath/matrixcalc).
@@ -34,6 +34,7 @@ This file is a curated list of resources related to the course.
  - [CalmCode](https://calmcode.io) - Code. Simply. Clearly. Calmly. Video tutorials for modern ideas and open source tools. 
  - [Python 3 Quick Tutorial](https://gist.github.com/kenjyco/69eeb503125035f21a9d).
  - [Andrew Glassner's Quick Guide to Python](https://www.glassner.com/writing/tech-notes/andrews-quick-guide-to-python).
+ - [The Algorithms - Python](https://github.com/TheAlgorithms/Python) - **Reference** implementation of many algorithms in Python.
 
 ### Scientific Python
 
