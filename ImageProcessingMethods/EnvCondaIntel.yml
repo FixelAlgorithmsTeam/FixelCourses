@@ -1,4 +1,4 @@
-name: ImageProcessing
+name: ImageProcessingMethods
 channels:
   - conda-forge
 dependencies:
