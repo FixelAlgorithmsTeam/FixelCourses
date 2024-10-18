@@ -61,6 +61,7 @@ This file is a curated list of resources related to the course.
    Posts on data analysis using statistics in Quants and other data.
  - [Kaggle - AdaBoost Classifier Tutorial](https://www.kaggle.com/code/prashant111/adaboost-classifier-tutorial).
  - [Machine Learning Books Repository](https://github.com/gimac/gninrael-enihcam).
+ - [Human Learns](https://github.com/koaning/human-learn) - Building and evaluating rule based methods by human. Includes a tool for simple labeling of clusters.
 
 ### Feature Engineering
 
@@ -88,7 +89,7 @@ This file is a curated list of resources related to the course.
  - [Kolmogorov Arnold Networks](https://github.com/KindXiaoming/pykan) - Kolmogorov Arnold Networks (KANs) are promising alternatives of Multi Layer Perceptrons (MLPs). KANs have strong mathematical foundations just like MLPs: MLPs are based on the universal approximation theorem, while KANs are based on Kolmogorov Arnold representation theorem.
  - [Torch Examples for Auto Encoders](https://github.com/davidstutz/torch-examples).
  - [The Mathematics of Variational Auto Encoders](https://davidstutz.de/the-mathematics-of-variational-auto-encoders).
- - [Simon J. D. Prince - Understanding Deep Learning](https://udlbook.github.io/udlbook).
+ - [Simon J. D. Prince - Understanding Deep Learning](https://udlbook.github.io/udlbook) - A great book with very clear visualizations.
  - [Chris Bishop, Hugh Bishop -  Deep Learning - Foundations and Concepts](https://www.bishopbook.com).
  - [Ian Goodfellow and Yoshua Bengio and Aaron Courville - Deep Learning](https://www.deeplearningbook.org).  
    A [Full PDF Link](https://github.com/janishar/mit-deep-learning-book-pdf).
