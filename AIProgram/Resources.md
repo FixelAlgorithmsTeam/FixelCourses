@@ -191,6 +191,6 @@ This file is a curated list of resources related to the course.
  - [NotMNIST](https://github.com/davidflanagan/notMNIST-to-MNIST) - An MNIST like data set based on letters.
  - [Fun Datasets](https://calmcode.io/datasets) - Simple fun datasets.
  - [ML Visuals](https://github.com/dair-ai/ml-visuals) - A collaborative effort to improve science communication by providing free visuals and figures.
- - 
+ - [Coda Bench](https://www.codabench.org) - Codabench is an open source platform allowing you to organize AI benchmarks.
 
 
