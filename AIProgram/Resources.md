@@ -165,6 +165,7 @@ This file is a curated list of resources related to the course.
  - [PyTorch Segmentation Models](https://github.com/qubvel/segmentation_models.pytorch) - Python library with Pre Trained Neural Networks for Image Segmentation based on PyTorch.
  - [Captum](https://github.com/pytorch/captum) - Model interpretability and understanding for PyTorch.
  - [Tensor Puzzles](https://github.com/srush/Tensor-Puzzles) - Solve puzzles. Improve your pytorch.
+ - [Deep Learning with PyTorch Step by Step](https://github.com/dvgodoy/PyTorchStepByStep) - A beginners book on PyTorch.
 
 ## Data Sets
 

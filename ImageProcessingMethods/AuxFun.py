@@ -83,33 +83,34 @@ def ImageGradient(mI: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
 # @njit
 def _BuilBinaryMrfGraphWeights( mL0: np.ndarray, mL1: np.ndarray, tC: np.ndarray ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
-    Build the sparse graph weights matrix for the binary MRF energy function using (vI, vJ, vV) format.
+    Build the a sparse graph weights matrix in COO format for the binary MRF energy function.  
+    The function returns the COO format vectors only.
     
     Parameters:
     ----------
-    L0 : np.ndarray
+    mL0 : np.ndarray
         2D array of unary costs for assigning 0 to each pixel (shape: N x M).
         
-    L1 : np.ndarray
+    mL1 : np.ndarray
         2D array of unary costs for assigning 1 to each pixel (shape: N x M).
         
-    C : np.ndarray
-        4D array representing the pairwise costs between pixels.
-        Shape: (N, M, dN, dM), where (dN, dM) defines the neighborhood structure.
-        For instance, if you are considering 4-neighborhood:
-        - dN = [-1, 0, 1, 0]
-        - dM = [0, 1, 0, -1]
+    mC : np.ndarray
+        3D array representing the pairwise costs between pixels.
+        Shape: (numRows, numCols, numNeighbors) as defined by the neighborhood structure.  
+        The neighbors pixels are along the 3rd dimension.
+        For instance `mC[ii, jj, :]` defines the neighborhood of the (ii, jj) pixel.  
+        The neighborhood is structured from the top pixel and clock wise.
         
     Returns:
     -------
-    vI : list
-        List of row indices for non-zero entries in the sparse matrix.
+    vI : np.ndarray
+        Vector of row indices for non zero entries in the sparse matrix.
     
-    vJ : list
-        List of column indices for non-zero entries in the sparse matrix.
+    vJ : np.ndarray
+        Vector of column indices for non zero entries in the sparse matrix.
     
-    vV : list
-        List of values for the non-zero entries in the sparse matrix.
+    vV : np.ndarray
+        Vector of values for the non zero entries in the sparse matrix.
     Remarks:
      - The matrix is not required to be symmetric.
      - The graph has 2 directed terminals:
@@ -196,13 +197,13 @@ def BuilBinaryMrfGraphWeights( mL0: np.ndarray, mL1: np.ndarray, tC: np.ndarray 
     
     Parameters:
     ----------
-    L0 : np.ndarray
+    mL0 : np.ndarray
         2D array of unary costs for assigning 0 to each pixel (shape: N x M).
         
-    L1 : np.ndarray
+    mL1 : np.ndarray
         2D array of unary costs for assigning 1 to each pixel (shape: N x M).
         
-    C : np.ndarray
+    mC : np.ndarray
         4D array representing the pairwise costs between pixels.
         Shape: (N, M, dN, dM), where (dN, dM) defines the neighborhood structure.
         For instance, if you are considering 4-neighborhood:
@@ -211,7 +212,7 @@ def BuilBinaryMrfGraphWeights( mL0: np.ndarray, mL1: np.ndarray, tC: np.ndarray 
         
     Returns:
     -------
-    vI : list
+    mW : np.ndarray
         List of row indices for non-zero entries in the sparse matrix.
     
     vJ : list
@@ -220,7 +221,7 @@ def BuilBinaryMrfGraphWeights( mL0: np.ndarray, mL1: np.ndarray, tC: np.ndarray 
     vV : list
         List of values for the non-zero entries in the sparse matrix.
     Remarks:
-     - The matrix is not required to be symmetric.
+     - The matrix is not required to be symmetric (Can describe directed graph).
      - The graph has 2 directed terminals:
         - Source to pixels.
         - Pixels to sink.
