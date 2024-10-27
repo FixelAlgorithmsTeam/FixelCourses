@@ -37,6 +37,7 @@ This file is a curated list of resources related to the course.
  - [Alexandre d'Aspremont - Convex Optimization: Algorithms and Applications](https://www.di.ens.fr/~aspremon/OptConvexeM2.html).
  - [Stanford - EE364a: Convex Optimization I](https://web.stanford.edu/class/ee364a).
  - [Stanford - EE364b: Convex Optimization II](https://web.stanford.edu/class/ee364b).
+ - [Stephen Boyd - Convex Optimization Short Course](https://web.stanford.edu/~boyd/papers/cvx_short_course.html).
  - [UCLA - EE236A: Linear Programming](http://www.seas.ucla.edu/~vandenbe/ee236a/ee236a.html).
  - [UCLA - ECE236B: Convex Optimization](http://www.seas.ucla.edu/~vandenbe/ee236b/ee236b.html).
  - [UCLA - ECE236C: Optimization Methods for Large Scale Systems](http://www.seas.ucla.edu/~vandenbe/ee236c.html).
