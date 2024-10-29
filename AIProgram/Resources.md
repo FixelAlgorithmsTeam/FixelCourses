@@ -62,6 +62,9 @@ This file is a curated list of resources related to the course.
  - [Kaggle - AdaBoost Classifier Tutorial](https://www.kaggle.com/code/prashant111/adaboost-classifier-tutorial).
  - [Machine Learning Books Repository](https://github.com/gimac/gninrael-enihcam).
  - [Human Learns](https://github.com/koaning/human-learn) - Building and evaluating rule based methods by human. Includes a tool for simple labeling of clusters.
+ - [Kevin Patrick Murphy - Machine Learning: a Probabilistic Perspective](https://probml.github.io/pml-book/book0.html).
+ - [Kevin Patrick Murphy - Probabilistic Machine Learning: An Introduction](https://probml.github.io/pml-book/book1.html).
+ - [Kevin Patrick Murphy - Probabilistic Machine Learning: Advanced Topics](https://probml.github.io/pml-book/book2.html).
 
 ### Feature Engineering
 
@@ -181,6 +184,7 @@ This file is a curated list of resources related to the course.
  - [DAVIS: Densely Annotated VIdeo Segmentation](https://davischallenge.org).
  - [Deep Learning — Computer Vision (CV) Using Transfer Learning (ResNet-18) in Pytorch — Skin Cancer Classification](https://scribe.rip/8d5b158893c5).
  - [Skin Cancer ISIC](https://www.kaggle.com/datasets/nodoubttome/skin-cancer9-classesisic) - Multi Class Sking Cancer.
+ - [University of Freiburg - Pattern Recognition and Image Processing](https://lmb.informatik.uni-freiburg.de/resources/datasets) - Segmentation, Image Sequences, Texture, Optical Flow, Hand Gestures, etc...
 
 
 ## Miscellaneous

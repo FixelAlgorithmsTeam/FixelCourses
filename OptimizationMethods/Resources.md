@@ -41,3 +41,8 @@ This file is a curated list of resources related to the course.
  - [UCLA - EE236A: Linear Programming](http://www.seas.ucla.edu/~vandenbe/ee236a/ee236a.html).
  - [UCLA - ECE236B: Convex Optimization](http://www.seas.ucla.edu/~vandenbe/ee236b/ee236b.html).
  - [UCLA - ECE236C: Optimization Methods for Large Scale Systems](http://www.seas.ucla.edu/~vandenbe/ee236c.html).
+
+
+### Solvers
+
+ - [GloptiPoly 3- Moments, Optimization and Semi Definite Programming](https://homepages.laas.fr/henrion/software/gloptipoly).
