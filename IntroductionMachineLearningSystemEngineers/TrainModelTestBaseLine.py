@@ -62,7 +62,6 @@ import xml.etree.ElementTree as ET
 
 
 # Visualization
-# from bokeh.plotting import figure, show
 import matplotlib.pyplot as plt
 import seaborn as sns
 
