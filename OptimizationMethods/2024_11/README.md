@@ -46,11 +46,14 @@ It is assumed that the Windows OS is used.
 3. Open `Conda Prompt (conda)`. You should see something like `(base) ...` on the terminal:
 ![](https://i.imgur.com/AGDV0WF.png)
 4. Navigate to the folder where `EnvConda.yml` is located.
-5. Run the command: `conda env create --file EnvTechnionAiProg.yml`. It should take a while.
-6. Once it is finished, run `conda activate MLMethods`. You should see `(base)` changes into `(MLMethods)`.
+5. Run the command: `conda env create -file EnvConda.yml`. It should take a while.   
+   Once it finishes oyu may see the list of the list of environments with `conda env list`.
+6. Once it is finished, run `conda activate <EnvName>`. You should see `(base)` changes into `(EnvName)`.  
+   The `<EnvName>` is defined as the field `name: <EnvName>` in the `EnvConda.yml`.
 7. Open VS Code (Run `code` on command line).
 8. Open the folder of the notebooks of the course.
-9. Open a notebook and make sure you set the Python Kernel to `MLMethods` (It should say Python `3.12.3` or `3.12.4`).
+9. Open a notebook and make sure you set the Python Kernel to match the `<EnvName>`.  
+   The version of Python match the version in `EnvConda.yml`.
 
 ### Visual Studio Code (VS Code)
 
