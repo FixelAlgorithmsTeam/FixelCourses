@@ -663,8 +663,8 @@ class ADMM():
     def ApplyIteration( self ) -> np.ndarray:
         
         self.vX  = self._hMinFun(self.vZ, self.vW, self.ρ) #<! Minimizing for x
-        self.vZ  = self._hProxFun(self.mP @ self.vX + self.vW, self.λ / self.ρ) #<! Minimizing for z
-        self.vW += self.mP @ self.vX - self.vZ #<! Dual variable update
+        self.vZ  = self._hProxFun(self._mP @ self.vX + self.vW, self.λ / self.ρ) #<! Minimizing for z
+        self.vW += self._mP @ self.vX - self.vZ #<! Dual variable update
 
         self.ii += 1
 
