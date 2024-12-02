@@ -653,8 +653,8 @@ class ADMM():
         self.λ = λ #<! Parameter Lambda
 
         self.vX  = np.copy(vX) #<! Current State
-        self.vZ  = np.empty(np.size(mP, 0)) #<! Separable variable
-        self.vW  = np.empty(np.size(mP, 0)) #<! Dual Variable (Lagrangian Multiplier)
+        self.vZ  = np.zeros(np.size(mP, 0)) #<! Separable variable
+        self.vW  = np.zeros(np.size(mP, 0)) #<! Dual Variable (Lagrangian Multiplier)
         self.ii  = 1
         
         pass
@@ -670,7 +670,7 @@ class ADMM():
 
         return self.vX
     
-    def ApplyIterations( self, numIterations: int, *, logArg: bool = True ) -> Optional[List[np.ndarray]]:
+    def ApplyIterations( self, numIterations: int, *, logArg: bool = False ) -> Optional[List[np.ndarray]]:
 
         if logArg:
             lX = [None] * numIterations
