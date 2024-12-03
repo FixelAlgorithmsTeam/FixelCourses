@@ -13,3 +13,8 @@ A repository dedicated to [Fixel Courses](https://fixelalgorithms.gitlab.io/cour
  - [Machine Learning Methods](https://fixelalgorithms.gitlab.io/courses/mlmethodscourse).
  - [Practical Optimization Methods](https://fixelalgorithms.gitlab.io/courses/optimizationmethods).
  - [Practical and Modern A/B Test Methods](https://fixelalgorithms.gitlab.io/courses/abtest).
+
+
+## Resources
+
+ - [Install Conda Environment](./InstallCondaEnv.md).

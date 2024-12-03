@@ -35,7 +35,7 @@ It is assumed that the Windows OS is used.
    It is better to download the `Mamba` based versions: `Mambaforge-xxxx`. 
 2. Download the environment specification file.  
    Each course has its own file.  
-   For instance, for `AI Program 2024_12` it is given by [``]().  
+   For instance, for `AI Program 2024_12` it is given by [`EnvConda.yml`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_12/EnvConda.yml).  
    Save it as `EnvConda.yml`.
 3. Open `Conda Prompt (conda)`.    
    If `Mini forge` is installed, look for `Min Forge Prompt` on Windows Menu.
