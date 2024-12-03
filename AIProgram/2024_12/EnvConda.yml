@@ -1,0 +1,36 @@
+name: AIProgram
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy
+  - scipy
+  - pandas
+  - numba
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - cvxpy
+  - scikit-learn
+  - xgboost
+  - lightgbm
+  - nltk
+  - umap-learn
+  - kneed 
+  - pytorch
+  - pytorch-cuda=12.4
+  - torchvision
+  - torchinfo
+  - scikit-image
+  - opencv
+  - autograd
+  - tensorboard
+  - matplotlib
+  - seaborn
+  - plotly
+  - graphviz
+  - pydot
+  - distinctipy
+  - gdown
