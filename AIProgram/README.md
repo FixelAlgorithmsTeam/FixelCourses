@@ -26,3 +26,8 @@ This folder is dedicated to the course [Technion AI Program](https://cont-edu.te
  - [Syylabus](https://cdn.prod.website-files.com/66cda18ee79e3818e9bbd4d1/673f55ffb2df314ef2b7cfb7_AI%20Training%20Program%20-%20ATLAS.pdf)
  - [Resources](./Resources.md).
  - [Projects](./Projects.md).
+
+
+## Miscellaneous
+
+ - [Install Conda Environment](./../InstallCondaEnv.md).
