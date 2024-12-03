@@ -39,7 +39,7 @@ It is assumed that the Windows OS is used.
    Save it as `EnvConda.yml`.
 3. Open `Conda Prompt (conda)` / `MiniForge Prompt` from Windows Menu.    
    If `Mini Forge` is installed, look for `Mini Forge Prompt` on Windows Menu.  
-   If `Mini  Conda` is installed, look for `Conda Prompt`.  
+   If `Mini  Conda` is installed, look for `Conda Prompt` or `Anaconda Prompt`.  
    You should see something like `(base) ...` on the terminal:
 ![](https://i.imgur.com/AGDV0WF.png)
 4. Navigate to the folder where `EnvConda.yml` is located.
