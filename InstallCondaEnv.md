@@ -37,8 +37,9 @@ It is assumed that the Windows OS is used.
    Each course has its own file.  
    For instance, for `AI Program 2024_12` it is given by [`EnvConda.yml`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_12/EnvConda.yml).  
    Save it as `EnvConda.yml`.
-3. Open `Conda Prompt (conda)`.    
-   If `Mini forge` is installed, look for `Min Forge Prompt` on Windows Menu.
+3. Open `Conda Prompt (conda)` / `MiniForge Prompt` from Windows Menu.    
+   If `Mini Forge` is installed, look for `Mini Forge Prompt` on Windows Menu.  
+   If `Mini  Conda` is installed, look for `Conda Prompt`.  
    You should see something like `(base) ...` on the terminal:
 ![](https://i.imgur.com/AGDV0WF.png)
 4. Navigate to the folder where `EnvConda.yml` is located.
