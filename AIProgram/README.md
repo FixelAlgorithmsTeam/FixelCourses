@@ -16,8 +16,8 @@ This folder is dedicated to the course [Technion AI Program](https://cont-edu.te
  - [Projects](./Projects.md).
  - [Azure Labs](https://labs.azure.com) - Virtual Machines.
  - [WorkShop 001 - Machine Learning on Cloud Server](./2024_02/WorkShop001).
- - [WorkShop 002 - Object Detection with Deep Learning](./2024_02/WorkShop001).
- - [WorkShop 003 - Image Segmentation with Deep Learning](./2024_02/WorkShop001).
+ - [WorkShop 002 - Object Detection with Deep Learning](./2024_02/WorkShop002).
+ - [WorkShop 003 - Image Segmentation with Deep Learning](./2024_02/WorkShop003).
 
 ## Class 002 (December 2024)
 
