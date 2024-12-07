@@ -11,9 +11,8 @@ dependencies:
   - pandas
   - numba
   - cvxpy
+  - autograd
   - scikit-learn
-  - xgboost
-  - lightgbm
   - kneed
   - jupyter
   - ipykernel
@@ -26,5 +25,4 @@ dependencies:
   - pydot
   - distinctipy
   - rich
-  - autograd
   - gdown
