@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 from enum import auto, Enum, unique
 
 # Typing
-from typing import Any, Callable, Dict, List, Literal, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, List, Literal, Optional, Self, Set, Tuple, Union
 
 # Course Packages
 
@@ -685,6 +685,92 @@ class ADMM():
         
         return lX
 
+class SequentialLeastSquares():
+    """
+    A class to solve the Regularized Least Squares problem:
+    
+        0.5 * ||A x - b||_2^2 + (α / 2) ||x||_2^2
+    
+    Using Sequential Least Squares (SLS) for efficient updates when new data is added incrementally.
+
+    Parameters
+    ----------
+    mA : np.ndarray
+        The design matrix (2D array) of size `(n_samples, n_features)`.
+    vB : np.ndarray
+        The target vector (1D array) of size `(n_samples,)`.
+    λ : float, optional, default=1.0
+        The forgetting factor, which controls the weight of past observations.
+        A value of `λ = 1.0` means no forgetting, while smaller values give more weight to recent observations.
+    α : float, optional, default=0.0
+        The regularization parameter. A positive value of `α` adds L2 regularization to prevent overfitting.
+
+    Attributes
+    ----------
+    mR : np.ndarray
+        The regularized inverse covariance matrix.
+    vX : np.ndarray
+        The current solution for the least squares problem, which minimizes the objective function.
+
+    Methods
+    -------
+    ApplyIteration(valB, vA, λ=None) -> np.ndarray
+        Updates the solution `vX` incrementally with a new observation `(valB, vA)` and an optional forgetting factor `λ`.
+    __call__(valB, vA) -> np.ndarray
+        A shorthand for `ApplyIteration()` that allows the instance to be used as a callable object.
+
+    Examples
+    --------
+    Initialize the SLS model with a design matrix and target vector:
+
+    >>> import numpy as np
+    >>> mA = np.array([[1, 2], [3, 4], [5, 6]])
+    >>> vB = np.array([1, 2, 3])
+    >>> oSls = SequentialLeastSquares(mA, vB, λ=0.9, α=0.1)
+
+    Apply an update with a new observation:
+
+    >>> valB = 4.0
+    >>> vA = np.array([7, 8])
+    >>> vXLS = oSls.ApplyIteration(valB, vA)
+    >>> print(vXLS)
+
+    Or use the shorthand callable syntax:
+
+    >>> vXLS = oSls(valB, vA)
+
+    Notes
+    -----
+    - The SLS algorithm is particularly useful when the design matrix `mA` is large and data arrives sequentially, as it avoids solving the full least squares problem from scratch.
+    - The forgetting factor `λ` controls how past data is weighted.
+      When `λ < 1.0`, older observations are gradually "forgotten," which can be useful in non-stationary environments.
+    - The regularization parameter `α` adds stability to the solution, particularly when the columns of `mA` are nearly collinear.
+
+    References
+    ----------
+    - [Sequential Form of the Least Squares Estimator for Linear Least Squares Model](https://dsp.stackexchange.com/a/56670).
+    """
+    def __init__( self: Self, mA: np.ndarray, vB: np.ndarray, /, *, λ: float = 1.0, α: float = 0.0 ) -> None:
+        # Initializing the model with the initial batch
+        
+        self.mR = np.linalg.pinv(mA.T @ mA + α * np.eye(mA.shape[1])) 
+        self.vX = self.mR @ (mA.T @ vB)     #<! The LS Solution
+    
+    def ApplyIteration( self: Self, valB: float, vA: np.ndarray, λ: Optional[float] = None ) -> np.ndarray:
+
+        if λ is None:
+            λ = self.λ
+
+        vRA      = self.mR @ vA
+        self.mR -= np.outer(vRA, vRA) / (λ + vA.T @ vRA)
+        self.mR /= λ
+        self.vX += (self.mR @ vA) @ (valB - vA.T @ self.vX)
+
+        return self.vX
+    
+    def __call__( self: Self, valB: float, vA: np.ndarray ) -> np.ndarray:
+        
+        return self.ApplyIteration(valB, vA)
 
 def ProjectSimplexBall( vY: np.ndarray, /, *, ballRadius: float = 1.0, ε: float = 0.0 ) -> np.ndarray:
     """
