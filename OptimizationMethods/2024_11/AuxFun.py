@@ -754,6 +754,8 @@ class SequentialLeastSquares():
         # Initializing the model with the initial batch
         
         self.mR = np.linalg.pinv(mA.T @ mA + α * np.eye(mA.shape[1])) 
+        self.λ  = λ
+        self.α  = α
         self.vX = self.mR @ (mA.T @ vB)     #<! The LS Solution
     
     def ApplyIteration( self: Self, valB: float, vA: np.ndarray, λ: Optional[float] = None ) -> np.ndarray:
@@ -764,7 +766,8 @@ class SequentialLeastSquares():
         vRA      = self.mR @ vA
         self.mR -= np.outer(vRA, vRA) / (λ + vA.T @ vRA)
         self.mR /= λ
-        self.vX += (self.mR @ vA) @ (valB - vA.T @ self.vX)
+        vK       = self.mR @ vA
+        self.vX += vK * (valB - vA.T @ self.vX)
 
         return self.vX
     
