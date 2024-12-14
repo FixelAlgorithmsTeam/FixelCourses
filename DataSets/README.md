@@ -24,3 +24,9 @@ Taken from Kaggle Local Outlier Factor by Gaurav Dutta.
 
  - [Kaggle - Ships in Satellite Imagery](https://www.kaggle.com/datasets/rhammell/ships-in-satellite-imagery).
  - 
+ 
+## EM Data Set
+
+Based on [Yair Weiss's Problem Set 2](https://www.cs.huji.ac.il/w~yweiss/emProblem.html).    
+Related to [Yair Weiss - Motion Segmentation using EM - A Short Tutorial](https://www.cs.huji.ac.il/w~yweiss/emTutorial.pdf).  
+Links are archived.
