@@ -12,7 +12,7 @@ It guides how to install a `conda` environment given in the form of a [YAML File
 
 1. Update Windows  
    Make sure your Windows version is updated using `Windows Update`.   
-   For Windows 10 it should be `Windows 10 Version 22H2` or more.
+   For Windows 10 it should be `Windows 10 Version 22H2` or later.
 2. Install Windows Terminal  
    It suggested to install [Windows Terminal](https://github.com/microsoft/terminal).  
    If can be done, the best way is to install it using the Windows Store: [Windows Store - Windows Terminal](https://apps.microsoft.com/detail/9N0DX20HK701).  
@@ -24,15 +24,18 @@ It guides how to install a `conda` environment given in the form of a [YAML File
    Choose the `User Installer`. Make sure to chose to add `Code` to path one options are showed.
 4. Enable Long Path Support  
    See [Microsoft - Maximum Path Length Limitation](https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation).  
-   The operation requires elevated privileges.
+   The operation requires elevated privileges (`Administrator`).
    
 ### Install the Conda Environment
 
 This is a basic instruction how to install the course environment under Anaconda (Or any `conda` managed distribution).  
 It is assumed that the Windows OS is used.
 
-1. Install the [MiniForge](https://conda-forge.org/miniforge).  
-   It is better to download the `Mamba` based versions: `Mambaforge-xxxx`. 
+1. Install the [MiniForge](https://github.com/conda-forge/miniforge/releases/latest).  
+   The package to download (Windows) should be named: `Miniforge<Version>-<YY>.<MM>.<Build>-<Patch>-Windows-x86_64.exe`.   
+   On _17/12/2024_ the latest version is `Miniforge3-24.11.0-0-Windows-x86_64.exe`.   
+   Use the option to install it per user. Do not register it as the default Python.  
+   **Attention**: Do not install version named `pypy`.
 2. Download the environment specification file.  
    Each course has its own file.  
    For instance, for `AI Program 2024_12` it is given by [`EnvConda.yml`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_12/EnvConda.yml).  
@@ -57,4 +60,5 @@ It is assumed that the Windows OS is used.
 
  1. Install the `Python` extension by **Microsoft**.
  2. Install the `Jupyter` extension by **Microsoft**.
+ 2. Install the `Data Wrangler` extension by **Microsoft**.
 
