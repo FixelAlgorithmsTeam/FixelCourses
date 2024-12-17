@@ -31,7 +31,7 @@ It guides how to install a `conda` environment given in the form of a [YAML File
 This is a basic instruction how to install the course environment under Anaconda (Or any `conda` managed distribution).  
 It is assumed that the Windows OS is used.
 
-1. Install the [MiniForge](https://github.com/conda-forge/miniforge/releases/latest).  
+1. Install the [MiniForge](https://github.com/conda-forge/miniforge/releases/latest) distribution of `conda`.  
    The package to download (Windows) should be named: `Miniforge<Version>-<YY>.<MM>.<Build>-<Patch>-Windows-x86_64.exe`.   
    On _17/12/2024_ the latest version is `Miniforge3-24.11.0-0-Windows-x86_64.exe`.   
    Use the option to install it per user. Do not register it as the default Python.  
