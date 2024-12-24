@@ -46,13 +46,18 @@ It is assumed that the Windows OS is used.
    You should see something like `(base) ...` on the terminal:
 ![](https://i.imgur.com/AGDV0WF.png)
 4. Navigate to the folder where `EnvConda.yml` is located.
-5. Run the command: `conda env create -file EnvConda.yml`. It should take a while.   
-   Once it finishes you may see the list of the list of environments with `conda env list`.
-6. Once it is finished, run `conda activate <EnvName>`. You should see `(base)` changes into `(EnvName)`.  
+5. Run the command: `conda env create --file EnvConda.yml` (Equivalent to `conda env create -f EnvConda.yml`).  
+   It will try to solve the dependency graph (It might take a while) and show the packages to be installed for approval.
+   Once approved, it will download the packages and install them.
+6. Run `conda env list` to see the list of available environments.  
+   Locate the environment of the specific course. This approves the previous step succeeded.
+6. Run `conda activate <EnvName>` to activate an environment.  
+   You should see `(base)` changes into `(EnvName)`.  
    The `<EnvName>` is defined as the field `name: <EnvName>` in the `EnvConda.yml`.
 7. Open VS Code.  
-   Run `code` on command line when the course environment is activated.
-8. Open the folder of the notebooks of the course.
+   Run `code` on command line when the course environment is activated.  
+   Launching from the activated environment allows `VS Code` inherit the system variables of the environment.
+8. Open the folder of the notebooks of the course with `File -> Open Folder...`.
 9. Open a notebook and make sure you set the Python Kernel to match the `<EnvName>`.  
    The version of Python match the version in `EnvConda.yml`.
 
