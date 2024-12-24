@@ -8,6 +8,12 @@ It is (2024) a rather popular package manager in the Python eco system.
 This guide is mainly Windows users though the main steps can be replicated in `macOS` and `Linux`.  
 It guides how to install a `conda` environment given in the form of a [YAML File](https://en.wikipedia.org/wiki/YAML).
 
+Guides:
+
+ - [Getting Started with `conda`](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html).
+ - [The `conda` User Guide](https://docs.conda.io/projects/conda/en/latest/user-guide/index.html).
+ - [The `conda` Cheat Sheet](https://docs.conda.io/projects/conda/en/latest/user-guide/cheatsheet.html).
+
 ### Auxiliary Steps
 
 1. Update Windows  
