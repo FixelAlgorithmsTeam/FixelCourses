@@ -47,8 +47,9 @@ It is assumed that the Windows OS is used.
 ![](https://i.imgur.com/AGDV0WF.png)
 4. Navigate to the folder where `EnvConda.yml` is located.
 5. Run the command: `conda env create --file EnvConda.yml` (Equivalent to `conda env create -f EnvConda.yml`).  
-   It will try to solve the dependency graph (It might take a while) and show the packages to be installed for approval.
-   Once approved, it will download the packages and install them.
+   It will try to solve the dependency graph (It might take a while) and show the packages to be installed for approval.  
+   Once approved, it will download the packages and install them.  
+   **Remark**: In general, the command for arbitrary path is: `conda env create --file <Path\To\EnvConda.yml>`.  
 6. Run `conda env list` to see the list of available environments.  
    Locate the environment of the specific course. This approves the previous step succeeded.
 6. Run `conda activate <EnvName>` to activate an environment.  
