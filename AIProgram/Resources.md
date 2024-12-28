@@ -126,6 +126,13 @@ This file is a curated list of resources related to the course.
     - [ResNeXt: A New Paradigm in Image Processing](https://scribe.rip/ee40425aea1f).
     - [Densely Connected Networks (DenseNet)](https://d2l.ai/chapter_convolutional-modern/densenet.html).
     - [EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks](https://scribe.rip/92941c5bfb95).
+ - Concepts  
+   - [Gabor Convolutional Networks](https://arxiv.org/abs/1705.01450).
+ - Layers
+    - [Deformable Convolutions](https://arxiv.org/abs/1811.11168).  
+	  See [Deformable Convolutional Networks (DCNs) : A Complete Guide](https://scribe.rip/eadd9f1f8ce2), [Notes on “Deformable Convolutional Networks”](https://scribe.rip/baaabbc11cf3), [Deformable Convolution](https://leimao.github.io/blog/Deformable-Convolution).  
+	  Te idea generalizes the Convolution layer. Yet it is hard to implement efficiently.
+	- 
  - [LightLy](https://github.com/lightly-ai/lightly) - A python library for self-supervised learning on images.
  - Features Visualization
     - [Visualizing and Understanding Convolutional Networks](https://arxiv.org/abs/1311.2901).
