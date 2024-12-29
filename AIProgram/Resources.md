@@ -101,7 +101,8 @@ This file is a curated list of resources related to the course.
     - [NNViz](https://github.com/LucaBonfiglioli/nnviz).
     - [TorchLens](https://github.com/johnmarktaylor91/torchlens).
     - [Tools to Design or Visualize Architecture of Neural Network](https://github.com/ashishpatel26/Tools-to-Design-or-Visualize-Architecture-of-Neural-Network).
-    - [Netron](https://github.com/lutzroeder/Netron).
+    - [Netron](https://github.com/lutzroeder/Netron) - Visualizer for neural network, deep learning and machine learning models.
+	- [TorchView](https://github.com/mert-kurttutan/torchview) - Visualize PyTorch models.
  - [TorchDrift: Drift Detection for PyTorch](https://torchdrift.org) - A data and concept drift library for PyTorch. It lets you monitor your PyTorch models to see if they operate within spec.
  - [What Does It Mean that Deep Learning is NoN Parametric](https://lernapparat.de/statistics-deep-learning-nonparametric) - The regularization point of view on a Neural Network.
  - [Machine (Deep) Learning Articles](https://github.com/christianversloot/machine-learning-articles) - A set of Markdown posts on applications and theory in Machine Learning. Focused on Deep Learning.
@@ -147,6 +148,8 @@ This file is a curated list of resources related to the course.
       - [Part 3: R-CNN Family](https://lilianweng.github.io/posts/2017-12-31-object-recognition-part-3).
       - [Part 4: Fast Detection Models](https://lilianweng.github.io/posts/2018-12-27-object-recognition-part-4).
     - [mAP (mean Average Precision) for Object Detection](https://scribe.rip/45c121a31173).
+	- Ayoosh Kathuria - How to Implement a YOLO (v3) Object Detector from Scratch in PyTorch: [Part I](https://blog.paperspace.com/how-to-implement-a-yolo-object-detector-in-pytorch), [Part II](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-2), [Part III](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-3), [Part IV](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-4), [Part V](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-5).
+	- [Build YOLO Model from Scratch](https://github.com/Praveen76/Build-YOLO-Model-from-scratch).
  - Image Segmentation
     - [Segmentation Models for PyTorch](https://github.com/qubvel/segmentation_models.pytorch).
     - [Jermey Jordan - An Overview of Semantic Image Segmentation](https://www.jeremyjordan.me/semantic-segmentation).
@@ -174,7 +177,7 @@ This file is a curated list of resources related to the course.
 
  - [PyTorch Segmentation Models](https://github.com/qubvel/segmentation_models.pytorch) - Python library with Pre Trained Neural Networks for Image Segmentation based on PyTorch.
  - [Captum](https://github.com/pytorch/captum) - Model interpretability and understanding for PyTorch.
- - [Tensor Puzzles](https://github.com/srush/Tensor-Puzzles) - Solve puzzles. Improve your pytorch.
+ - [Tensor Puzzles](https://github.com/srush/Tensor-Puzzles) - Solve puzzles. Improve your PyTorch.
  - [Deep Learning with PyTorch Step by Step](https://github.com/dvgodoy/PyTorchStepByStep) - A beginners book on PyTorch.
 
 ## Data Sets
