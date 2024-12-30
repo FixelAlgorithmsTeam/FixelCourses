@@ -103,6 +103,7 @@ This file is a curated list of resources related to the course.
     - [Tools to Design or Visualize Architecture of Neural Network](https://github.com/ashishpatel26/Tools-to-Design-or-Visualize-Architecture-of-Neural-Network).
     - [Netron](https://github.com/lutzroeder/Netron) - Visualizer for neural network, deep learning and machine learning models.
 	- [TorchView](https://github.com/mert-kurttutan/torchview) - Visualize PyTorch models.
+	- [TorchExplorer](https://github.com/spfrommer/torchexplorer) - Interactively inspect module inputs, outputs, parameters, and gradients.
  - [TorchDrift: Drift Detection for PyTorch](https://torchdrift.org) - A data and concept drift library for PyTorch. It lets you monitor your PyTorch models to see if they operate within spec.
  - [What Does It Mean that Deep Learning is NoN Parametric](https://lernapparat.de/statistics-deep-learning-nonparametric) - The regularization point of view on a Neural Network.
  - [Machine (Deep) Learning Articles](https://github.com/christianversloot/machine-learning-articles) - A set of Markdown posts on applications and theory in Machine Learning. Focused on Deep Learning.
