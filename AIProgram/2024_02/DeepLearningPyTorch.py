@@ -235,6 +235,7 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
             oOpt.zero_grad()    #<! Set gradients to zeros
             valLoss.backward()  #<! Backward
             oOpt.step()         #<! Update parameters
+            oModel.eval()       #<! Inference mode for layers
         else: #<! Value of `opMode` was already validated
             with torch.no_grad():
                 # No computational graph
@@ -316,8 +317,8 @@ def RunEpochSch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callab
             oOpt.step()         #<! Update parameters
 
             learnRate = oSch.get_last_lr()[0]
-            oSch.step() #<! Update learning rate
-
+            oSch.step()         #<! Update learning rate
+            oModel.eval()       #<! Inference mode for layers
         else: #<! Value of `opMode` was already validated
             with torch.no_grad():
                 # No computational graph
