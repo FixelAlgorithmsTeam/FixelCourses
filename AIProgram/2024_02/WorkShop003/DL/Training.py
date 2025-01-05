@@ -112,6 +112,7 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
             oOpt.zero_grad()    #<! Set gradients to zeros
             valLoss.backward()  #<! Backward
             oOpt.step()         #<! Update parameters
+            oModel.eval()       #<! Set layers to inference mode
         else: #<! Value of `opMode` was already validated
             with torch.no_grad():
                 # No computational graph
