@@ -128,6 +128,10 @@ This file is a curated list of resources related to the course.
     - [ResNeXt: A New Paradigm in Image Processing](https://scribe.rip/ee40425aea1f).
     - [Densely Connected Networks (DenseNet)](https://d2l.ai/chapter_convolutional-modern/densenet.html).
     - [EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks](https://scribe.rip/92941c5bfb95).
+	- [ConNeXt - A ConvNet for the 2020s](https://arxiv.org/abs/2201.03545).  
+	  See [Sebastian Raschka - Looking Back at 2022: A Big Year For AI](https://magazine.sebastianraschka.com/p/ahead-of-ai-4-a-big-year-for-ai).  
+	  The context is that ConvNets might be as effective as ViT given enough data and training time as in [ConvNets Match Vision Transformers at Scale](https://arxiv.org/abs/2310.16764).
+	- 
  - Concepts  
    - [Gabor Convolutional Networks](https://arxiv.org/abs/1705.01450).
  - Layers
@@ -180,6 +184,7 @@ This file is a curated list of resources related to the course.
  - [Captum](https://github.com/pytorch/captum) - Model interpretability and understanding for PyTorch.
  - [Tensor Puzzles](https://github.com/srush/Tensor-Puzzles) - Solve puzzles. Improve your PyTorch.
  - [Deep Learning with PyTorch Step by Step](https://github.com/dvgodoy/PyTorchStepByStep) - A beginners book on PyTorch.
+ - [Mixed Precision Training with `Fabric`](https://magazine.sebastianraschka.com/p/accelerating-pytorch-model-training).
 
 ## Data Sets
 
