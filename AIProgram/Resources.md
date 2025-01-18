@@ -109,6 +109,7 @@ This file is a curated list of resources related to the course.
  - [Machine (Deep) Learning Articles](https://github.com/christianversloot/machine-learning-articles) - A set of Markdown posts on applications and theory in Machine Learning. Focused on Deep Learning.
  - [A Guide to Convolution Arithmetic for Deep Learning](https://arxiv.org/abs/1603.07285) - A visual deep overview of the Math of Convolution operations.
  - [Label Smoothing Mathematics](https://leimao.github.io/blog/Label-Smoothing) - A deep dive into the mathematics of Label Smoothing.
+ - AI by Hand ([Tom Yeh](https://x.com/ProfTomYeh)): [Workbooks by Mohsena](https://www.youtube.com/playlist?list=PL0cq-CiC5QhuyQQ-Qi5Qr5e5Rbzrn7beY), [Deep Learning Basic](https://www.youtube.com/playlist?list=PL0cq-CiC5Qhs9HcDnJpWuoDMrV0iPJ_-X).
 
 
 ### Computer Vision
@@ -127,6 +128,7 @@ This file is a curated list of resources related to the course.
     - [Residual Networks (ResNet) and ResNeXt](https://d2l.ai/chapter_convolutional-modern/resnet.html).
     - [ResNeXt: A New Paradigm in Image Processing](https://scribe.rip/ee40425aea1f).
     - [Densely Connected Networks (DenseNet)](https://d2l.ai/chapter_convolutional-modern/densenet.html).
+	- [Network Decoupling: From Regular to Depthwise Separable Convolutions](https://arxiv.org/abs/1808.05517) - Separable Convolution for Network Decoupling.
     - [EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks](https://scribe.rip/92941c5bfb95).
 	- [ConNeXt - A ConvNet for the 2020s](https://arxiv.org/abs/2201.03545).  
 	  See [Sebastian Raschka - Looking Back at 2022: A Big Year For AI](https://magazine.sebastianraschka.com/p/ahead-of-ai-4-a-big-year-for-ai).  
@@ -159,6 +161,10 @@ This file is a curated list of resources related to the course.
     - [Segmentation Models for PyTorch](https://github.com/qubvel/segmentation_models.pytorch).
     - [Jermey Jordan - An Overview of Semantic Image Segmentation](https://www.jeremyjordan.me/semantic-segmentation).
  - [What is Average Precision in Object Detection & Localization Algorithms](https://scribe.rip/3f330efe697b).
+ - [AI by Hand (Tom Yeh) - Computer Vision](https://www.youtube.com/playlist?list=PL0cq-CiC5QhutrhhsLLiybg2OehFOftI9) - A Playlist for Computer Vision. Basics to Deep Learning.
+ - [Illarion’s Notes - Machine Learning](https://ikhlestov.github.io/pages/machine-learning).   
+   Generally good starting point. Some are not relevant / accurate.
+ - 
 
 
 ### Natural Language Processing (NLP)
@@ -185,6 +191,14 @@ This file is a curated list of resources related to the course.
  - [Tensor Puzzles](https://github.com/srush/Tensor-Puzzles) - Solve puzzles. Improve your PyTorch.
  - [Deep Learning with PyTorch Step by Step](https://github.com/dvgodoy/PyTorchStepByStep) - A beginners book on PyTorch.
  - [Mixed Precision Training with `Fabric`](https://magazine.sebastianraschka.com/p/accelerating-pytorch-model-training).
+ - [Illarion’s Notes - PyTorch Notes](https://ikhlestov.github.io/pages/machine-learning/pytorch-notes).
+ - PyTorch Optimizers:
+   - [PyTorch Optimizer](https://github.com/jettify/pytorch-optimizer) - A collection of optimizers for Pytorch.
+   - [PyTorch Optimizer](https://github.com/kozistr/pytorch_optimizer) - A set of optimizer & lr scheduler & loss function collections in PyTorch.
+   - [ADAHESSIAN: An Adaptive Second Order Optimizer for Machine Learning](https://github.com/amirgholami/adahessian). See [AdaHessian](https://github.com/davda54/ada-hessian).  
+     [FastAI Discussion on `ADAHESSIAN`](https://forums.fast.ai/t/76214), [YouTube Recordings](https://www.youtube.com/watch?v=S87ancnZ0MM), [Reddit Discussion](https://www.reddit.com/r/MachineLearning/comments/i76wxd).
+   - [Best Deep Learning Optimizers](https://github.com/lessw2020/Best-Deep-Learning-Optimizers).
+ - 
 
 ## Data Sets
 
