@@ -227,5 +227,9 @@ This file is a curated list of resources related to the course.
  - [Fun Datasets](https://calmcode.io/datasets) - Simple fun datasets.
  - [ML Visuals](https://github.com/dair-ai/ml-visuals) - A collaborative effort to improve science communication by providing free visuals and figures.
  - [Coda Bench](https://www.codabench.org) - Codabench is an open source platform allowing you to organize AI benchmarks.
+ - Annotations Tools
+	- [VGG Image Annotator (VIA)](https://gitlab.com/vgg/via).
+	- [LabelMe](https://github.com/wkentaro/labelme).
+ - 
 
 
