@@ -11,7 +11,8 @@ This file is a curated list of resources related to the course.
 ### Mathematics
 
  - [Nick Higham's _What Is_ Series](https://nhigham.com/index-of-what-is-articles).
- - [Matrix Calculus for Machine Learning and Beyond](https://github.com/mitmath/matrixcalc).
+ - [Matrix Calculus for Machine Learning and Beyond](https://github.com/mitmath/matrixcalc).  
+   See the course notes: [ArXiV - Matrix Calculus (for Machine Learning and Beyond)](https://arxiv.org/abs/2501.14787).
  - [Matrix Calculus Calculator](https://www.matrixcalculus.org).
  - [Mathematics for Machine Learning](https://mml-book.github.io).  
    The project has a [GitHub Repository](https://github.com/mml-book/mml-book.github.io).
@@ -102,8 +103,8 @@ This file is a curated list of resources related to the course.
     - [TorchLens](https://github.com/johnmarktaylor91/torchlens).
     - [Tools to Design or Visualize Architecture of Neural Network](https://github.com/ashishpatel26/Tools-to-Design-or-Visualize-Architecture-of-Neural-Network).
     - [Netron](https://github.com/lutzroeder/Netron) - Visualizer for neural network, deep learning and machine learning models.
-	- [TorchView](https://github.com/mert-kurttutan/torchview) - Visualize PyTorch models.
-	- [TorchExplorer](https://github.com/spfrommer/torchexplorer) - Interactively inspect module inputs, outputs, parameters, and gradients.
+	  - [TorchView](https://github.com/mert-kurttutan/torchview) - Visualize PyTorch models.
+	  - [TorchExplorer](https://github.com/spfrommer/torchexplorer) - Interactively inspect module inputs, outputs, parameters, and gradients.
  - [TorchDrift: Drift Detection for PyTorch](https://torchdrift.org) - A data and concept drift library for PyTorch. It lets you monitor your PyTorch models to see if they operate within spec.
  - [What Does It Mean that Deep Learning is NoN Parametric](https://lernapparat.de/statistics-deep-learning-nonparametric) - The regularization point of view on a Neural Network.
  - [Machine (Deep) Learning Articles](https://github.com/christianversloot/machine-learning-articles) - A set of Markdown posts on applications and theory in Machine Learning. Focused on Deep Learning.
@@ -193,7 +194,7 @@ This file is a curated list of resources related to the course.
  - [Mixed Precision Training with `Fabric`](https://magazine.sebastianraschka.com/p/accelerating-pytorch-model-training).
  - [Illarion’s Notes - PyTorch Notes](https://ikhlestov.github.io/pages/machine-learning/pytorch-notes).
  - PyTorch Optimizers:
-   - [PyTorch Optimizer](https://github.com/jettify/pytorch-optimizer) - A collection of optimizers for Pytorch.
+   - [PyTorch Optimizer](https://github.com/jettify/pytorch-optimizer) - A collection of optimizers for PyTorch.
    - [PyTorch Optimizer](https://github.com/kozistr/pytorch_optimizer) - A set of optimizer & lr scheduler & loss function collections in PyTorch.
    - [ADAHESSIAN: An Adaptive Second Order Optimizer for Machine Learning](https://github.com/amirgholami/adahessian). See [AdaHessian](https://github.com/davda54/ada-hessian).  
      [FastAI Discussion on `ADAHESSIAN`](https://forums.fast.ai/t/76214), [YouTube Recordings](https://www.youtube.com/watch?v=S87ancnZ0MM), [Reddit Discussion](https://www.reddit.com/r/MachineLearning/comments/i76wxd).
@@ -212,8 +213,8 @@ This file is a curated list of resources related to the course.
  - [Pharmaceutical Drugs and Vitamins Dataset V2](https://www.kaggle.com/datasets/vencerlanz09/pharmaceutical-drugs-and-vitamins-dataset-v2).
  - [Motion based Segmentation and Recognition Dataset](http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid).
  - [DAVIS: Densely Annotated VIdeo Segmentation](https://davischallenge.org).
- - [Deep Learning — Computer Vision (CV) Using Transfer Learning (ResNet-18) in Pytorch — Skin Cancer Classification](https://scribe.rip/8d5b158893c5).
- - [Skin Cancer ISIC](https://www.kaggle.com/datasets/nodoubttome/skin-cancer9-classesisic) - Multi Class Sking Cancer.
+ - [Deep Learning — Computer Vision (CV) Using Transfer Learning (ResNet-18) in PyTorch — Skin Cancer Classification](https://scribe.rip/8d5b158893c5).
+ - [Skin Cancer ISIC](https://www.kaggle.com/datasets/nodoubttome/skin-cancer9-classesisic) - Multi Class Skin Cancer.
  - [University of Freiburg - Pattern Recognition and Image Processing](https://lmb.informatik.uni-freiburg.de/resources/datasets) - Segmentation, Image Sequences, Texture, Optical Flow, Hand Gestures, etc...
 
 
@@ -227,7 +228,7 @@ This file is a curated list of resources related to the course.
  - [Fun Datasets](https://calmcode.io/datasets) - Simple fun datasets.
  - [ML Visuals](https://github.com/dair-ai/ml-visuals) - A collaborative effort to improve science communication by providing free visuals and figures.
  - [Coda Bench](https://www.codabench.org) - Codabench is an open source platform allowing you to organize AI benchmarks.
- - Annotations Tools
+ - Annotation Tools
 	- [VGG Image Annotator (VIA)](https://gitlab.com/vgg/via).
 	- [LabelMe](https://github.com/wkentaro/labelme).
  - 
