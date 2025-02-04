@@ -203,6 +203,7 @@ This file is a curated list of resources related to the course.
 
 ## Data Sets
 
+ - [Kaggle](https://www.kaggle.com) - AI & ML Community. Many datasets and competitions.
  - [KMNIST](https://github.com/rois-codh/kmnist) - Repository for Kuzushiji-MNIST, Kuzushiji-49 and Kuzushiji-Kanji.
  - [MNIST-C: A Robustness Benchmark for Computer Vision](https://arxiv.org/abs/1906.02337).  
    See also [Short Science - MNIST-C: A Robustness Benchmark for Computer Vision](https://shortscience.org/paper?bibtexKey=journals/corr/abs-1906-02337).
