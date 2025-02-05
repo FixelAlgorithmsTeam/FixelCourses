@@ -79,7 +79,7 @@ def PlotBinaryClassData( mX: np.ndarray, vY: np.ndarray, /, *, hA: Optional[plt.
     hA.scatter(mX[vIdx1, 0], mX[vIdx1, 1], s = elmSize, color = classColor[1], edgecolor = 'k', label = f'$C_\u007b {vC[1]} \u007d$')
     hA.axvline(x = 0, color = 'k')
     hA.axhline(y = 0, color = 'k')
-    hA.axis('equal')
+    hA.set_aspect('equal')
     if axisTitle is not None:
         hA.set_title(axisTitle)
     hA.legend()
