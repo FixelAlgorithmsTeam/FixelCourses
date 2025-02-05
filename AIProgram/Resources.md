@@ -12,7 +12,7 @@ This file is a curated list of resources related to the course.
 
  - [Nick Higham's _What Is_ Series](https://nhigham.com/index-of-what-is-articles).
  - [Matrix Calculus for Machine Learning and Beyond](https://github.com/mitmath/matrixcalc).  
-   See the course notes: [ArXiV - Matrix Calculus (for Machine Learning and Beyond)](https://arxiv.org/abs/2501.14787).
+   See the course notes: [ArXiV - Matrix Calculus for Machine Learning and Beyond](https://arxiv.org/abs/2501.14787).
  - [Matrix Calculus Calculator](https://www.matrixcalculus.org).
  - [Mathematics for Machine Learning](https://mml-book.github.io).  
    The project has a [GitHub Repository](https://github.com/mml-book/mml-book.github.io).
