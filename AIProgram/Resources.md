@@ -134,7 +134,7 @@ This file is a curated list of resources related to the course.
 	- [ConNeXt - A ConvNet for the 2020s](https://arxiv.org/abs/2201.03545).  
 	  See [Sebastian Raschka - Looking Back at 2022: A Big Year For AI](https://magazine.sebastianraschka.com/p/ahead-of-ai-4-a-big-year-for-ai).  
 	  The context is that ConvNets might be as effective as ViT given enough data and training time as in [ConvNets Match Vision Transformers at Scale](https://arxiv.org/abs/2310.16764).
-	- 
+	- [PyTorch Image Models](https://github.com/huggingface/pytorch-image-models) - The largest collection of PyTorch image encoders / backbones. Including train, evaluation, inference, export scripts and pretrained weights.
  - Concepts  
    - [Gabor Convolutional Networks](https://arxiv.org/abs/1705.01450).
  - Layers
