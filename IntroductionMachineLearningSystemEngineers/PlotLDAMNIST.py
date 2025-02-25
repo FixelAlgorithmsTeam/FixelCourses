@@ -116,7 +116,7 @@ dfDataLda = pd.DataFrame({'x_1': mXLda[:, 0], 'x_2': mXLda[:, 1], 'Label': vY})
 
 # sns.set_style("darkgrid")  # adds seaborn style to charts, eg. grid
 # sns.color_palette('tab10')
-sns.set(style = "ticks", context = "talk")
+sns.set_theme(style = "ticks", context = "talk")
 plt.style.use("dark_background")  # inverts colors to dark theme
 
 hF, vHa = plt.subplots(nrows = 1, ncols = 2, figsize = (10, 6))
