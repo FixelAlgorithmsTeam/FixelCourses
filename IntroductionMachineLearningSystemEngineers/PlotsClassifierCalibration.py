@@ -64,6 +64,9 @@ np.random.seed(seedNum)
 random.seed(seedNum)
 
 # sns.set_theme() #>! Apply SeaBorn theme
+plt.style.use('dark_background')  # inverts colors to dark theme
+
+figIdx = 0
 
 # %% Constants
 
@@ -102,15 +105,19 @@ class NaivelyCalibratedLinearSVC(LinearSVC):
 # %% Loading Data
 
 X, y = make_classification(
-    n_samples=100_000, n_features=20, n_informative=2, n_redundant=2, random_state=42
+    n_samples     = 100_000, 
+    n_features    = 20, 
+    n_informative = 2, 
+    n_redundant   = 2, 
+    random_state  = 42
 )
 
-train_samples = 100  # Samples used for training the models
+train_samples = 1000  # Samples used for training the models
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
-    shuffle=False,
-    test_size=100_000 - train_samples,
+    shuffle   = False,
+    test_size = 100_000 - train_samples,
 )
 
 
@@ -120,22 +127,26 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 # %% Analysis
 
-lr = LogisticRegressionCV(
-    Cs=np.logspace(-6, 6, 101), cv=10, scoring="neg_log_loss", max_iter=1_000
+oLrCls = LogisticRegressionCV(
+    Cs       = np.logspace(-6, 6, 101), 
+    cv       = 10, 
+    scoring  = "neg_log_loss", 
+    max_iter = 1_000
 )
-gnb = GaussianNB()
-svc = NaivelyCalibratedLinearSVC(C=1.0)
-rfc = RandomForestClassifier(random_state=42)
+oGnbCls       = GaussianNB()
+oSvmCls       = NaivelyCalibratedLinearSVC(C = 1.0)
+oRndForestCls = RandomForestClassifier(random_state = 42)
 
-clf_list = [
-    (lr, "Logistic Regression"),
-    (gnb, "Naive Bayes"),
-    (svc, "SVC"),
-    (rfc, "Random forest"),
+lCls = [
+    (oLrCls, "Logistic Regression"),
+    (oGnbCls, "Naive Bayes"),
+    (oSvmCls, "SVC"),
+    (oRndForestCls, "Random forest"),
 ]
 
 
 # %% Plots
+figIdx = 1
 
 fig = plt.figure(figsize=(10, 10))
 gs = GridSpec(4, 2)
@@ -144,17 +155,17 @@ colors = plt.get_cmap("Dark2")
 ax_calibration_curve = fig.add_subplot(gs[:2, :2])
 calibration_displays = {}
 markers = ["^", "v", "s", "o"]
-for i, (clf, name) in enumerate(clf_list):
+for i, (clf, name) in enumerate(lCls):
     clf.fit(X_train, y_train)
     display = CalibrationDisplay.from_estimator(
         clf,
         X_test,
         y_test,
-        n_bins=10,
-        name=name,
-        ax=ax_calibration_curve,
-        color=colors(i),
-        marker=markers[i],
+        n_bins = 10,
+        name   = name,
+        ax     = ax_calibration_curve,
+        color  = colors(i),
+        marker = markers[i],
     )
     calibration_displays[name] = display
 
@@ -165,51 +176,55 @@ ax_calibration_curve.set_ylabel("Fractional of Positives")
 
 # Add histogram
 grid_positions = [(2, 0), (2, 1), (3, 0), (3, 1)]
-for i, (_, name) in enumerate(clf_list):
+for i, (_, name) in enumerate(lCls):
     row, col = grid_positions[i]
     ax = fig.add_subplot(gs[row, col])
 
     ax.hist(
         calibration_displays[name].y_prob,
-        range=(0, 1),
-        bins=10,
-        label=name,
-        color=colors(i),
+        range = (0, 1),
+        bins  = 10,
+        label = name,
+        color = colors(i),
     )
     ax.set(title=name, xlabel="Mean Predicted Probability", ylabel="Count")
 
 plt.tight_layout()
 plt.show()
 
+fig.savefig(f'Figure{figIdx:04d}.svg', transparent = True)
+
 # %%
 
-lr = LogisticRegression(C=1.0)
-svc = NaivelyCalibratedLinearSVC(max_iter=10_000)
-svc_isotonic = CalibratedClassifierCV(svc, cv=2, method="isotonic")
-svc_sigmoid = CalibratedClassifierCV(svc, cv=2, method="sigmoid")
+oLrCls        = LogisticRegression(C = 1.0)
+oSvmCls       = NaivelyCalibratedLinearSVC(max_iter = 10_000)
+oSvmClsCalIso = CalibratedClassifierCV(oSvmCls, cv = 2, method = "isotonic")
+oSvmClsCalSig = CalibratedClassifierCV(oSvmCls, cv = 2, method = "sigmoid")
 
-clf_list = [
-    (lr, "Logistic Regression"),
-    (svc, "SVC"),
-    (svc_isotonic, "Calibrated SVC (Isotonic)"),
-    (svc_sigmoid, "Calibrated SVC (Sigmoid)"),
+lCls = [
+    (oLrCls, "Logistic Regression"),
+    (oSvmCls, "SVC"),
+    (oSvmClsCalIso, "Calibrated SVC (Isotonic)"),
+    (oSvmClsCalSig, "Calibrated SVC (Sigmoid)"),
 ]
+
+figIdx += 1
 
 fig = plt.figure(figsize=(10, 10))
 gs = GridSpec(4, 2)
 
 ax_calibration_curve = fig.add_subplot(gs[:2, :2])
 calibration_displays = {}
-for i, (clf, name) in enumerate(clf_list):
+for i, (clf, name) in enumerate(lCls):
     clf.fit(X_train, y_train)
     display = CalibrationDisplay.from_estimator(
         clf,
         X_test,
         y_test,
-        n_bins=10,
-        name=name,
-        ax=ax_calibration_curve,
-        color=colors(i),
+        n_bins = 10,
+        name   = name,
+        ax     = ax_calibration_curve,
+        color  = colors(i),
     )
     calibration_displays[name] = display
 
@@ -220,18 +235,20 @@ ax_calibration_curve.set_ylabel("Fractional of Positives")
 
 # Add histogram
 grid_positions = [(2, 0), (2, 1), (3, 0), (3, 1)]
-for i, (_, name) in enumerate(clf_list):
+for i, (_, name) in enumerate(lCls):
     row, col = grid_positions[i]
     ax = fig.add_subplot(gs[row, col])
 
     ax.hist(
         calibration_displays[name].y_prob,
-        range=(0, 1),
-        bins=10,
-        label=name,
-        color=colors(i),
+        range = (0, 1),
+        bins  = 10,
+        label = name,
+        color = colors(i),
     )
-    ax.set(title=name, xlabel="Mean Predicted Probability", ylabel="Count")
+    ax.set(title=name, xlabel = "Mean Predicted Probability", ylabel = "Count")
 
 plt.tight_layout()
 plt.show()
+
+fig.savefig(f'Figure{figIdx:04d}.svg', transparent = True)

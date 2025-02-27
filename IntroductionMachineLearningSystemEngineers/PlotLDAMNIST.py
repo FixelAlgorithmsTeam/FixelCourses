@@ -62,6 +62,8 @@ random.seed(seedNum)
 
 sns.set_theme() #>! Apply SeaBorn theme
 
+figIdx = 0
+
 # %% Constants
 
 
@@ -116,8 +118,10 @@ dfDataLda = pd.DataFrame({'x_1': mXLda[:, 0], 'x_2': mXLda[:, 1], 'Label': vY})
 
 # sns.set_style("darkgrid")  # adds seaborn style to charts, eg. grid
 # sns.color_palette('tab10')
-sns.set_theme(style = "ticks", context = "talk")
-plt.style.use("dark_background")  # inverts colors to dark theme
+sns.set_theme(style = 'ticks', context = 'talk')
+plt.style.use('dark_background')  # inverts colors to dark theme
+
+figIdx += 1
 
 hF, vHa = plt.subplots(nrows = 1, ncols = 2, figsize = (10, 6))
 vHa = vHa.flat
@@ -131,7 +135,7 @@ for hA in vHa:
     hA.set_xlabel('$x_1$')
     hA.set_ylabel('$x_2$')
 
-hF.savefig('TMP.svg', transparent = True)
+hF.savefig(f'Figure{figIdx:04d}.svg', transparent = True)
 
 
 # %%
