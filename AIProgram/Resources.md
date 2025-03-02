@@ -111,6 +111,10 @@ This file is a curated list of resources related to the course.
  - [A Guide to Convolution Arithmetic for Deep Learning](https://arxiv.org/abs/1603.07285) - A visual deep overview of the Math of Convolution operations.
  - [Label Smoothing Mathematics](https://leimao.github.io/blog/Label-Smoothing) - A deep dive into the mathematics of Label Smoothing.
  - AI by Hand ([Tom Yeh](https://x.com/ProfTomYeh)): [Workbooks by Mohsena](https://www.youtube.com/playlist?list=PL0cq-CiC5QhuyQQ-Qi5Qr5e5Rbzrn7beY), [Deep Learning Basic](https://www.youtube.com/playlist?list=PL0cq-CiC5Qhs9HcDnJpWuoDMrV0iPJ_-X).
+ - [Learning Deep Learning](https://patrick-llgc.github.io/Learning-Deep-Learning) - A set of blog posts and reviews of papers.
+ - [Denny Britz - Deep Learning Papernotes](https://github.com/dennybritz/deeplearning-papernotes).
+ - [Daniel Takeshi - Deep Learning Papernotes](https://github.com/DanielTakeshi/Paper_Notes).
+ - 
 
 
 ### Computer Vision

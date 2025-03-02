@@ -22,11 +22,11 @@ Contains list of projects for the choice of the students.
  -  Predict the Probability of a Worker to Resign   
     See the [IBM HR Analytics Employee Attrition & Performance](https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset).  
     See [What Is Your Model Hiding? A Tutorial on Evaluating ML Models](https://www.evidentlyai.com/blog/tutorial-2-model-evaluation-hr-attrition).
- - Facility Entrance System  
-   Build employees data set, recognize. Improve over time.
- - [Detecting Early Alzheimer](https://www.kaggle.com/code/hyunseokc/detecting-early-alzheimer-s).
- - Finding all label errors in MNIST and Fashion MNIST.  
-   See [Finding Label Issues in Image Classification Datasets](https://cleanlab.ai/blog/label-errors-image-datasets), [Identifying Mislabeled Instances in Classification Datasets](https://arxiv.org/abs/1912.05283), [2.56% Test Error on CIFAR-10 using PyTorch and AutoAugment](https://davidstutz.de/2-percent-test-error-on-cifar10-using-pytorch-autoagument).
+ -  Facility Entrance System  
+    Build employees data set, recognize. Improve over time.
+ -  [Detecting Early Alzheimer](https://www.kaggle.com/code/hyunseokc/detecting-early-alzheimer-s).
+ -  Finding all label errors in MNIST and Fashion MNIST.  
+    See [Finding Label Issues in Image Classification Datasets](https://cleanlab.ai/blog/label-errors-image-datasets), [Identifying Mislabeled Instances in Classification Datasets](https://arxiv.org/abs/1912.05283), [2.56% Test Error on CIFAR-10 using PyTorch and AutoAugment](https://davidstutz.de/2-percent-test-error-on-cifar10-using-pytorch-autoagument).
  - 
 
 
@@ -35,6 +35,8 @@ Contains list of projects for the choice of the students.
 ### Computer Vision
 
  - Tracking football players during play.
+ - Solving the game [Dobble](https://en.wikipedia.org/wiki/Dobble).  
+   See: [Kaggle Dobble Card Images](https://www.kaggle.com/datasets/grouby/dobble-card-images), [Kaggle - DobbleSet](https://www.kaggle.com/datasets/atugaryov/dobbleset).
  - Identifying events in a video stream.
  - Measuring heart rate and respiration rate from a video.
  - Building a drone tracker.

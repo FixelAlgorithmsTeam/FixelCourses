@@ -1,0 +1,35 @@
+name: AISystemEngineers
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy
+  - scipy
+  - pandas
+  - numba
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - scikit-learn
+  - xgboost
+  - lightgbm
+  - kneed 
+  - pytorch
+  - pytorch-cuda=12.4
+  - torchvision
+  - torchinfo
+  - torchmetrics
+  - ultralytics
+  - scikit-image
+  - tensorboard
+  - matplotlib
+  - seaborn
+  - plotly
+  - graphviz
+  - pydot
+  - distinctipy
+  - imagesize
+  - gdown
+  - onedrivedownloader 
