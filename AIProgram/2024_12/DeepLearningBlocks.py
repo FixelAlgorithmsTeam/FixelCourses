@@ -185,7 +185,7 @@ class LeakyReLULayer():
 
 # Cross Entropy Loss
 
-def CrossEntropyLoss( vY: np.ndarray, mZ: np.ndarray ) -> Tuple[np.float_, np.ndarray]:
+def CrossEntropyLoss( vY: np.ndarray, mZ: np.ndarray ) -> Tuple[np.float64, np.ndarray]:
     '''
     Returns both the loss and the gradient w.r.t the input (mZ).
     Assumes the input is logits (Before applying probability like transformation).
@@ -205,7 +205,7 @@ def CrossEntropyLoss( vY: np.ndarray, mZ: np.ndarray ) -> Tuple[np.float_, np.nd
 
 # MSE Loss
 
-def MseLoss( vY: np.ndarray, vZ: np.ndarray ) -> Tuple[np.float_, np.ndarray]:
+def MseLoss( vY: np.ndarray, vZ: np.ndarray ) -> Tuple[np.float64, np.ndarray]:
     '''
     Returns both the loss and the gradient w.r.t the input (vZ).
     The function uses the mean loss (Normalized by N). 
@@ -502,7 +502,7 @@ def RunEpoch( oModel: ModelNN, oDataSet: DataSet, oOpt: Optimizer, hL: Callable,
 
 # Score Functions
 
-def ScoreAccLogits( mScore: np.ndarray, vY: np.ndarray ) -> np.float_:
+def ScoreAccLogits( mScore: np.ndarray, vY: np.ndarray ) -> np.float64:
     """
     Calculates the classification accuracy.  
     Input:

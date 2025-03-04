@@ -25,6 +25,7 @@ dependencies:
   - pytorch-cuda=12.4
   - torchvision
   - torchinfo
+  - torchmetrics
   - scikit-image
   - opencv
   - autograd
