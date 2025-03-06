@@ -132,7 +132,7 @@ class SAM2ImageEncoder:
         self.img_height, self.img_width = image.shape[:2]
 
         # Resize input image
-        input_img = ski.transform.resize(input_img, (self.input_width, self.input_height))
+        input_img = ski.transform.resize(image, (self.input_width, self.input_height), preserve_range = True)
 
         mean = np.array([0.485, 0.456, 0.406])
         std = np.array([0.229, 0.224, 0.225])
@@ -184,13 +184,13 @@ class SAM2ImageDecoder:
 
     def __call__(self, image_embed: np.ndarray,
                  high_res_feats_0: np.ndarray, high_res_feats_1: np.ndarray,
-                 point_coords: np.ndarray, point_labels: np.ndarray) -> tuple[np.ndarray, ndarray]:
+                 point_coords: np.ndarray, point_labels: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
         return self.predict(image_embed, high_res_feats_0, high_res_feats_1, point_coords, point_labels)
 
     def predict(self, image_embed: np.ndarray,
                  high_res_feats_0: np.ndarray, high_res_feats_1: np.ndarray,
-                 point_coords: np.ndarray, point_labels: np.ndarray) -> tuple[np.ndarray, ndarray]:
+                 point_coords: np.ndarray, point_labels: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
         inputs = self.prepare_inputs(image_embed, high_res_feats_0, high_res_feats_1, point_coords, point_labels)
 
