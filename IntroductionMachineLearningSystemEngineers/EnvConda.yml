@@ -15,7 +15,7 @@ dependencies:
   - scikit-learn
   - xgboost
   - lightgbm
-  - kneed 
+  - kneed
   - pytorch
   - pytorch-cuda=12.4
   - torchvision
@@ -23,6 +23,7 @@ dependencies:
   - torchmetrics
   - ultralytics
   - onnxruntime
+  - openai-clip
   - scikit-image
   - tensorboard
   - matplotlib
@@ -33,4 +34,4 @@ dependencies:
   - distinctipy
   - imagesize
   - gdown
-  - onedrivedownloader 
+  - onedrivedownloader
