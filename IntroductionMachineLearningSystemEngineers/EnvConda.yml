@@ -24,6 +24,7 @@ dependencies:
   - ultralytics
   - onnxruntime
   - openai-clip
+  - transformers
   - scikit-image
   - tensorboard
   - matplotlib
