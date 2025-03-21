@@ -214,8 +214,10 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
 
     if opMode == NNMode.TRAIN:
         oModel.train(True) #<! Equivalent of `oModel.train()`
+        trainMode = True
     elif opMode == NNMode.INFERENCE:
         oModel.eval() #<! Equivalent of `oModel.train(False)`
+        trainMode = False
     else:
         raise ValueError(f'The `opMode` value {opMode} is not supported!')
     
@@ -237,18 +239,20 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
             oOpt.step()         #<! Update parameters
             oModel.eval()       #<! Inference mode for layers
         else: #<! Value of `opMode` was already validated
-            with torch.no_grad():
+            with torch.inference_mode(): #<! The `torch.inference_mode()` scope is more optimized than `torch.no_grad()` 
                 # No computational graph
                 mZ      = oModel(mX) #<! Model output
                 valLoss = hL(mZ, vY) #<! Loss
 
-        with torch.no_grad():
+        with torch.inference_mode():
             # Score
+            oModel.eval() #<! Ensure Evaluation Mode (Dropout / Normalization layers)
             valScore = hS(mZ, vY)
             # Normalize so each sample has the same weight
             epochLoss  += batchSize * valLoss.item()
             epochScore += batchSize * valScore.item()
             numSamples += batchSize
+            oModel.train(trainMode) #<! Restore original mode
 
         print(f'\r{"Train" if opMode == NNMode.TRAIN else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}, loss: {valLoss:.6f}', end = '')
     

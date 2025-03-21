@@ -24,6 +24,7 @@ dependencies:
   - torchvision
   - torchinfo
   - torchmetrics
+  - shap
   - scikit-image
   - opencv
   - autograd
