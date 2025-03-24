@@ -1,4 +1,4 @@
-# AI for System Engineers - Resources
+# AI for System Engineers and Managers - Resources
 
 [![](./../FixelAlgorithmsLogo.png)](https://fixelalgorithms.gitlab.io)
 
