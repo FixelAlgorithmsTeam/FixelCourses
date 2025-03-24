@@ -12,6 +12,7 @@ This file is a curated list of resources related to the course.
  - [Andriy Burkov - Machine Learning Engineering](https://www.mlebook.com).
  - [Machine Learning in Production: From Models to Products](https://mlip-cmu.github.io/book).
  - Stuart Russell, Peter Norvig - Artificial Intelligence - A Modern Approach.
+ - Chip Huyen - Designing Machine Learning Systems.
  - Pethuru Raj - Explainable Artificial Intelligence (XAI) - Concepts, Enabling Tools, Technologies and Applications.
  - Tin Chih Toly Chen - Explainable Artificial Intelligence (XAI) in Manufacturing.
 
@@ -59,6 +60,7 @@ This file is a curated list of resources related to the course.
 ## Posts / Notes
 
  - [AI and Machine Learning: A Historical Perspective](https://thelmbook.com/articles/#!./AI-history.md).
+ - [A Conceptual Explanation of Bayesian Hyperparameter Optimization for Machine Learning](https://scribe.rip/b8172278050f).
 
 ## Miscellaneous
 
