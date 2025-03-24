@@ -8,6 +8,7 @@ A repository dedicated to [Fixel Courses](https://fixelalgorithms.gitlab.io/cour
 
 ## Table of Courses
 
+ - [Image Processing Methods](https://fixelalgorithms.gitlab.io/courses/imgprocmethods).
  - [Introduction to Deep Learning](https://fixelalgorithms.gitlab.io/courses/intdlcourse).
  - [Introduction to Machine Learning](https://fixelalgorithms.gitlab.io/courses/intmlcourse).
  - [Machine Learning Methods](https://fixelalgorithms.gitlab.io/courses/mlmethodscourse).
