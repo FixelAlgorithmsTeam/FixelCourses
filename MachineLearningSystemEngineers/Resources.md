@@ -60,7 +60,7 @@ This file is a curated list of resources related to the course.
 ## Posts / Notes
 
  - [AI and Machine Learning: A Historical Perspective](https://thelmbook.com/articles/#!./AI-history.md).
- - [A Conceptual Explanation of Bayesian Hyperparameter Optimization for Machine Learning](https://scribe.rip/b8172278050f).
+ - [A Conceptual Explanation of Bayesian Hyper Parameter Optimization for Machine Learning](https://scribe.rip/b8172278050f).
 
 ## Miscellaneous
 
