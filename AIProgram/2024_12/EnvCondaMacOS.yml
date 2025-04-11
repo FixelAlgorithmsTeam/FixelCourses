@@ -1,6 +1,5 @@
 name: AIProgram
 channels:
-  - pytorch
   - conda-forge
 dependencies:
   - python=3.12
@@ -36,3 +35,4 @@ dependencies:
   - pydot
   - distinctipy
   - gdown
+  - onedrivedownloader
