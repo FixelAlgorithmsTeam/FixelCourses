@@ -8,7 +8,7 @@ This folder is dedicated to the course [Scientific Programming Methods](https://
 
 ## Class 001 (May 2025)
 
- - Partial course (Only the 1st day of teh course).
+ - Partial course (Only the 1st day of the course).
  - [Program Files](./2025_05).
 
 
