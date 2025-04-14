@@ -1,0 +1,29 @@
+name: ScientificProgrammingMethods
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - numpy
+  - scipy
+  - pandas
+  - numba
+  - pyomo
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - cvxpy
+  - scikit-learn
+  - xgboost
+  - lightgbm
+  - umap-learn
+  - kneed 
+  - scikit-image
+  - autograd
+  - matplotlib
+  - seaborn
+  - plotly
+  - graphviz
+  - pydot
+  - distinctipy
+  - gdown
+  - onedrivedownloader
