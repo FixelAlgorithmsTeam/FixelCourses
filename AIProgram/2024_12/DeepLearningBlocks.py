@@ -360,6 +360,15 @@ class Optimizer():
 
 class DataSet():
     def __init__( self, mX: np.ndarray, vY: np.ndarray, batchSize: int, shuffleData: bool = True, dropLast: bool = True ) -> None:
+        """
+        Creates a DataSet object for training a model.
+        Input:
+            mX          - Matrix (dimIn, numSamples) of the input data.
+            vY          - Vector (numSamples, ) of the reference target.
+            batchSize   - Scalar of the batch size.
+            shuffleData - Boolean to shuffle the data.
+            dropLast    - Boolean to drop the last batch if it is not full.
+        """
 
         numSamples = len(vY)
         
@@ -389,13 +398,14 @@ class DataSet():
             vIdx = self.vIdx
 
         for ii in range(self.numBatches):
+            # Generator, can be thought as a lazy iterator
             startIdx  = ii * self.batchSize
             endIdx    = min(startIdx + self.batchSize, self.numSamples) #<! Will work without the "safety net": lA = [None] * 3; lA[1:20]
             vBatchIdx = vIdx[startIdx:endIdx]
             mXBatch   = self.mX[:, vBatchIdx]
             vYBatch   = self.vY[vBatchIdx]
 
-            yield mXBatch, vYBatch
+            yield mXBatch, vYBatch #<! See https://stackoverflow.com/questions/231767
 
 # Training Loop
 
@@ -566,7 +576,8 @@ def CountModelParams( oModel: ModelNN ) -> int:
     Output:
         numParams   - Scalar of the number of parameters in the model.
     Remarks:
-      - AA
+      - It is assumed parameters are stored in a dictionary `dParams` of each layer.
+      - It is assumed the parameters are stored in a NumPy array.
     """
 
     numParams = 0
