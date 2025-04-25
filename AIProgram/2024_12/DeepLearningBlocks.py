@@ -59,6 +59,12 @@ class LinearLayer():
         self.dGrads     = {'mW' : None, 'vB' : None}
         self.Init()
     
+    def __repr__( self: Self ) -> str:
+        return f'Linear Layer ({self.dParams["mW"].shape[1]}, {self.dParams["mW"].shape[0]})'
+    
+    def __str__( self: Self ) -> str:
+        return self.__repr__()
+    
     def Init( self ) -> None:
         
         dimIn       = self.dimIn
@@ -111,6 +117,12 @@ class DropoutLayer():
         self.mMask   = None
         self.dGrads  = {}
         self.dParams = {}
+    
+    def __repr__( self: Self ) -> str:
+        return f'Dropout Layer (p = {self.p})'
+    
+    def __str__( self: Self ) -> str:
+        return self.__repr__()
 
     # Train Time
     def Forward( self, mX: np.ndarray ) -> np.ndarray:
@@ -142,6 +154,12 @@ class ReLULayer():
         self.dParams = {}
         self.dGrads  = {}
     
+    def __repr__( self: Self ) -> str:
+        return 'ReLU Layer'
+    
+    def __str__( self: Self ) -> str:
+        return self.__repr__()
+    
     def Forward( self, mX: np.ndarray ) -> np.ndarray:
         
         self.mX = mX #<! Store for Backward pass
@@ -165,6 +183,12 @@ class LeakyReLULayer():
         self.α  = α
         self.dParams = {}
         self.dGrads  = {}
+    
+    def __repr__( self: Self ) -> str:
+        return f'LeakyReLU Layer (α = {self.α})'
+    
+    def __str__( self: Self ) -> str:
+        return self.__repr__()
     
     def Forward( self: Self, mX: np.ndarray ) -> np.ndarray:
 
@@ -226,6 +250,16 @@ class ModelNN():
         
         self.lLayers    = lLayers
         self.opMode     = opMode
+    
+    def __repr__( self: Self ) -> str:
+
+        sLayers = [f'Layer {(ii + 1):03d}: ' + str(oLayer) for ii, oLayer in enumerate(self.lLayers)]
+        sLayers = '\n'.join(sLayers)
+        
+        return f'ModelNN:\n{sLayers}'
+    
+    def __str__( self: Self ) -> str:
+        return self.__repr__()
     
     def Init( self ) -> None:
 
