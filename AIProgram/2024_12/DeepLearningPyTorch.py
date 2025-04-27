@@ -254,7 +254,7 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
             numSamples += batchSize
             oModel.train(trainMode) #<! Restore original mode
 
-        print(f'\r{"Train" if opMode == NNMode.TRAIN else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}, loss: {valLoss:.6f}', end = '')
+        print(f'\r{"Train" if trainMode else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}, loss: {valLoss:.6f}', end = '')
     
     print('', end = '\r')
             
@@ -298,8 +298,10 @@ def RunEpochSch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callab
 
     if opMode == NNMode.TRAIN:
         oModel.train(True) #<! Equivalent of `oModel.train()`
+        trainMode = True
     elif opMode == NNMode.INFERENCE:
         oModel.eval() #<! Equivalent of `oModel.train(False)`
+        trainMode = False
     else:
         raise ValueError(f'The `opMode` value {opMode} is not supported!')
     
@@ -341,14 +343,16 @@ def RunEpochSch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callab
             numSamples += batchSize
             lLearnRate.append(learnRate)
 
-            if (oTBLogger is not None) and (opMode == NNMode.TRAIN):
+            oModel.train(trainMode) #<! Restore original mode
+
+            if (oTBLogger is not None) and trainMode:
                 # Logging at Iteration level for training
                 oTBLogger.iiItr += 1
                 oTBLogger.oTBWriter.add_scalar('Train Loss', valLoss.item(), oTBLogger.iiItr)
                 oTBLogger.oTBWriter.add_scalar('Train Score', valScore.item(), oTBLogger.iiItr)
                 oTBLogger.oTBWriter.add_scalar('Learning Rate', learnRate, oTBLogger.iiItr)
 
-        print(f'\r{"Train" if opMode == NNMode.TRAIN else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}, loss: {valLoss:.6f}', end = '')
+        print(f'\r{"Train" if trainMode else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}, loss: {valLoss:.6f}', end = '')
     
     print('', end = '\r')
             
