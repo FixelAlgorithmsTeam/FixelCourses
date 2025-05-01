@@ -188,7 +188,9 @@ vX, vY = GenPieceWiseLinearData(numSamples, numSegments, tuXRange = tuXRange, σ
 
 # %% Analyze Data
 
-mX = np.concat((vX, vY), axis = 1)
+mX  = np.c_[vX, vY]
+dfX = pd.DataFrame(mX, columns = ['x', 'y'])
+# dfX.to_csv('PieceWiseLinearData.csv', index = False)
 
 
 # %% Plot Results
