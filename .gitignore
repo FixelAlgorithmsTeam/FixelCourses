@@ -22,7 +22,7 @@ Archive/*
 *.bmp
 *.jpg
 *.mp4
-# *.png
+*.png
 *.svg
 *.tif
 
