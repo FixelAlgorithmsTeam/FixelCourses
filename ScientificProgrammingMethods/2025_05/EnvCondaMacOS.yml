@@ -13,7 +13,7 @@ dependencies:
   - jupyter
   - ipykernel
   - ipywidgets
-  - cvxpy
+#  - cvxpy
   - scikit-learn
   - xgboost
   - lightgbm
@@ -29,3 +29,5 @@ dependencies:
   - distinctipy
   - gdown
   - onedrivedownloader
+  - pip:
+    - cvxpy
