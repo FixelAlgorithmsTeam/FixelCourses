@@ -114,7 +114,7 @@ This file is a curated list of resources related to the course.
  - [Learning Deep Learning](https://patrick-llgc.github.io/Learning-Deep-Learning) - A set of blog posts and reviews of papers.
  - [Denny Britz - Deep Learning Papernotes](https://github.com/dennybritz/deeplearning-papernotes).
  - [Daniel Takeshi - Deep Learning Papernotes](https://github.com/DanielTakeshi/Paper_Notes).
- - 
+ - [Kyunghyun Cho - Machine Learning - A Lecture Note](https://arxiv.org/abs/2505.03861).
 
 
 ### Computer Vision
