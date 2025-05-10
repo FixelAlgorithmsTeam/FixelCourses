@@ -12,6 +12,7 @@ dependencies:
   - ipykernel
   - ipywidgets
   - cvxpy
+  - highspy
   - scikit-learn
   - xgboost
   - lightgbm
