@@ -1,4 +1,4 @@
-# Fixel Courses - Machine Learning Methods Methods
+# Fixel Courses - Machine Learning Methods
 
 [![](./FixelAlgorithmsLogo.png)](https://fixelalgorithms.gitlab.io)
 
