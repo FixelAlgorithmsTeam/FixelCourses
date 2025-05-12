@@ -84,7 +84,7 @@ from ipywidgets import interact
 #  - Single line fill
 # 
 #  ```python
-#  vallToFill = ???
+#  valToFill = ???
 #  ```
 # 
 #  - Multi Line to Fill (At least one)
