@@ -7,7 +7,7 @@
 
 This folder is dedicated to the course [Machine Learning Methods](https://fixelalgorithms.gitlab.io/courses/mlmethodscourse) by [Fixel Algorithms](https://fixelalgorithms.gitlab.io).
 
- - [Resources](./../AIProgram/Resources.md) (From the AI Program).
+ - [Resources](./../AIProgram/Resources.md) (From the [AI Program](./../AIProgram)).
  - [Class of 02/2022](./2022_02).
  - [Class of 01/2023](./2023_01).
  - [Class of 06/2024](./2024_06).
