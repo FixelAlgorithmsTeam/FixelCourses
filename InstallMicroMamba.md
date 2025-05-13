@@ -93,7 +93,6 @@ Downloading MicroMamba (Download the latest version available):
 <!-- ![](https://i.imgur.com/CEohdVS.png) -->
 <!-- https://i.postimg.cc/j5GdBh6z/CEohdVS.png -->
 
-
 The end game (3 files in the same folder, You may call the folder as you wish):
 
 ![](https://i.imgur.com/q6v4MgN.png)
@@ -113,4 +112,3 @@ Run the new set profile:
 
 ![](https://i.imgur.com/ebYB4v1.png)
 <!-- ![](https://i.postimg.cc/Y2W6nrQW/image.png) -->
-
