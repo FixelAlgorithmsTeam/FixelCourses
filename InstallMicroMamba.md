@@ -88,28 +88,26 @@ Downloading MicroMamba (Download the latest version available):
 <!-- ![](https://i.imgur.com/qd8SkzA.png) -->
 <!-- ![](https://i.postimg.cc/jqpL1RvG/image.png) -->
 
-The end game (3 files in the same folder, You may call the folder as you wish):
-
-![](https://i.imgur.com/CEohdVS.png)
+<!-- ![](https://i.imgur.com/CEohdVS.png) -->
 <!-- https://i.postimg.cc/j5GdBh6z/CEohdVS.png -->
 
 
-The Button Down menu in _Windows Terminal_ for Settings or choosing a Profile.
+The end game (3 files in the same folder, You may call the folder as you wish):
 
 ![](https://i.imgur.com/q6v4MgN.png)
 <!-- ![](https://postimg.cc/YvrmGzD4/4b984d55) -->
 
-The Settings page to add a new profile:
+The Button Down menu in _Windows Terminal_ for Settings or choosing a Profile:
 
 ![](https://i.imgur.com/X1HnfTS.png)
 <!-- ![](https://i.postimg.cc/0NnSghr7/image.png) -->
 
-Run the new set profile:
+The Settings page to add a new profile:
 
 ![](https://i.imgur.com/okGMJP2.png)
 <!-- ![](https://i.postimg.cc/tJKZtjmG/image.png) -->
 
-aa
+Run the new set profile:
 
 ![](https://i.imgur.com/ebYB4v1.png)
 <!-- ![](https://i.postimg.cc/Y2W6nrQW/image.png) -->
