@@ -531,7 +531,7 @@ def RunEpoch( oModel: ModelNN, oDataSet: DataSet, oOpt: Optimizer, hL: Callable,
         if opMode == NNMode.TRAIN:
             # Backward
             oModel.Backward(mDz) #<! Backward
-            oOpt.Step(oModel)  #<! Update parameters
+            oOpt.Step(oModel)    #<! Update parameters
         
         # Score
         valScore = hS(mZ, vY)
