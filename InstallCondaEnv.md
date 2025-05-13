@@ -44,7 +44,7 @@ It is assumed that the Windows OS is used.
    **Attention**: Do not install version named `pypy`.
 2. Download the environment specification file.  
    Each course has its own file.  
-   For instance, for `AI Program 2024_12` it is given by [`EnvConda.yml`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_12/EnvConda.yml).  
+   For instance, for `AI Program 2024_12` it is given by [`AIProgram\2024_12\EnvConda.yml`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_12/EnvConda.yml) (Link to GitHub page).  
    Save it as `EnvConda.yml`.
 3. Open `Conda Prompt (conda)` / `MiniForge Prompt` from Windows Menu.    
    If `Mini Forge` is installed, look for `Mini Forge Prompt` on Windows Menu.  
@@ -56,6 +56,7 @@ It is assumed that the Windows OS is used.
    It will try to solve the dependency graph (It might take a while) and show the packages to be installed for approval.  
    Once approved, it will download the packages and install them.  
    **Remark**: In general, the command for arbitrary path is: `conda env create --file <Path\To\EnvConda.yml>`.  
+   **Remark**: In MicroMamba no need to use `env`: `micromamba create --file <Path\To\EnvConda.yml>` / `micromamba create -f <Path\To\EnvConda.yml>`.  
 6. Run `conda env list` to see the list of available environments.  
    Locate the environment of the specific course. This approves the previous step succeeded.
 6. Run `conda activate <EnvName>` to activate an environment.  
