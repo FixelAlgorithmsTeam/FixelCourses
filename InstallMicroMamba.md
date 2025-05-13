@@ -1,6 +1,6 @@
 # Fixel Courses - Install MicroMamba
 
-This guide shows how to install [MicroMamba](https://github.com/mamba-org/mamba) on Windows computer.
+This guide shows how to install [MicroMamba](https://github.com/mamba-org/mamba) on Windows computer.  
 The installation is configured to be _Portable_, hence does not affect any other configuration on the computer.
 
 ## Prerequisites
