@@ -20,3 +20,4 @@ A repository dedicated to [Fixel Courses](https://fixelalgorithms.gitlab.io/cour
 ## Resources
 
  - [Install Conda Environment](./InstallCondaEnv.md).
+ - [Install MicroMamba Environment (Advanced)](./InstallMicroMamba.md).
