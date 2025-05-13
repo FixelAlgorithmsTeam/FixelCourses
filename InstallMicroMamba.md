@@ -6,9 +6,9 @@ The installation is configured to be _Portable_, hence does not affect any other
 ## Prerequisites
 
  - Windows 10 / Windows 11.
- - [Windows Terminal](https://github.com/microsoft/terminal) installed.
-   It is recommended to install it using [Windows Store - Terminal](https://apps.microsoft.com/detail/9n0dx20hk701).
-   It is recommended to set [_Windows Terminal_ as the default terminal](https://superuser.com/questions/1789185).
+ - [Windows Terminal](https://github.com/microsoft/terminal) installed.  
+   It is recommended to install it using [Windows Store - Terminal](https://apps.microsoft.com/detail/9n0dx20hk701).  
+   It is recommended to set [_Windows Terminal_ as the default terminal](https://superuser.com/questions/1789185).  
  - The [VS Code](https://code.visualstudio.com) editor is installed and available on the system path variable.
 
 ## Install MicroMamaba Environment
