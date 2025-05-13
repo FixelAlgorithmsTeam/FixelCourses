@@ -79,6 +79,8 @@ See [`Set-ExecutionPolicy`](https://learn.microsoft.com/en-us/powershell/module/
 
 ### Images of the Installation Phase
 
+**Remark**: Naming may be different from above. Stick to the above.
+
 Downloading MicroMamba (Download the latest version available):
 
 ![](https://i.imgur.com/qF2aisQ.png)
