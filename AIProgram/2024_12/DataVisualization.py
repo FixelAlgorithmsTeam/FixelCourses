@@ -142,7 +142,7 @@ def PlotMnistImages( mX: np.ndarray, vY: np.ndarray, numRows: int, numCols: Opti
     if hF is None:
         hF, hA = plt.subplots(numRows, numCols, figsize = tFigSize)
     else:
-        hA = hF.axis
+        hA = hF.axes
     
     hA = np.atleast_1d(hA) #<! To support numImg = 1
     hA = hA.flat
