@@ -68,6 +68,7 @@ Archive/*
 Report*.html
 KaggleWhatsCooking.json
 IMDBReviews*.*
+*.env
 
 # TensorBoard
 *tfevents*

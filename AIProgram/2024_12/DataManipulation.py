@@ -74,6 +74,17 @@ def DownloadDecompressGzip( fileUrl: str, fileName: str) -> None:
             f.close()
         return
 
+def ParseEnvFile( fileName: str = '.env', *, filePath: str = '.', keyValSep: str = '=' ) -> Dict[str, str]:
+    # Read the file and parse it into a dictionary
+    dEnv = {}
+    with open(os.path.join(filePath, fileName), 'r') as hF:
+        for line in hF:
+            if line.startswith('#') or not line.strip():
+                continue
+            key, value = line.strip().split(keyValSep, 1)
+            dEnv[key]  = value.strip()
+    return dEnv
+
 def DownloadUrl( fileUrl: str, fileName: str ) -> str:
     
     if not os.path.exists(fileName):
@@ -99,7 +110,6 @@ def ConvertMnistDataDf( imgFilePath: str, labelFilePath: str ) -> Tuple[np.ndarr
     l.close()
 
     return mX, vY
-
 
 def ConvertBBoxFormat( vBox: np.ndarray, tuImgSize: Tuple[int, int], boxFormatIn: BBoxFormat, boxFormatOut: BBoxFormat ) -> np.ndarray:
     # tuImgSize = (numRows, numCols) <=> (imgHeight, imgWidth)
