@@ -10,3 +10,8 @@ This folder is dedicated to the course [Optimization Methods](https://fixelalgor
  - [Resources](./Resources.md).
  - [Class of 12/2023](./2023_12).
  - [Class of 11/2024](./2024_11).
+
+## Miscellaneous
+
+ - [Install Conda Environment](./../InstallCondaEnv.md).
+ - [Install MicroMamba Environment](./../InstallMicroMamba.md).
