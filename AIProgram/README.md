@@ -32,3 +32,4 @@ This folder is dedicated to the course [Technion AI Program](https://cont-edu.te
 ## Miscellaneous
 
  - [Install Conda Environment](./../InstallCondaEnv.md).
+ - [Install MicroMamba Environment](./../InstallMicroMamba.md).
