@@ -98,3 +98,6 @@ Train.csv
 data.mat
 MercedesBenzTrain.csv
 TIMIT_Train.mat
+
+# Exclude
+!PythonMamba.png
