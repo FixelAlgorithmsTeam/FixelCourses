@@ -119,3 +119,8 @@ Run the new set profile:
 
 ![](https://i.imgur.com/ebYB4v1.png)
 <!-- ![](https://i.postimg.cc/Y2W6nrQW/image.png) -->
+
+In case [Microsoft C and C++ (MSVC) Runtime Libraries](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist) is not installed the following error will be shown:
+
+![](https://i.imgur.com/8Am9VFF.png)
+<!-- ![](https://i.postimg.cc/QdSgSd7B/1.png) -->
