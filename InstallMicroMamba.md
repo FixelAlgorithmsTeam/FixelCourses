@@ -15,6 +15,8 @@ The installation is configured to be _Portable_, hence does not affect any other
    It is recommended to install it using [Windows Store - Terminal](https://apps.microsoft.com/detail/9n0dx20hk701).  
    It is recommended to set [_Windows Terminal_ as the default terminal](https://superuser.com/questions/1789185).  
  - The [VS Code](https://code.visualstudio.com) editor is installed and available on the system path variable.
+ - Microsoft C and C++ (MSVC) Runtime Libraries  
+   Install the latest [Microsoft C and C++ (MSVC) Runtime Libraries](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist).
 
 ## Install MicroMamaba Environment
 
