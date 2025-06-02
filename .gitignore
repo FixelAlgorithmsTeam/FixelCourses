@@ -12,6 +12,7 @@ Archive/*
 **/TensorBoardLog/*
 **/DetectShips/*
 **/HW*/*
+**/wandb/*
 
 # Archives
 *.7z
