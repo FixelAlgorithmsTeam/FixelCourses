@@ -109,7 +109,7 @@ class ObjectLocalizationDataset( Dataset ):
         vBi = vBi.astype(np.float32)
 
         if self.singleY:
-            return tXi, np.r_[valYi, vBi]
+            return tXi, np.r_[valYi.astype(np.float32), vBi]
         else:
             return tXi, valYi, vBi
 
