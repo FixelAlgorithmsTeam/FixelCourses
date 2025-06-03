@@ -168,8 +168,8 @@ def GenLabeldEllipseImg( tuImgSize: Tuple[int, int], numObj: int, *, boxFormat: 
     mBB = np.zeros(shape = (numObj, 4)) #<! [x1, y1, x2, y2]
 
     for ii in range(numObj):
-        cIdx    = np.random.randint(3) #<! R, G, B -> [0, 1, 2]
-        rotDeg  = np.pi * np.random.rand()
+        cIdx    = np.random.randint(3)     #<! R, G, B -> [0, 1, 2]
+        rotDeg  = np.pi * np.random.rand() #<! [0, π]
         centRow = np.random.randint(low = int(np.ceil(0.1 * tuImgSize[0])), high = int(np.ceil(0.9 * tuImgSize[0])))
         centCol = np.random.randint(low = int(np.ceil(0.1 * tuImgSize[1])), high = int(np.ceil(0.9 * tuImgSize[1])))
         majAxis = (tuImgSize[0] / 16) + ((tuImgSize[0] / 4) * np.random.rand()) #<! Major Axis
@@ -178,19 +178,20 @@ def GenLabeldEllipseImg( tuImgSize: Tuple[int, int], numObj: int, *, boxFormat: 
         # Generate the Ellipse
         vR, vC = ski.draw.ellipse(centRow, centCol, majAxis, minAxis, shape = tuImgSize, rotation = rotDeg)
 
-        mI[vR, vC, cIdx] = 1.0
+        mI[vR, vC, cIdx] = 1.0 #<! Class of the ellipse
 
+        # Bounding Box
         xLeft   = np.min(vC)
         xRight  = np.max(vC)
         yTop    = np.min(vR)
         yBottom = np.max(vR)
 
         # PASCAL VOC format
-        vY[ii]     = cIdx       #<! Label
-        mBB[ii, 0] = xLeft      #<! x Min
-        mBB[ii, 1] = yTop       #<! y Min
-        mBB[ii, 2] = xRight     #<! x Max
-        mBB[ii, 3] = yBottom    #<! y Max
+        vY[ii]     = cIdx    #<! Label
+        mBB[ii, 0] = xLeft   #<! x Min
+        mBB[ii, 1] = yTop    #<! y Min
+        mBB[ii, 2] = xRight  #<! x Max
+        mBB[ii, 3] = yBottom #<! y Max
 
         if (boxFormat != BBoxFormat.PASCAL_VOC):
             mBB[ii] = ConvertBBoxFormat(mBB[ii], tuImgSize, BBoxFormat.PASCAL_VOC, boxFormat)

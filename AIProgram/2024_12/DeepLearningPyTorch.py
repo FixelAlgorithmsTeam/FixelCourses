@@ -42,7 +42,7 @@ from DeepLearningBlocks import NNMode
 
 
 # Typing
-from typing import Any, Callable, Dict, Generator, List, Optional, Self, Set, Tuple, Union
+from typing import Any, Callable, Dict, Generator, List, Literal, Optional, Self, Set, Tuple, Union
 
 # Auxiliary Classes
 
@@ -89,10 +89,10 @@ class ObjectLocalizationDataset( Dataset ):
         if (tX.shape[0] != mB.shape[0]):
             raise ValueError(f'The number of samples in `tX` and `mB` does not match!')
         
-        self.tX = tX
-        self.vY = vY
-        self.mB = mB
-        self.singleY = singleY #<! Return label and box, or a single vector
+        self.tX         = tX #<! (numSamples, H, W, C)
+        self.vY         = vY #<! (numSamples, )
+        self.mB         = mB #<! (numSamples, 4)
+        self.singleY    = singleY #<! Return label and box, or a single vector
         self.numSamples = tX.shape[0]
 
     def __len__( self: Self ) -> int:
@@ -105,11 +105,12 @@ class ObjectLocalizationDataset( Dataset ):
         valYi = self.vY[idx] #<! Label
         vBi   = self.mB[idx] #<! Bounding Box
 
-        tXi = tXi.astype(np.float32)
-        vBi = vBi.astype(np.float32)
+        tXi   = tXi.astype(np.float32)
+        vBi   = vBi.astype(np.float32)
 
         if self.singleY:
-            return tXi, np.r_[valYi.astype(np.float32), vBi]
+            valYi = valYi.astype(np.float32)
+            return tXi, np.r_[valYi, vBi]
         else:
             return tXi, valYi, vBi
 
@@ -182,6 +183,42 @@ def GenDataLoaders( dsTrain: Dataset, dsVal: Dataset, batchSize: int, *, numWork
     dlVal   = torch.utils.data.DataLoader(dsVal, shuffle = False, batch_size = 2 * batchSize, num_workers = numWorkers, persistent_workers = PersWork)
 
     return dlTrain, dlVal
+
+def GenResNetModel( trainedModel: bool, numCls: int, resNetDepth: Literal[18, 34, 50] = 18 ) -> nn.Module:
+    # Read on the API change at: How to Train State of the Art Models Using TorchVision’s Latest Primitives
+    # https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives
+
+    match resNetDepth:
+        case 18:
+            modelFun = torchvision.models.resnet18
+            modelWeights = torchvision.models.ResNet18_Weights.IMAGENET1K_V1
+        case 34:
+            modelFun = torchvision.models.resnet34
+            modelWeights = torchvision.models.ResNet34_Weights.IMAGENET1K_V1
+        case 50:
+            modelFun = torchvision.models.resnet50
+            modelWeights = torchvision.models.ResNet50_Weights.IMAGENET1K_V2
+        case 101:
+            modelFun = torchvision.models.resnet101
+            modelWeights = torchvision.models.ResNet101_Weights.IMAGENET1K_V1
+        case 152:
+            modelFun = torchvision.models.resnet152
+            modelWeights = torchvision.models.ResNet152_Weights.IMAGENET1K_V1
+        case _:
+            raise ValueError(f'The `resNetDepth`: {resNetDepth} is invalid!')
+
+    if trainedModel:
+        oModel        = modelFun(weights = modelWeights)
+        numFeaturesIn = oModel.fc.in_features
+        # Assuming numCls << 1000
+        oModel.fc     = nn.Sequential(
+            nn.Linear(numFeaturesIn, 128), nn.ReLU(),
+            nn.Linear(128, numCls),
+        )
+    else:
+        oModel = modelFun(weights = None, num_classes = numCls)
+
+    return oModel
 
 def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable, oOpt: Optional[Optimizer] = None, opMode: NNMode = NNMode.TRAIN ) -> Tuple[float, float]:
     """
