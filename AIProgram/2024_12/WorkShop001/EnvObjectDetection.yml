@@ -1,0 +1,28 @@
+name: ObjectDetection
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - numpy
+  - scipy
+  - pandas
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - scikit-learn
+  - pytorch
+  - cuda=12.6
+  - torchvision
+  - torchinfo
+  - torchmetrics
+  - ultralytics
+  - scikit-image
+  - tensorboard
+  - matplotlib
+  - seaborn
+  - plotly
+  - graphviz
+  - pydot
+  - distinctipy
+  - gdown
+  - onedrivedownloader

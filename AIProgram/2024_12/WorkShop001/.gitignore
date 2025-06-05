@@ -1,0 +1,8 @@
+# Folders
+*files*/*
+*_ext*/*
+wandb*/*
+
+# Files
+*.png
+*.drawio.bkp
