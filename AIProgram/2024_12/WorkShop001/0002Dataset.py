@@ -12,7 +12,7 @@
 # 
 # | Version | Date       | User        |Content / Changes                                                                         |
 # |---------|------------|-------------|------------------------------------------------------------------------------------------|
-# | 1.0.000 | 06/07/2024 | Royi Avital | First version                                                                            |
+# | 1.0.000 | 02/06/2025 | Royi Avital | First version                                                                            |
 # |         |            |             |                                                                                          |
 
 # %% Packages
@@ -23,7 +23,7 @@ import scipy as sp
 import pandas as pd
 
 # Typing
-from typing import Any, Callable, Dict, Generator, List, Optional, Self, Set, Tuple, Union
+from typing import Any, Callable, Dict, Generator, List, Literal, Optional, Self, Set, Tuple, Union
 
 # Image Processing & Computer Vision
 
@@ -32,7 +32,6 @@ from typing import Any, Callable, Dict, Generator, List, Optional, Self, Set, Tu
 # Deep Learning
 
 # Miscellaneous
-import datetime
 import gdown
 import os
 from platform import python_version
@@ -40,7 +39,6 @@ import random
 import warnings
 import shutil
 import yaml
-
 
 # Visualization
 import matplotlib as mpl
@@ -84,7 +82,7 @@ T_IMG_SIZE = (100, 100, 3)
 DATA_FOLDER_NAME  = 'Data'
 TEST_FOLDER_NAME  = 'Test'
 TRAIN_FOLDER_NAME = 'Train'
-DRIVE_FOLDER_URL  = 'https://drive.google.com/drive/u/2/folders/1wxKIDN777K8kQ4UhJMu5csSbTVXhG7G9' #<! Labeled Data Set
+DRIVE_FOLDER_URL  = 'https://drive.google.com/drive/u/2/folders/1wxKIDN777K8kQ4UhJMu5csSbTVXhG7G9' #<! Labeled Data Set folder
 
 
 # %% Local Packages
@@ -95,8 +93,18 @@ DRIVE_FOLDER_URL  = 'https://drive.google.com/drive/u/2/folders/1wxKIDN777K8kQ4U
 
 # %% Parameters
 
-dataFileId  = '1LW3pX_dg8oQ2Q-hixeGo6AwNxtb_DPwg'
-fileExt     = 'png'
+# dataFileId = '1ocqIxXP--q0KXIylTKQIqTwQgw3ZsiX3' #<! Images + Labels (LabelMe)
+dataFileId = '1LW3pX_dg8oQ2Q-hixeGo6AwNxtb_DPwg' #<! Images
+fileExt    = 'png'
+
+
+# %% [markdown]
+#
+# ## Generate / Load Data
+# 
+# This section is used to download the data set from Google Drive and extract it.      
+# The dataset, composed of 300 images, will be extracted to `Data` folder.    
+# Once the data is downloaded, it should be labeled using LabelMe or similar tool.    
 
 
 # %% Load / Generate Data
@@ -110,30 +118,21 @@ if not (os.path.isdir(dataFolderPath)):
 # Move file, replaces if already exists (https://stackoverflow.com/a/8858026)
 os.replace(fileName, os.path.join(dataFolderPath, fileName))
 
+# Unpack the archive, the images, into the data folder
 shutil.unpack_archive(os.path.join(dataFolderPath, fileName), dataFolderPath)
 
 
-# %% Train Test Split
-
-# Ultralytics have different structure
-
-# testFolderPath  = os.path.join(dataFolderPath, TEST_FOLDER_NAME)
-# trainFolderPath = os.path.join(dataFolderPath, TRAIN_FOLDER_NAME)
-
-# if not (os.path.isdir(testFolderPath)):
-#     os.mkdir(testFolderPath)
-
-# if not (os.path.isdir(trainFolderPath)):
-#     os.mkdir(trainFolderPath)
-
-# lFiles = [fileName for fileName in os.listdir(dataFolderPath) if fileName.endswith(fileExt)]
-
-# for ii, fileName in enumerate(lFiles):
-#     filePath = os.path.join(dataFolderPath, fileName)
-#     if (ii < 250):
-#         os.replace(filePath, os.path.join(trainFolderPath, fileName))
-#     else:
-#         os.replace(filePath, os.path.join(testFolderPath, fileName))
+# %% [markdown]
+#
+# ## Label Data
+# 
+# Label the data as following:
+# - The Classes
+#   - Ball - The game ball.
+#   - Referee - The referee.
+#
+# Use the policies as defined in the slides.
+# At the end of this file the `Data` folder should contain a `.json` file per image.
 
 
 # %% Display Results

@@ -729,9 +729,11 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
 
 :::{.incremental}
  * There are common bounding box formats:
- * Each format can be presented in a normalized form (Values in [0, 1] range).
+ * Format can be presented in a normalized form (Values in [0, 1] range).
  * The IoU calculation is more efficient in the `xyxy` format.
 :::
+
+. . .
 
 :::{.callout-caution icon=false}
 #### [{{< iconify logos python >}}]{style="color: #02b875;"} Coding Task
@@ -762,12 +764,11 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
 ## The Model {.unlisted}
 
 :::{.incremental}
- * The Model: [`Ultralytics YOLOv8n`](https://github.com/ultralytics/ultralytics).
+ * The Model: [`Ultralytics YOLOv11n`](https://github.com/ultralytics/ultralytics).
  * Set for _Object Detection_.
  * Image Input Size: `640x640`.
  * [Grid Size](https://github.com/ultralytics/ultralytics/issues/8863): `[80x80, 40x40, 20x20]`.  
-   See [Defaults YOLOv8 Grid Size](https://stackoverflow.com/questions/75904407).
- * Number of Parameters: `3.2e6`.
+   See [YOLOv11 Explained](https://scribe.rip/2dbe2d376f71).
 :::
 
 . . .
@@ -775,6 +776,14 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
 :::{.callout-note title="The Model Size"}
 
 The choice of the smallest model (`n`) is due to the simplicity of the task and the constrained time for training.
+
+:::
+
+. . .
+
+:::{.callout-tip title="Friendly License"}
+
+The Ultralytics version of YOLO requires licensing for commercial use. See an [MIT Licensed YOLO](https://github.com/MultimediaTechLab/YOLO).
 
 :::
 
@@ -810,10 +819,25 @@ The choice of the smallest model (`n`) is due to the simplicity of the task and 
 #### [{{< iconify logos python >}}]{style="color: #02b875;"} Coding Task
 
  * Download [LabelMe](https://github.com/labelmeai/labelme).  
-   Use the pre compiled single file executables form `Releases`.
- * Put the [`.labelmerc`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_02/WorkShop002/.labelmerc) in `$USERFOLDER` / `$HOME`.
+   A licensed version will be provided by the course.  
+ * Put the [`.labelmerc`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_12/WorkShop001/.labelmerc) in `$USERFOLDER` / `$HOME`.
  * Run the program, load the folder and label your assigned files.
  * Upload the JSON files as instructed.
+:::
+
+## Labeling {.unlisted auto-animate="true"}
+
+:::{style="font-size: 60%;"}
+ * The labeling will done using the `LabelMe` JSON format.
+ * The classes are: [`Ball`, `Referee`].  
+   Mind the _capitalization_ of the letters.
+:::
+
+:::{.callout-note title="The Data for Training"}
+
+At the end of the step one should have 300 labeled images in the `Data` sub folder.  
+A [pre labeled file are available to download](https://drive.google.com/file/d/1ocqIxXP--q0KXIylTKQIqTwQgw3ZsiX3).
+
 :::
 
 ## Pre Processing the Data {.unlisted}
