@@ -12,7 +12,7 @@
 # 
 # | Version | Date       | User        |Content / Changes                                                                         |
 # |---------|------------|-------------|------------------------------------------------------------------------------------------|
-# | 1.0.000 | 06/07/2024 | Royi Avital | First version                                                                            |
+# | 1.0.000 | 09/06/2025 | Royi Avital | First version                                                                            |
 # |         |            |             |                                                                                          |
 
 # %% Packages
@@ -28,8 +28,7 @@ import pandas as pd
 
 # Deep Learning
 from ultralytics import YOLO
-# from ultralytics.yolo.utils import get_settings
-# from ultralytics.yolo.cfg import get_cfg
+from ultralytics import settings
 
 # Miscellaneous
 import datetime
@@ -88,12 +87,11 @@ L_CLS = ['Ball', 'Referee']
 
 # %% Local Packages
 
-# from AuxFun import *
 
 # %% Parameters
 
-modelCfgFile        = 'yolov8n.yaml' #<! The name sets the scale of the model
-modelWeightsFile    = 'yolov8n.pt' #<! Download from GitHub
+modelCfgFile        = 'yolo11n.yaml' #<! The name postfix (`n`) sets the scale of the model
+modelWeightsFile    = 'yolo11n.pt' #<! Download from GitHub
 dataFile            = 'DetectBall.yaml'
 
 numEpoch    = 100
@@ -101,6 +99,24 @@ batchSize   = 12
 imgSize     = 640
 numWorkers  = 0
 ampMode     = False
+
+
+# %% Ultralytics Settings
+
+# Run once and restart the kernel to apply the changes
+# settings.update({
+#     'datasets_dir': os.getcwd(), #<! Set the datasets directory to the current directory
+#     'sync': False, #<! Disable synchronization with the cloud
+#     'clearml': False, #<! Disable ClearML integration
+#     'comet': False, #<! Disable Comet integration
+#     'hub': False, #<! Disable Ultralytics Hub integration
+#     'mlflow': False, #<! Disable MLflow integration
+#     'neptune': False, #<! Disable Neptune integration
+#     'raytune': False, #<! Disable Ray Tune integration
+#     'tensorboard': False, #<! Disable TensorBoard integration
+#     'wandb': False, #<! Disable Weights & Biases integration
+#     'openvino_msg': False, #<! Disable OpenVINO integration
+# })
 
 
 # %% Define Model

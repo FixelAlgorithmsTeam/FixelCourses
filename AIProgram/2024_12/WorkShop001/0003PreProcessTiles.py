@@ -41,14 +41,10 @@ import json
 import os
 from platform import python_version
 import random
-import warnings
 import shutil
-import yaml
 
 
 # Visualization
-import matplotlib as mpl
-from matplotlib.patches import Rectangle, Circle
 import matplotlib.pyplot as plt
 
 # Jupyter
@@ -161,9 +157,11 @@ for ii, fullFileName in enumerate(lFile):
 
                 boxInTile = np.all(np.logical_and( mBox[0] >= mTile[0], mBox[1] < mTile[1] ))
                 if boxInTile:
+                    # Save only tiles which contain a box (Label)
                     tileFileNameLbl = tileFileName + '.' + yoloFileExt
                     tileFileNameImg = tileFileName + '.' + imgFileExt
                     mBoxTile = mBox - np.array([colIdx, rowIdx])[None, :] #<! Coordinates in Tile
+                    # Convert to YOLO format (LabelMe used Pascal VOC format)
                     vBoxYolo = ConvertPascalVocYolo(mBoxTile.flat, lTileSize[1], lTileSize[0]) #<! TODO: Check for negative values
                     if np.any(vBoxYolo < 0.0):
                         print(fullFileName)

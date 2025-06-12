@@ -14,7 +14,7 @@
 # 
 # | Version | Date       | User        |Content / Changes                                                                         |
 # |---------|------------|-------------|------------------------------------------------------------------------------------------|
-# | 1.0.000 | 06/07/2024 | Royi Avital | First version                                                                            |
+# | 1.0.000 | 12/06/2025 | Royi Avital | First version                                                                            |
 # |         |            |             |                                                                                          |
 
 # %% Packages
@@ -35,21 +35,21 @@ import skimage as ski
 # Deep Learning
 
 # Miscellaneous
-import datetime
-import gdown
-import json
+# import datetime
+# import gdown
+# import json
 import math
 import os
 from platform import python_version
 import random
-import warnings
+# import warnings
 import shutil
-import yaml
+# import yaml
 
 
 # Visualization
-import matplotlib as mpl
-from matplotlib.patches import Rectangle, Circle
+# import matplotlib as mpl
+# from matplotlib.patches import Rectangle, Circle
 import matplotlib.pyplot as plt
 
 # Jupyter
@@ -99,13 +99,12 @@ L_CLS = ['Ball', 'Referee']
 # %% Auxiliary Functions
 
 
-
-
 # %% Parameters
 
 imgFileExt  = 'png'
 yoloFileExt = 'txt'
 
+# Train / Validation Split
 valSetRatio     = 0.2
 trainSetRatio   = 1.0 - valSetRatio
 
