@@ -2,6 +2,7 @@
 *files*/*
 *_ext*/*
 wandb*/*
+runs/*
 
 # Files
 *.png

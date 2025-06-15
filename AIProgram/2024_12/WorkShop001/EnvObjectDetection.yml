@@ -18,6 +18,7 @@ dependencies:
   - ultralytics
   - scikit-image
   - tensorboard
+  - wandb
   - matplotlib
   - seaborn
   - plotly
