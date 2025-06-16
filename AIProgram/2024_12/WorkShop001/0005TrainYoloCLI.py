@@ -34,7 +34,6 @@ import pandas as pd
 
 # Deep Learning
 from ultralytics import YOLO
-from ultralytics import settings
 
 # ML Ops
 import wandb
@@ -49,17 +48,11 @@ import random
 from typing import Callable, Dict, Generator, List, Literal, Optional, Self, Set, Tuple, Union
 
 # Visualization
-import matplotlib.pyplot as plt
 
 # Jupyter
-from IPython import get_ipython
 
 
 # %% Configuration
-
-# %matplotlib inline
-
-# warnings.filterwarnings("ignore")
 
 seedNum = 512
 np.random.seed(seedNum)
@@ -191,7 +184,7 @@ dataFile         = 'DetectBall.yaml'
 
 # Sweep Configuration
 projName = 'BallRefereeDetection' #<! Project name in Weights & Biases
-numExp   = 10 #<! Number of experiments (Runs) in the sweep
+numExp   = 100 #<! Number of experiments (Runs) in the sweep
 
 # YOLO Training Parameters (Not in teh sweep)
 numEpoch    = 15
@@ -201,40 +194,7 @@ numWorkers  = 2
 ampMode     = False
 
 
-# %% Ultralytics Settings
-
-# Run once and restart the kernel to apply the changes
-# settings.update({
-#     'datasets_dir': os.getcwd(), #<! Set the datasets directory to the current directory
-#     'sync': False, #<! Disable synchronization with the cloud
-#     'clearml': False, #<! Disable ClearML integration
-#     'comet': False, #<! Disable Comet integration
-#     'dvc': False, #<! Disable DVC integration
-#     'hub': False, #<! Disable Ultralytics Hub integration
-#     'mlflow': False, #<! Disable MLflow integration
-#     'neptune': False, #<! Disable Neptune integration
-#     'raytune': False, #<! Disable Ray Tune integration
-#     'tensorboard': False, #<! Disable TensorBoard integration
-#     'wandb': False, #<! Disable Weights & Biases integration
-#     'vscode_msg': False, #<! Disable VS Code integration
-#     'openvino_msg': False, #<! Disable OpenVINO integration
-# })
-
-
-# %% Training Function
-
-hTrainYoloModel = lambda: TrainYoloModel(projName, dataFile, numEpoch, batchSize, imgSize, numWorkers, ampMode, modelWeightsFile)
-
-
-# %% Configure Weights & Biases
-
-# Parse the Environment File
-dEnv        = ParseEnvFile('.env')
-wandbApiKey = dEnv[WANDB_API_KEY] #<! Extract the API Key
-wandb.login(key = wandbApiKey, verify = True) #<! Do once per computer
-
-
-# %% Configure the Sweep
+# Configure the Sweep
 
 # Based on:
 # - https://docs.ultralytics.com/usage/cfg
@@ -331,26 +291,20 @@ dSweep = {
     }
 }
 
-
-# %% Create the Sweep
-
-# Run once to create the sweep
-# Then use the sweepId to run the sweep in a distributed manner
-# Each node (Computer) will run a different set of experiments
-# sweepId = wandb.sweep(dSweep, project = projName)
-sweepId = 'db1ixuao'
-print(f'Sweep ID: {sweepId}') #>! Print the Sweep ID to use it later
-
 # %% Run the Sweep
 
-# On Windows working with the Interactive Mode generates issues with the agent.
-# Since the agents uses Multi Processing, the forking causes issues on Windows.
-# Hence once the sweep is properly configured, use `0005TrainYoloCLI.py`.
+if __name__ == '__main__':
+    # Using the `__main__` allows proper work with multiprocessing and in the Wandb agent.
 
-wandb.agent(sweepId, function = hTrainYoloModel, project = projName, count = 1) #>! count = number of runs to perform
+    hTrainYoloModel = lambda: TrainYoloModel(projName, dataFile, numEpoch, batchSize, imgSize, numWorkers, ampMode, modelWeightsFile)
 
+    # Parse the Environment File
+    dEnv        = ParseEnvFile('.env')
+    wandbApiKey = dEnv[WANDB_API_KEY] #<! Extract the API Key
+    wandb.login(key = wandbApiKey, verify = True) #<! Do once per computer
+    
+    sweepId = 'db1ixuao'
+    print(f'Sweep ID: {sweepId}') #>! Print the Sweep ID to use it later
 
-# %% Validate the Model
+    wandb.agent(sweepId, function = hTrainYoloModel, project = projName, count = numExp) #>! count = number of runs to perform
 
-
-# %%
