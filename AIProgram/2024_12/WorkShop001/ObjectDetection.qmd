@@ -706,7 +706,7 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
 
 # Test Case - Ball and Referee Detection
 
-## The Task {.unlisted}
+## The Task {.unlisted auto-animate="true"}
 
 :::{.incremental}
  * Given an HD Image (`1920x1080x3`) of a _Football_ (Soccer) game:
@@ -724,6 +724,17 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
    The files are located in `AIProgram/2024_12/WorkShop001`.
  * Create a `conda` environment based on [`EnvObjectDetection.yml`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_12/WorkShop002/EnvObjectDetection.yml).
 :::
+
+## The Task {.unlisted auto-animate="true"}
+
+:::{style="font-size: 60%;"}
+ * Given an HD Image (`1920x1080x3`) of a _Football_ (Soccer) game:
+    * Detect the Ball.
+    * Detect the **Referee**.  
+      Mind **Referee** vs. _Assistant Referee_.
+:::
+
+![](https://i.imgur.com/OnsVAQV.png){#tight-fig fig-align="center" height="500px"}
 
 ## Bounding Box Format
 
