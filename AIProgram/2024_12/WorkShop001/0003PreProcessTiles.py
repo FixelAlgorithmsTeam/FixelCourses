@@ -130,6 +130,7 @@ for ii, fullFileName in enumerate(os.listdir(dataFolderPath)):
 numTiles = len(lRow) * len(lCol)
 
 for ii, fullFileName in enumerate(lFile):
+    print(f'Processing Image {(ii + 1):03d} out of {len(lFile):03d} Images')
     fileName, fileExt = os.path.splitext(fullFileName)
     jsonFileName = fileName + '.' + lblFileExt
     jsonFilePath = os.path.join(dataFolderPath, jsonFileName)
@@ -204,6 +205,7 @@ for ii, lineStr in enumerate(lLine):
 
 lLbl = [L_CLS[lblIdx] for lblIdx in vLbl]
 
-PlotBox(mI, vLbl, mBox)
+hA = PlotBox(mI, vLbl, mBox)
+hA.set_title(f'Image: {imgFullName}');
 
 # %%

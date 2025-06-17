@@ -32,12 +32,10 @@ from ultralytics import YOLO
 # from ultralytics.yolo.cfg import get_cfg
 
 # Miscellaneous
-import datetime
 import os
 from platform import python_version
 import random
-import warnings
-import yaml
+# import warnings
 
 
 # Visualization
@@ -89,8 +87,13 @@ L_CLS = ['Ball', 'Referee']
 # %% Local Packages
 
 # from AuxFun import *
+from TiledYoloDetector import TiledDetector #<! Supports tiling detection
 
 # %% Parameters
+
+# Should be the path to the model file.
+# Extract it from the optimal sweep folder.
+modelPath = ???
 
 # Set parameters to load pre trained model
 

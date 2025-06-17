@@ -91,7 +91,7 @@ DRIVE_FOLDER_URL  = 'https://drive.google.com/drive/u/2/folders/1wxKIDN777K8kQ4U
 D_CLS = {'Ball': 0, 'Referee': 1}
 L_CLS = ['Ball', 'Referee']
 
-WANDB_API_KEY     = 'WANDB_API_KEY'
+WANDB_API_KEY = 'WANDB_API_KEY'
 
 
 # %% Local Packages
@@ -136,7 +136,8 @@ def TrainYoloModel(projName: str, dataFile: str, numEpoch: int, batchSize: int, 
         # Load model each time to reset weights
         oModel = YOLO(modelWeightsFile)
 
-        # Run training using fixed and sweep-defined parameters
+        # Run training using fixed and sweep defined parameters
+        # Hyper parameters by https://docs.ultralytics.com/usage/cfg
         dResults = oModel.train(
             data         = dataFile,
             epochs       = numEpoch,
@@ -149,10 +150,11 @@ def TrainYoloModel(projName: str, dataFile: str, numEpoch: int, batchSize: int, 
             val          = True,
             plots        = True, 
             # Optimizer parameters
-            lr0          = dCfg['lr0'],
+            optimizer    = 'auto',               #<! Use 'auto' to let YOLO choose the optimizer, or specify 'SGD', 'Adam', etc.
+            # lr0          = dCfg['lr0'],          #<! Have no effect when `optimizer = 'auto'`
             lrf          = dCfg['lrf'],
-            momentum     = dCfg['momentum'],
-            weight_decay = dCfg['weight_decay'],
+            # momentum     = dCfg['momentum'],     #<! Have no effect when `optimizer = 'auto'`
+            weight_decay = dCfg['weight_decay'], 
             # Augmentation parameters
             hsv_h        = dCfg['hsv_h'],
             hsv_s        = dCfg['hsv_s'],
@@ -160,15 +162,15 @@ def TrainYoloModel(projName: str, dataFile: str, numEpoch: int, batchSize: int, 
             degrees      = dCfg['degrees'],
             translate    = dCfg['translate'],
             scale        = dCfg['scale'],
-            shear        = dCfg['shear'],
-            perspective  = dCfg['perspective'],
+            shear        = dCfg['shear'],        #<!
+            perspective  = dCfg['perspective'],  #<!
             flipud       = dCfg['flipud'],
             fliplr       = dCfg['fliplr'],
             bgr          = dCfg['bgr'],
             mosaic       = dCfg['mosaic'],
             mixup        = dCfg['mixup'],
             cutmix       = dCfg['cutmix'],
-            erasing      = dCfg['erasing'], #<! Classification only
+            erasing      = dCfg['erasing'],      #<! Classification only
         )
 
         # Validation metrics
@@ -185,9 +187,9 @@ def TrainYoloModel(projName: str, dataFile: str, numEpoch: int, batchSize: int, 
 
 # %% Parameters
 
-modelCfgFile     = 'yolo11n.yaml' #<! The name postfix (`n`) sets the scale of the model
-modelWeightsFile = 'yolo11n.pt' #<! Download from GitHub
-dataFile         = 'DetectBall.yaml'
+modelCfgFile     = 'yolo11n.yaml'           #<! The name postfix (`n`) sets the scale of the model
+modelWeightsFile = 'yolo11n.pt'             #<! Download from GitHub
+dataFile         = 'DetectBallReferee.yaml' #<! YOLO dataset configuration
 
 # Sweep Configuration
 projName = 'BallRefereeDetection' #<! Project name in Weights & Biases
@@ -240,7 +242,7 @@ wandb.login(key = wandbApiKey, verify = True) #<! Do once per computer
 # - https://docs.ultralytics.com/usage/cfg
 # - https://docs.ultralytics.com/usage/cfg/#augmentation-settings
 # - https://docs.wandb.ai/guides/sweeps/sweep-config-keys
-
+# The choices are mostly to show the options. Review them to make better informed choices.
 dSweep = {
     'method': 'random',  # or 'random', 'bayes'
     'metric': {
@@ -248,21 +250,21 @@ dSweep = {
         'name': 'Score' # Example metric, check YOLO's output for exact name
     },
     'parameters': {
-        'lr0': {
-            'distribution': 'log_uniform_values',
-            'min': 1e-4,
-            'max': 1e-1
-        },
+        # 'lr0': {
+        #     'distribution': 'log_uniform_values',
+        #     'min': 1e-4,
+        #     'max': 1e-1
+        # },
         'lrf': {
             'distribution': 'uniform',
             'min': 0.01,
             'max': 0.2
         },
-        'momentum': {
-            'distribution': 'uniform',
-            'min': 0.85,
-            'max': 0.97
-        },
+        # 'momentum': {
+        #     'distribution': 'uniform',
+        #     'min': 0.85,
+        #     'max': 0.97
+        # },
         'weight_decay': {
             'distribution': 'log_uniform_values',
             'min': 1e-5,
@@ -338,7 +340,7 @@ dSweep = {
 # Then use the sweepId to run the sweep in a distributed manner
 # Each node (Computer) will run a different set of experiments
 # sweepId = wandb.sweep(dSweep, project = projName)
-sweepId = 'db1ixuao'
+sweepId = 'c3rmk0rt'
 print(f'Sweep ID: {sweepId}') #>! Print the Sweep ID to use it later
 
 # %% Run the Sweep
@@ -347,6 +349,8 @@ print(f'Sweep ID: {sweepId}') #>! Print the Sweep ID to use it later
 # Since the agents uses Multi Processing, the forking causes issues on Windows.
 # Hence once the sweep is properly configured, use `0005TrainYoloCLI.py`.
 
+# !!! Run this in CLI. See `0005TrainYoloCLI.py` !!!
+# Copy the Sweep ID and use it in `0005TrainYoloCLI.py` to run the sweep.
 wandb.agent(sweepId, function = hTrainYoloModel, project = projName, count = 1) #>! count = number of runs to perform
 
 

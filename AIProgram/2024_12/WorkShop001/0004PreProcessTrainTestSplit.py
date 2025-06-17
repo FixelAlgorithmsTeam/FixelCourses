@@ -28,28 +28,20 @@ import pandas as pd
 from typing import Any, Callable, Dict, Generator, List, Optional, Self, Set, Tuple, Union
 
 # Image Processing & Computer Vision
-import skimage as ski
 
 # Machine Learning
 
 # Deep Learning
 
 # Miscellaneous
-# import datetime
-# import gdown
-# import json
 import math
 import os
 from platform import python_version
 import random
-# import warnings
 import shutil
-# import yaml
 
 
 # Visualization
-# import matplotlib as mpl
-# from matplotlib.patches import Rectangle, Circle
 import matplotlib.pyplot as plt
 
 # Jupyter
@@ -105,16 +97,16 @@ imgFileExt  = 'png'
 yoloFileExt = 'txt'
 
 # Train / Validation Split
-valSetRatio     = 0.2
-trainSetRatio   = 1.0 - valSetRatio
+valSetRatio   = 0.2
+trainSetRatio = 1.0 - valSetRatio
 
 
 # %% Load / Generate Data
 
-dataFolderPath      = os.path.join(os.getcwd(), DATA_FOLDER_NAME)
-tilesFolderPath     = os.path.join(dataFolderPath, TILES_FOLDER_NAME)
-imagesFolderPath    = os.path.join(dataFolderPath, IMG_FOLDER_NAME)
-labelsFolderPath    = os.path.join(dataFolderPath, LBL_FOLDER_NAME)
+dataFolderPath   = os.path.join(os.getcwd(), DATA_FOLDER_NAME)
+tilesFolderPath  = os.path.join(dataFolderPath, TILES_FOLDER_NAME)
+imagesFolderPath = os.path.join(dataFolderPath, IMG_FOLDER_NAME)
+labelsFolderPath = os.path.join(dataFolderPath, LBL_FOLDER_NAME)
 
 # Clean Images folder
 if os.path.isdir(imagesFolderPath):
@@ -148,6 +140,7 @@ numTestFiles = math.ceil(valSetRatio * numFiles)
 lValIdx = random.sample(range(numFiles), numTestFiles)
 
 for ii, imgFileName in enumerate(lFile):
+    print(f'Processing {ii + 1}/{numFiles}: {imgFileName} ...')
     fileName, fileExt = os.path.splitext(imgFileName)
     if ii in lValIdx:
         # Validation Image

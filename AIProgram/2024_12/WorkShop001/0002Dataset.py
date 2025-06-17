@@ -153,7 +153,7 @@ jsonFullName         = fileName + '.' + lblFileExt
 
 # Read image
 mI = ski.io.imread(os.path.join(dataFolderPath, imgFullName))
-# Read labels
+# Read labels (LabelMe format -> Dictionary)
 with open(os.path.join(dataFolderPath, jsonFullName)) as jsonfile:
         dJson = json.load(jsonfile)
     

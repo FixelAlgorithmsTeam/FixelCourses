@@ -84,7 +84,7 @@ DRIVE_FOLDER_URL  = 'https://drive.google.com/drive/u/2/folders/1wxKIDN777K8kQ4U
 D_CLS = {'Ball': 0, 'Referee': 1}
 L_CLS = ['Ball', 'Referee']
 
-WANDB_API_KEY     = 'WANDB_API_KEY'
+WANDB_API_KEY = 'WANDB_API_KEY'
 
 
 # %% Local Packages
@@ -142,10 +142,11 @@ def TrainYoloModel(projName: str, dataFile: str, numEpoch: int, batchSize: int, 
             val          = True,
             plots        = True, 
             # Optimizer parameters
-            lr0          = dCfg['lr0'],
+            optimizer    = 'auto',               #<! Use 'auto' to let YOLO choose the optimizer, or specify 'SGD', 'Adam', etc.
+            # lr0          = dCfg['lr0'],          #<! Have no effect when `optimizer = 'auto'`
             lrf          = dCfg['lrf'],
-            momentum     = dCfg['momentum'],
-            weight_decay = dCfg['weight_decay'],
+            # momentum     = dCfg['momentum'],     #<! Have no effect when `optimizer = 'auto'`
+            weight_decay = dCfg['weight_decay'], 
             # Augmentation parameters
             hsv_h        = dCfg['hsv_h'],
             hsv_s        = dCfg['hsv_s'],
@@ -153,15 +154,15 @@ def TrainYoloModel(projName: str, dataFile: str, numEpoch: int, batchSize: int, 
             degrees      = dCfg['degrees'],
             translate    = dCfg['translate'],
             scale        = dCfg['scale'],
-            shear        = dCfg['shear'],
-            perspective  = dCfg['perspective'],
+            shear        = dCfg['shear'],        #<!
+            perspective  = dCfg['perspective'],  #<!
             flipud       = dCfg['flipud'],
             fliplr       = dCfg['fliplr'],
             bgr          = dCfg['bgr'],
             mosaic       = dCfg['mosaic'],
             mixup        = dCfg['mixup'],
             cutmix       = dCfg['cutmix'],
-            erasing      = dCfg['erasing'], #<! Classification only
+            erasing      = dCfg['erasing'],      #<! Classification only
         )
 
         # Validation metrics
@@ -180,14 +181,14 @@ def TrainYoloModel(projName: str, dataFile: str, numEpoch: int, batchSize: int, 
 
 modelCfgFile     = 'yolo11n.yaml' #<! The name postfix (`n`) sets the scale of the model
 modelWeightsFile = 'yolo11n.pt' #<! Download from GitHub
-dataFile         = 'DetectBall.yaml'
+dataFile         = 'DetectBallReferee.yaml'
 
 # Sweep Configuration
 projName = 'BallRefereeDetection' #<! Project name in Weights & Biases
 numExp   = 100 #<! Number of experiments (Runs) in the sweep
 
 # YOLO Training Parameters (Not in teh sweep)
-numEpoch    = 15
+numEpoch    = 3
 batchSize   = 12
 imgSize     = 640
 numWorkers  = 2
@@ -208,21 +209,21 @@ dSweep = {
         'name': 'Score' # Example metric, check YOLO's output for exact name
     },
     'parameters': {
-        'lr0': {
-            'distribution': 'log_uniform_values',
-            'min': 1e-4,
-            'max': 1e-1
-        },
+        # 'lr0': {
+        #     'distribution': 'log_uniform_values',
+        #     'min': 1e-4,
+        #     'max': 1e-1
+        # },
         'lrf': {
             'distribution': 'uniform',
             'min': 0.01,
             'max': 0.2
         },
-        'momentum': {
-            'distribution': 'uniform',
-            'min': 0.85,
-            'max': 0.97
-        },
+        # 'momentum': {
+        #     'distribution': 'uniform',
+        #     'min': 0.85,
+        #     'max': 0.97
+        # },
         'weight_decay': {
             'distribution': 'log_uniform_values',
             'min': 1e-5,
@@ -303,7 +304,7 @@ if __name__ == '__main__':
     wandbApiKey = dEnv[WANDB_API_KEY] #<! Extract the API Key
     wandb.login(key = wandbApiKey, verify = True) #<! Do once per computer
     
-    sweepId = 'db1ixuao'
+    sweepId = 'c3rmk0rt' #<! Take it from the Sweep ID (`sweepID`) in `0005TrainYolo.py`
     print(f'Sweep ID: {sweepId}') #>! Print the Sweep ID to use it later
 
     wandb.agent(sweepId, function = hTrainYoloModel, project = projName, count = numExp) #>! count = number of runs to perform
