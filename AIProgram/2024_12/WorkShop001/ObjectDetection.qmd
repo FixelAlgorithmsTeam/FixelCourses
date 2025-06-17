@@ -38,8 +38,10 @@ format:
 
 revealjs-plugins:
   - attribution
+  - animate
 filters:
   - roughnotation
+  - animate
 ---
 
 # Object Detection
@@ -735,6 +737,7 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
 :::
 
 ![](https://i.imgur.com/OnsVAQV.png){#tight-fig fig-align="center" height="500px"}
+<!-- ![](https://i.postimg.cc/9QRBz12v/image.png){#tight-fig fig-align="center" height="500px"} -->
 
 ## Bounding Box Format
 
@@ -786,7 +789,7 @@ $$ \text{mAP} = \frac{1}{C} \sum_{c \in C} \frac{ \text{TP}_{\text{c}} }{ \text{
 
 :::{.callout-note title="The Model Size"}
 
-The choice of the smallest model (`n`) is due to the simplicity of the task and the constrained time for training.
+The choice of the smallest model (`n`) is due to the simplicity of the task and the constrained time for training. More complex cases might require larger model.
 
 :::
 
@@ -838,7 +841,19 @@ The Ultralytics version of YOLO requires licensing for commercial use. See an [M
 
 ## Labeling {.unlisted auto-animate="true"}
 
-:::{style="font-size: 60%;"}
+:::{style="font-size: 100%;"}
+ * The labeling will done using the `LabelMe` JSON format.
+ * The classes are: [`Ball`, `Referee`].  
+   Mind the _capitalization_ of the letters.
+:::
+
+![](https://i.imgur.com/3eP3L4f.png){#tight-fig fig-align="center" height="500px"}
+
+<!-- ![](https://i.postimg.cc/t4tv3W8z/image.png){#tight-fig fig-align="center" height="500px"} -->
+
+## Labeling {.unlisted auto-animate="true"}
+
+:::{style="font-size: 100%;"}
  * The labeling will done using the `LabelMe` JSON format.
  * The classes are: [`Ball`, `Referee`].  
    Mind the _capitalization_ of the letters.
@@ -846,21 +861,49 @@ The Ultralytics version of YOLO requires licensing for commercial use. See an [M
 
 :::{.callout-note title="The Data for Training"}
 
-At the end of the step one should have 300 labeled images in the `Data` sub folder.  
-A [pre labeled file are available to download](https://drive.google.com/file/d/1ocqIxXP--q0KXIylTKQIqTwQgw3ZsiX3).
+At the end of the step one should have 300 labeled images in the `Data` sub folder: Image File (`.png`) + Label File (`.json`).  
+A [pre labeled images are available to download](https://drive.google.com/file/d/1ocqIxXP--q0KXIylTKQIqTwQgw3ZsiX3).
 
 :::
 
-## Pre Processing the Data {.unlisted}
+. . .
+
+![](https://i.imgur.com/hG88LKo.png){#tight-fig fig-align="center" height="250px"}
+
+<!-- ![](https://i.postimg.cc/851SdTy7/image.png){#tight-fig fig-align="center" height="250px"} -->
+
+## Pre Processing the Data {.unlisted auto-animate="true"}
 
 :::{.incremental}
  * The image is relatively large (`1920x1080`).
  * The model was trained on `640x640` images with `[80x80, 40x40, 20x20]` grids.
  * Naive training means the data will be resized with factor `3`.
  * The ball size (_Bounding Box_) is about ~`12x12`.  
-   After factorization it will be ~`4x4` pixels which is too low for valid performance.
+   After factorization it will be ~`4x4` pixels which is challenging and might hinder performance.
  * Solution: Tiled Detection (See [SAHI: Slicing Aided Hyper Inference](https://github.com/obss/sahi)).
 :::
+
+## Pre Processing the Data {.unlisted auto-animate="true"}
+
+:::{}
+ * Tiled Detection: Create tiles of `640x640` which move along on the image.
+:::
+
+```yaml { .animate src="TiledDetection002.svg"}
+setup:
+  - element: "#detection-tile"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "0"
+animation:
+  - []
+  - 
+    - element: "#detection-tile"
+    - modifier: attr
+    - parameters:
+      - visibility: "hidden"
+```
 
 ## Training {.unlisted}
 

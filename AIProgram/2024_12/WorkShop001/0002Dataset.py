@@ -145,7 +145,7 @@ lFile    = [fileName for fileName in os.listdir(dataFolderPath) if fileName.ends
 numFiles = len(lFile)
 
 imgIdx = random.randrange(numFiles)
-imgIdx = 224
+# imgIdx = 224 #<! Used in the slides
 
 imgFullName          = lFile[imgIdx]
 fileName, imgFileExt = os.path.splitext(imgFullName)
