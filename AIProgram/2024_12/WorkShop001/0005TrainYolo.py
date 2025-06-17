@@ -196,11 +196,11 @@ projName = 'BallRefereeDetection' #<! Project name in Weights & Biases
 numExp   = 10 #<! Number of experiments (Runs) in the sweep
 
 # YOLO Training Parameters (Not in teh sweep)
-numEpoch    = 15
-batchSize   = 12
-imgSize     = 640
+numEpoch    = 15    #<! Adjust according to time budget and complexity of the task
+batchSize   = 12    #< Adjust by the GPU memory available
+imgSize     = 640   #<! YOLO's default image size
 numWorkers  = 2
-ampMode     = False
+ampMode     = False #<! Setting to `True` might lower the run time, but might affect the accuracy.
 
 
 # %% Ultralytics Settings

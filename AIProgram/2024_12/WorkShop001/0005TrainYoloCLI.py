@@ -188,11 +188,11 @@ projName = 'BallRefereeDetection' #<! Project name in Weights & Biases
 numExp   = 100 #<! Number of experiments (Runs) in the sweep
 
 # YOLO Training Parameters (Not in teh sweep)
-numEpoch    = 3
-batchSize   = 12
-imgSize     = 640
+numEpoch    = 15    #<! Adjust according to time budget and complexity of the task
+batchSize   = 12    #< Adjust by the GPU memory available
+imgSize     = 640   #<! YOLO's default image size
 numWorkers  = 2
-ampMode     = False
+ampMode     = False #<! Setting to `True` might lower the run time, but might affect the accuracy.
 
 
 # Configure the Sweep
@@ -304,8 +304,8 @@ if __name__ == '__main__':
     wandbApiKey = dEnv[WANDB_API_KEY] #<! Extract the API Key
     wandb.login(key = wandbApiKey, verify = True) #<! Do once per computer
     
-    sweepId = 'c3rmk0rt' #<! Take it from the Sweep ID (`sweepID`) in `0005TrainYolo.py`
-    print(f'Sweep ID: {sweepId}') #>! Print the Sweep ID to use it later
+    sweepId = 'c3rmk0rt'          #<! Take it from the Sweep ID (`sweepID`) in `0005TrainYolo.py`
+    print(f'Sweep ID: {sweepId}') #<! Print the Sweep ID to use it later
 
     wandb.agent(sweepId, function = hTrainYoloModel, project = projName, count = numExp) #>! count = number of runs to perform
 
