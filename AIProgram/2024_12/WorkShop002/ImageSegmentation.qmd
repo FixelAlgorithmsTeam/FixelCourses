@@ -1,0 +1,514 @@
+---
+title: "Image Segmentation with U-Net"
+subtitle: "Workshop"
+author: "Royi Avital"
+editor:
+  render-on-save: false
+execute:
+  freeze: true
+format: 
+  revealjs:
+    theme: [dark, Custom.scss]
+    width: 1200
+    height: 800
+    footer: "[Technion - The School of Continuing Education](https://cont-edu.technion.ac.il)"
+    logo: "https://i.imgur.com/8Eg8S2J.png"
+    toc: true
+    toc-title: Agenda
+    toc-depth: 2
+    margin: 0.05
+    navigation-mode: vertical
+    chalkboard: true
+    html-math-method: mathjax
+    include-in-header:
+      - text: |
+          <script>
+          MathJax = {
+            loader: {load: ['[tex]/color', '[tex]/html']},
+            tex: {packages: {'[+]': ['autoload', 'color', html]}},
+            options: {
+              menuOptions: {
+                settings: {
+                  assistiveMml: false
+                }
+              }
+            }
+          };
+          </script>
+
+revealjs-plugins:
+  - attribution
+filters:
+  - roughnotation
+---
+
+
+# Image Segmentation
+
+![](https://i.imgur.com/3dMBM5o.png){#tight-fig fig-align="left" height="350px"}
+
+{{< include MathJaXMacros.qmd >}}
+
+<!-- It seems colors must be defined locally -->
+$$
+\definecolor{BoldRed}{rgb}{0.9, 0.2, 0.2}
+$$
+
+## Introduction
+
+:::{.incremental}
+ * Consider the _Image Segmentation_ task:
+    * {{< iconify oui ml-classification-job >}} Classification (**What** is the object).
+    * {{< iconify pixelarticons pixelarticons >}} Pixel Level (**Where** is the object).
+:::
+
+. . .
+
+![](https://i.imgur.com/eBwcy4L.png){#tight-fig fig-align="center"}
+
+## Image Segmentation Types {auto-animate="true"}
+
+| Type  | Example  |
+|--------|--------|
+| Semantic  | ![](https://i.imgur.com/cnerHbN.png){#tight-fig fig-align="center" height="100px"}   |
+| Instance   | ![](https://i.imgur.com/qbAoMk3.png){#tight-fig fig-align="center" height="100px"}   |
+| Panoptic | ![](https://i.imgur.com/J99Rzpu.png){#tight-fig fig-align="center" height="100px"}   |
+
+: Segmentation Types {.striped .success}
+
+## Image Segmentation Types {.unlisted auto-animate="true"}
+
+| Type  | Example  |
+|--------|--------|
+| Semantic  | Pixel $\to$ Class   |
+| Instance   | Pixel $\to$ Object ID   |
+| Panoptic | Pixel $\to$ Class + Object ID  |
+
+: Segmentation Types {.striped .success}
+
+. . . 
+
+:::{.callout-important title="Interpretation"}
+
+ - [Semantic]{style="color: magenta;"}: Pixel (**Each**) is labeled by its texture and other image related properties.
+ - Instance: Pixel is labeled as part of a predefined set of objects. Each object is uniquely identified (Can be counted).
+ - Panoptic: Pixel (**Each**) is labeled by its texture and object.
+
+:::
+
+## Image Segmentation Types {.unlisted auto-animate="true"}
+
+| Type  | Example  |
+|--------|--------|
+| Semantic  | Pixel $\to$ Class   |
+| Instance   | Pixel $\to$ Object ID   |
+| Panoptic | Pixel $\to$ Class + Object ID  |
+
+: Segmentation Types {.striped .success}
+
+:::{.callout-tip icon=false}
+
+#### [{{< iconify fluent chat-bubbles-question-24-regular >}}]{style="color: #02b875;"} Question
+
+How can one create an _Object Detector_ from _Image Segmentor_?
+
+:::
+
+## Semantic Segmentation {auto-animate="true"}
+
+:::{.incremental}
+ * {{< iconify pixelarticons pixelarticons >}} The model classifies **each** pixel in the image:
+:::
+
+. . .
+
+![](https://i.imgur.com/LHBwINh.png){#tight-fig fig-align="center" height="450px"}
+
+## Semantic Segmentation {.unlisted auto-animate="true"}
+
+![](https://i.imgur.com/Rjpv18s.png){#tight-fig fig-align="center"}
+
+## The Score {auto-animate="true"}
+
+:::{.incremental}
+
+ * Imbalanced (Background) Classification Scores:
+    - Balanced Accuracy.
+    - Recall, Precision.
+    - Dice / F1.
+    - Confusion Matrix.
+ * Object Scores
+    - IoU.
+    - mAP.
+
+:::
+
+## The Score {.unlisted auto-animate="true"}
+
+:::{style="font-size: 50%;"}
+
+ * Imbalanced (Background) Classification Scores:
+    - Balanced Accuracy.
+    - Recall, Precision.
+    - Dice / F1.
+    - Confusion Matrix.
+ * Object Scores
+    - IoU.
+    - mAP.
+
+:::
+
+. . .
+
+:::{.callout-tip title="Resources"}
+
+ - [Understanding Evaluation Metrics in Medical Image Segmentation](https://scribe.rip/d289a373a3f).
+ - [An Overview of Semantic Image Segmentation](https://www.jeremyjordan.me/semantic-segmentation).
+ - [Evaluating Image Segmentation Models](https://www.jeremyjordan.me/evaluating-image-segmentation-models).
+ - [Image Segmentation — Choosing the Correct Metric](https://scribe.rip/aa21fd5751af).
+ - [`miseval`: A Metric Library for Medical Image Segmentation EVALuation](https://github.com/frankkramer-lab/miseval).
+ - Kaggle: [All the Segmentation Metrics](https://www.kaggle.com/code/yassinealouini/all-the-segmentation-metrics), [Understanding Dice Coefficient](https://www.kaggle.com/code/yerramvarun/understanding-dice-coefficient), [Visual Guide To Understanding Segmentation Metrics](https://www.kaggle.com/code/dschettler8845/visual-guide-to-understanding-segmentation-metrics).
+:::
+
+
+## The Loss Function {.unlisted}
+
+:::{.incremental}
+ * Cross Entropy Loss.
+ * Cross Entropy Loss + Label Smoothing.
+ * Balanced Cross Entropy / Focal Loss.
+ * Gradient Friendly Region / Boundary Loss.
+
+:::
+
+. . .
+
+:::{.callout-tip title="Resources"}
+
+ - [Loss Functions for Image Segmentation](https://github.com/JunMa11/SegLossOdyssey).
+ - [3 Common Loss Functions for Image Segmentation](https://dev.to/_aadidev/3-common-loss-functions-for-image-segmentation-545o).
+ - [Instance segmentation loss functions](https://softwaremill.com/instance-segmentation-loss-functions).
+ - [Focal Loss: An Efficient Way of Handling Class Imbalance](https://scribe.rip/4855ae1db4cb).
+:::
+
+
+# Data
+
+## The Data Set
+
+:::{.incremental style="font-size: 80%;"} 
+ - The _RAW_ data set should be built with
+    - Images: Real World / Synthetic / Specific / General.
+    - Labels: Masks (Binary), Integer Maps (Multi Class).
+ - There are several known datasets:
+    - [COCO Dataset](https://cocodataset.org) - Common Objects in Context.  
+    Originally by Microsoft. Labeled for many tasks (Segmentation, KeyPoints, etc...).
+    - [PASCAL VOC2012 Segmentation](http://host.robots.ox.ac.uk/pascal/VOC).
+    - [BDD100K: A Large Scale Diverse Driving Video Database](https://bair.berkeley.edu/blog/2018/05/30/bdd).
+    - [Motion Based Segmentation and Recognition Dataset](https://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid).
+    - [The Cityscapes Dataset](https://www.cityscapes-dataset.com/).
+    - [Mapillary Vistas Dataset](https://www.mapillary.com/dataset/vistas).
+    - [ApolloScape Scene Parsing](https://apolloscape.auto/scene.html).
+ - The datasets are usually used for pre training of models and evaluation of architectures.
+:::
+
+
+# Models
+
+## Image Segmentation Models {.unlisted auto-animate="true"}
+
+:::{.incremental} 
+ - The first models were based on large image classification models with different heads.
+ - Later models used the concept of _Fully Convolutional Net_ (FCN).
+ - The next evolution step was Encoder / Decoder architectures.
+ - Modern FCN models are based on U-Net like shape.
+:::
+
+## Image Segmentation Models {.unlisted auto-animate="true"}
+
+:::{style="font-size: 40%;"} 
+ - The first models were based on large image classification models with different heads.
+ - Later models used the concept of _Fully Convolutional Net_ (FCN).
+ - The next evolution step was Encoder / Decoder architectures.
+ - Modern FCN models are based on U-Net like shape.
+:::
+
+. . .
+
+![](https://i.imgur.com/gQSl4Jm.png){#tight-fig fig-align="center" height="550px"}
+
+## Image Segmentation Models {.unlisted auto-animate="true"}
+
+:::{style="font-size: 100%;"} 
+ - The first models were based on large image classification models with different heads.
+ - Later models used the concept of _Fully Convolutional Net_ (FCN).
+ - The next evolution step was Encoder / Decoder architectures.
+ - Modern FCN models are based on U-Net like shape.
+:::
+
+. . .
+
+:::{.callout-tip title="Resources"}
+
+ - [Comparative Study of Image Segmentation Architectures Using Deep Learning](https://scribe.rip/3743875fd608).
+ - [Image Segmentation: Architectures, Losses, Datasets and Frameworks](https://neptune.ai/blog/image-segmentation).
+ - [Complete Guide to Semantic Segmentation](https://www.superannotate.com/blog/guide-to-semantic-segmentation).
+:::
+
+## UpSample Layer {.unlisted auto-animate="true"}
+
+:::{.incremental} 
+ - _Signal Processing_ style upsampling:
+    - Insert zeros.
+    - Apply _Low Pass Filter_.
+:::
+
+. . .
+
+![](https://i.imgur.com/EVj0sy0.png){#tight-fig fig-align="center"}
+
+## UpSample Layer {.unlisted auto-animate="true"}
+
+:::{} 
+ - _Signal Processing_ style upsampling:
+    - Insert zeros.
+    - Apply _Low Pass Filter_.
+:::
+
+. . .
+
+:::{.callout-note title="Generalized by Interpolation"}
+
+One could generalize the model by using any given interpolation method instead of applying _Low Pass Filter_.
+
+:::
+
+## UpSample Layer {.unlisted auto-animate="true"}
+
+:::{} 
+ - _Signal Processing_ style upsampling:
+    - Insert zeros.
+    - Apply **Interpolation**.
+:::
+
+. . .
+
+![](https://i.imgur.com/NlkWUKa.png){#tight-fig fig-align="center"}
+
+## UpSample Layer {.unlisted auto-animate="true"}
+
+:::{} 
+ - _**Image** Processing_ style upsampling:
+    - Insert zeros.
+    - Apply **Interpolation**.
+:::
+
+. . .
+
+![](https://i.imgur.com/54tvzBt.png){#tight-fig fig-align="center" height="250px"}
+
+## UpSample Layer {.unlisted auto-animate="true"}
+
+:::{.incremental} 
+ - The conventional upsampling methods are not adaptive to the loss.
+ - Conceptually, one could use learned filter coefficients (LPF).
+ - The concept of _Transposed Convolution_ was introduced in [Fully Convolutional Networks for Semantic Segmentation](https://arxiv.org/abs/1411.4038).
+ - The filter coefficients are the [`ConvTranspose2d`](https://pytorch.org/docs/stable/generated/torch.nn.ConvTranspose2d.html) layer parameters.
+:::
+
+. . .
+
+:::{.callout-note title="Adjoint Operator"}
+
+The _Convolution_ layer, as a _linear operator_ can be applied as a matrix: 
+
+:::{#tight-math}
+$$ \operatorname{Conv}_{\boldsymbol{W}} \left( \boldsymbol{x} \right) = \boldsymbol{W} \boldsymbol{x} $$
+:::
+
+The name _Transposed Convolution_ is coined as the operation is basically the _Adjoint Operator_:
+
+:::{#tight-math}
+$$ \operatorname{ConvTranspose}_{\boldsymbol{W}} \left( \boldsymbol{z} \right) = \boldsymbol{W}^{T} \boldsymbol{z} $$
+:::
+
+:::
+
+## UpSample Layer {.unlisted auto-animate="true"}
+
+:::{} 
+ - The conventional upsampling methods are not adaptive to the loss.
+ - Conceptually, one could use learned filter coefficients (LPF).
+:::
+
+. . .
+
+![](https://i.imgur.com/PDwDLG6.png){#tight-fig fig-align="center" height="350px"}
+
+:::{#tight-div}
+[**Credit**: [Dive into Deep Learning](https://d2l.ai/chapter_computer-vision/transposed-conv.html)]{style="font-size: 40%;"}
+:::
+
+## UpSample Layer {.unlisted auto-animate="true"}
+
+:::{} 
+ - The conventional upsampling methods are not adaptive to the loss.
+ - Conceptually, one could use learned filter coefficients (LPF).
+:::
+
+. . .
+
+:::{.callout-tip title="Resources"}
+
+ - [What is Transposed Convolutional Layer](https://scribe.rip/40e5e6e31c11).
+ - [Understand Transposed Convolutions](https://scribe.rip/4f5d97b2967).
+ - [Dive into Deep Learning - Computer Vision - Transposed Convolution](https://d2l.ai/chapter_computer-vision/transposed-conv.html).
+ - [UpSampling vs. Transposed Convolution](https://stats.stackexchange.com/questions/252810).
+ - [Deconvolution and Checkerboard Artifacts](https://distill.pub/2016/deconv-checkerboard).
+:::
+
+
+## U-Net {.unlisted auto-animate="true"}
+
+![](https://i.imgur.com/fwEB4Cf.png){#tight-fig fig-align="center"}
+
+## U-Net Blocks {.unlisted auto-animate="true"}
+
+![](https://i.imgur.com/YDcd4sw.png){#tight-fig fig-align="center"}
+
+## U-Net Resources {.unlisted auto-animate="true"}
+
+:::{.callout-tip title="Resources"}
+ - [UNet Architecture Breakdown](https://www.kaggle.com/code/prvnkmr/unet-architecture-breakdown) - Includes explanation on Transposed Convolution.
+ - [Focal Loss](https://web.archive.org/web/20221101163651/https://amaarora.github.io/2020/06/29/FocalLoss.html).
+ - [Focal Loss Implementation](https://stackoverflow.com/questions/64751157).
+:::
+
+
+
+# Training
+
+## Pre Process {.unlisted}
+
+:::{.incremental style="font-size: 80%;"} 
+ - Gather a large enough data set of relevant images.  
+   The size should match the difficulty of the task.  
+   When using _Transfer Learning_ smaller dataset can be used.
+ - Labeling  
+   Apply labeling on the data if required.
+ - Validate the Dataset  
+   Validate all images are qualified and annotations are accurate.  
+   For large dataset one might sample.
+ - Processing of Images  
+   Some processing of the images might be done offline.  
+   For instance, removing color to make the model only structure sensitive.  
+   Resizing can also be done in offline to reduce the overhead.  
+ - Processing of Labels  
+   Conversion of standards, filtering classes, etc...
+:::
+
+## Train the Model {.unlisted}
+
+:::{.incremental style="font-size: 80%;"} 
+ - Choose the Model  
+   Select the model to be used according to the task.  
+   Currently stick with `U-Net` based models.  
+   For easy tasks, where peed matters, one could consider `YOLOv8`.
+ - Select the Hyper Parameters  
+   Select the size of the model according to run time and training time constraints. In case of a doubt, start with the smallest.
+ - Code the Scripts  
+   Build the scripts for training.   
+   Separate the scripts for data pre processing, training and evaluation.
+:::
+
+# Evaluation
+
+## Score {.unlisted auto-animate="true"}
+
+:::{#tight-div .incremental}
+ * By definition the problem is _imbalanced_ (Background).
+ * The most common score is the _Intersection over Union_ (IoU).
+:::
+
+. . .
+
+:::{#tight-math}
+ $$\operatorname{IoU} \left( \MyClr{green}{{B}_{i}}, \MyClr{red}{{B}_{j}} \right) = \frac{ \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \cap \MyClr{red}{{B}_{j}} \right) }{ \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \cup \MyClr{red}{{B}_{j}} \right) }$$
+:::
+
+![](https://i.imgur.com/5eC3qV8.png){#tight-fig fig-align="center" height="350px" style="margin: 0px;"}
+
+:::{#tight-div}
+[**Credit**: [Learn OpenCV - Intersection over Union (IoU) in Object Detection & Segmentation](https://learnopencv.com/intersection-over-union-iou-in-object-detection-and-segmentation/)]{style="font-size: 40%;"}
+:::
+
+## Score {.unlisted auto-animate="true"}
+
+:::{#tight-div .incremental}
+ * By definition the problem is _imbalanced_ (Background).
+ * A common score / loss is the _Dice Score_ .
+:::
+
+. . .
+
+:::{#tight-math}
+ $$\operatorname{Dice} \left( \MyClr{green}{{B}_{i}}, \MyClr{red}{{B}_{j}} \right) = \frac{ 2 \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \cap \MyClr{red}{{B}_{j}} \right) }{ \operatorname{Area} \left( \MyClr{green}{{B}_{i}} \right) + \operatorname{Area} \left( \MyClr{red}{{B}_{j}} \right) }$$
+:::
+
+![](https://i.imgur.com/gKq7VEU.png){#tight-fig fig-align="center" height="350px" style="margin: 0px;"}
+
+:::{#tight-div}
+[**Credit**: [Understanding Jaccard’s Index and Dice Coefficient in Object Detection and Image Segmentation](https://ogre51.medium.com/861c4a496b2b)]{style="font-size: 40%;"}
+:::
+
+# Test Case - Cats & Dog Segmentation
+
+## The Task {.unlisted}
+
+:::{.incremental}
+ * Given an Image, Classify each pixel into 3 classes (_Trimap_):
+    * Segment Dog / Cat (Pet) pixels.
+    * Segment Edge pixels.
+    * Segment Background pixels.
+:::
+
+. . .
+
+:::{.callout-caution icon=false}
+#### [{{< iconify logos python >}}]{style="color: #02b875;"} Coding Task
+
+ * Download the Workshop files from [Fixel Courses](https://github.com/FixelAlgorithmsTeam/FixelCourses).  
+   The files are located in `AIProgram/2024_02/WorkShop003`.
+ * Create a `conda` environment based on [`EnvImageSegmentation.yml`](https://github.com/FixelAlgorithmsTeam/FixelCourses/blob/master/AIProgram/2024_02/WorkShop003/EnvImageSegmentation.yml).
+:::
+
+## The Data {.unlisted}
+
+:::{.incremental}
+ * Based on [The Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets).
+ * Each image is an RGB image.
+ * Image dimensions is **non constant**.
+ * Masks are in the range `[1, 2, 3]`. 
+:::
+
+. . .
+
+:::{.callout-caution icon=false}
+#### [{{< iconify logos python >}}]{style="color: #02b875;"} Coding Task
+
+ * Run the script `0001Dataset.py`.
+ * Ensure the data in the folder `Data`.
+:::
+
+## The Model {.unlisted}
+
+## Labeling {.unlisted auto-animate="true"}
+
+## Pre Processing the Data {.unlisted}
+
+## Training {.unlisted}
+
+## Inference {.unlisted}
+
+
+
