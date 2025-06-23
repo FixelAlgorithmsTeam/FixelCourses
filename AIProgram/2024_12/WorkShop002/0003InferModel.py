@@ -43,6 +43,7 @@ from torchvision.transforms import v2 as TorchVisionTrns
 
 # Miscellaneous
 import os
+import pickle
 from platform import python_version
 import random
 # import warnings
@@ -86,78 +87,10 @@ DATA_SET_FOLDER   = 'OxfordIIITPet'
 # %% Local Packages
 
 from DL import BuildUNet, ImageSegmentationDataset
-from DL import GenDataLoaders, RunEpoch, TrainModel
+from AuxFun import DataTensorToImageMask, UnNormalizeImg, ModelToMask, PlotMasks
 
 
 # %% Auxiliary Functions
-
-class SqueezeTrns(nn.Module):
-    def __init__(self, dim: int = None) -> None:
-        super().__init__()
-
-        self.dim = dim
-    
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        
-        return torch.squeeze(x, dim = self.dim)
-
-class SubtractConst(nn.Module):
-    def __init__(self, const: int = 0) -> None:
-        super().__init__()
-
-        self.const = const
-    
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        
-        return x - self.const
-
-def UnNormalizeImg( tI: torch.Tensor, vMean: List[float], vStd: List[float] ) -> torch.Tensor:
-    """
-    UnNormalize the image tensor.
-    :param tI: Image tensor of shape (C, H, W).
-    :param vMean: Mean values for each channel.
-    :param vStd: Standard deviation values for each channel.
-    :return: Un-normalized image tensor.
-    """
-    tI = tI * torch.tensor(vStd).view(3, 1, 1) + torch.tensor(vMean).view(3, 1, 1)
-    
-    return tI
-
-def ModelToMask( tI: torch.Tensor ) -> np.ndarray:
-
-    tI = torch.squeeze(tI, dim = 0)
-    mM = torch.argmax(tI, dim = 0)
-    mM = mM.cpu().numpy()
-
-    return mM
-
-def PlotMasks( mI: np.ndarray, mM: np.ndarray, *, mP: Optional[np.ndarray] = None ) -> plt.Figure:
-
-    if mP is not None:
-        numImg = 3
-    else:
-        numImg = 2
-    
-    hF, vHa = plt.subplots(nrows = 1, ncols = numImg, figsize = (5 * numImg, 5))
-
-    vHa = vHa.flat
-    hA = vHa[0]
-    hA.imshow(mI)
-    hA.axis('off')
-    hA.set_title('Input Image')
-
-    hA = vHa[1]
-    hA.imshow(mM, interpolation = 'nearest')
-    hA.axis('off')
-    hA.set_title('Input Mask')
-
-    if (numImg == 3):
-        hA = vHa[2]
-        hA.imshow(mP, interpolation = 'nearest')
-        hA.axis('off')
-        hA.set_title('Predicted Mask')
-    
-    return hF
 
 
 # %% Parameters
@@ -172,8 +105,9 @@ lStd  = [0.25, 0.25, 0.25]
 
 lClass = ['Pet', 'Background', 'Border']
 
-modelFileName = 'BestModel_2025_06_22_875.pt'  #<! https://drive.google.com/file/d/15UZlVEjyINpYAibETZGJDdNRsVkBRvBl
-dataFileName  = 'BestModel_2025_06_22_875.npz' #<! https://drive.google.com/file/d/1uL08rL7IO6vv7_X-f4PjLFeyWpaArQ_m
+modelFileName = 'BestModel_2025_06_22_875.pt' #<! https://drive.google.com/file/d/15UZlVEjyINpYAibETZGJDdNRsVkBRvBl
+dataFileName  = 'BestModel_2025_06_22_875_Train_Test_Split.npz' #<! https://drive.google.com/file/d/1uL08rL7IO6vv7_X-f4PjLFeyWpaArQ_m
+trainFileName = 'BestModel_2025_06_23_873_Training_Data.pkl' #<! https://drive.google.com/file/d/1uL08rL7IO6vv7_X-f4PjLFeyWpaArQ_m
 
 
 # %% [markdown]
@@ -194,6 +128,8 @@ dataFileName  = 'BestModel_2025_06_22_875.npz' #<! https://drive.google.com/file
 
 # %% Load / Generate Data
 
+hDataTensorToImageMask = lambda tI, tM: DataTensorToImageMask(tI, tM, lMean, lStd)
+
 dsImgSeg    = ImageSegmentationDataset(dataSetPath)
 dSplitIdx   = np.load(dataFileName) #<! TrainValSplit.npz of the run
 vTrainIdx   = dSplitIdx['vTrainIdx']
@@ -211,6 +147,49 @@ mI = np.permute_dims(tI.cpu().numpy(), (1, 2, 0)) #<! (C, H, W) -> (H, W, C)
 mM = tM.cpu().numpy()
 
 hF = PlotMasks(mI, mM)
+
+
+# %% Plot Training Phase
+
+# Load Training Phase Data
+try:
+    with open(trainFileName, 'rb') as file:
+        dTrainPhase = pickle.load(file)
+except FileNotFoundError:
+    print(f"Error: The file '{trainFileName}' was not found.")
+except Exception as e:
+    print(f"An error occurred: {e}")
+
+lTrainLoss  = dTrainPhase['lTrainLoss']
+lTrainScore = dTrainPhase['lTrainScore']
+lValLoss    = dTrainPhase['lValLoss']
+lValScore   = dTrainPhase['lValScore']
+lLearnRate  = dTrainPhase['lLearnRate']
+
+hF, vHa = plt.subplots(nrows = 1, ncols = 3, figsize = (12, 5))
+vHa = np.ravel(vHa)
+
+hA = vHa[0]
+hA.plot(lTrainLoss, lw = 2, label = 'Train')
+hA.plot(lValLoss, lw = 2, label = 'Validation')
+hA.set_title('Cross Entropy Loss')
+hA.set_xlabel('Epoch')
+hA.set_ylabel('Loss')
+hA.legend()
+
+hA = vHa[1]
+hA.plot(lTrainScore, lw = 2, label = 'Train')
+hA.plot(lValScore, lw = 2, label = 'Validation')
+hA.set_title('Accuracy Score')
+hA.set_xlabel('Epoch')
+hA.set_ylabel('Score')
+hA.legend()
+
+hA = vHa[2]
+hA.plot(lLearnRate, lw = 2)
+hA.set_title('Learn Rate Scheduler')
+hA.set_xlabel('Epoch')
+hA.set_ylabel('Learn Rate');
 
 
 # %% Data Transforms
@@ -236,9 +215,10 @@ imgIdx      = random.randrange(numSamples)
 tI, tM = dsImgSeg[imgIdx]
 
 # Compensate for the normalization
-tI = UnNormalizeImg(tI, lMean, lStd)
-mI = np.permute_dims(tI.cpu().numpy(), (1, 2, 0)) #<! (C, H, W) -> (H, W, C)
-mM = tM.cpu().numpy()
+mI, mM = hDataTensorToImageMask(tI, tM)
+# tI = UnNormalizeImg(tI, lMean, lStd)
+# mI = np.permute_dims(tI.cpu().numpy(), (1, 2, 0)) #<! (C, H, W) -> (H, W, C)
+# mM = tM.cpu().numpy()
 
 hF = PlotMasks(mI, mM)
 
@@ -264,10 +244,9 @@ oModel = oModel.to(runDevice) #<! We could leave it on CPU as well
 # %% Display Results
 
 
-
 # %% Display Prediction
 
-# Train
+# Train Dataset
 numSamples  = len(vTrainIdx)
 imgIdx      = random.randrange(numSamples)
 imgIdx      = vTrainIdx[imgIdx]
@@ -279,15 +258,17 @@ with torch.inference_mode():
     tO = oModel(tI)
 mP = ModelToMask(tO)
 
-tI = torch.squeeze(tI, dim = 0) #<! Remove batch dimension
+mI, mM = hDataTensorToImageMask(tI, tM)
 
-tI = UnNormalizeImg(tI, lMean, lStd)
-mI = np.permute_dims(tI.cpu().numpy(), (1, 2, 0)) #<! (C, H, W) -> (H, W, C)
-mM = tM.cpu().numpy()
+# tI = torch.squeeze(tI, dim = 0) #<! Remove batch dimension
+
+# tI = UnNormalizeImg(tI, lMean, lStd)
+# mI = np.permute_dims(tI.cpu().numpy(), (1, 2, 0)) #<! (C, H, W) -> (H, W, C)
+# mM = tM.cpu().numpy()
 
 hF = PlotMasks(mI, mM, mP = mP)
 
-# Validation
+# Validation Dataset
 numSamples  = len(vValIdx)
 imgIdx      = random.randrange(numSamples)
 imgIdx      = vValIdx[imgIdx]
@@ -299,11 +280,13 @@ with torch.inference_mode():
     tO = oModel(tI)
 mP = ModelToMask(tO)
 
-tI = torch.squeeze(tI, dim = 0) #<! Remove batch dimension
+mI, mM = hDataTensorToImageMask(tI, tM)
 
-tI = UnNormalizeImg(tI, lMean, lStd)
-mI = np.permute_dims(tI.cpu().numpy(), (1, 2, 0)) #<! (C, H, W) -> (H, W, C)
-mM = tM.cpu().numpy()
+# tI = torch.squeeze(tI, dim = 0) #<! Remove batch dimension
+
+# tI = UnNormalizeImg(tI, lMean, lStd)
+# mI = np.permute_dims(tI.cpu().numpy(), (1, 2, 0)) #<! (C, H, W) -> (H, W, C)
+# mM = tM.cpu().numpy()
 
 hF = PlotMasks(mI, mM, mP = mP)
 

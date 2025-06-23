@@ -85,70 +85,12 @@ DATA_SET_FOLDER   = 'OxfordIIITPet'
 
 # %% Local Packages
 
-from DL import AdjustMask, BuildUNet, ImageSegmentationDataset
+from DL import BuildUNet, ImageSegmentationDataset
 from DL import GenDataLoaders, TrainModel
+from AuxFun import DataTensorToImageMask, ModelToMask, PlotMasks
 
 
 # %% Auxiliary Functions
-
-class SqueezeTrns(nn.Module):
-    def __init__(self, dim: int = None) -> None:
-        super().__init__()
-
-        self.dim = dim
-    
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        
-        return torch.squeeze(x, dim = self.dim)
-
-class SubtractConst(nn.Module):
-    def __init__(self, const: int = 0) -> None:
-        super().__init__()
-
-        self.const = const
-    
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        
-        return x - self.const
-
-def ModelToMask( tI: torch.Tensor ) -> np.ndarray:
-
-    tI = torch.squeeze(tI, dim = 0)
-    mM = torch.argmax(tI, dim = 0)
-    mM = mM.cpu().numpy()
-
-    return mM
-
-def PlotMasks( mI: np.ndarray, mM: np.ndarray, *, mP: Optional[np.ndarray] = None ) -> plt.Figure:
-    # mI -  Input Image
-    # mM -  Input Mask
-    # mP -  Predicted Mask (Optional)
-
-    if mP is not None:
-        numImg = 3
-    else:
-        numImg = 2
-    
-    hF, vHa = plt.subplots(nrows = 1, ncols = numImg, figsize = (5 * numImg, 5))
-
-    vHa = vHa.flat
-    hA = vHa[0]
-    hA.imshow(mI)
-    hA.axis('off')
-    hA.set_title('Input Image')
-
-    hA = vHa[1]
-    hA.imshow(mM, interpolation = 'nearest')
-    hA.axis('off')
-    hA.set_title('Input Mask')
-
-    if (numImg == 3):
-        hA = vHa[2]
-        hA.imshow(mP, interpolation = 'nearest')
-        hA.axis('off')
-        hA.set_title('Predicted Mask')
-    
-    return hF
 
 
 # %% Parameters
@@ -158,8 +100,8 @@ dataSetPath = os.path.join(DATA_FOLDER_NAME, DATA_SET_FOLDER)
 
 imgSize = 128
 
-vMean = [0.5, 0.5, 0.5]
-vStd  = [0.25, 0.25, 0.25]
+lMean = [0.5, 0.5, 0.5]
+lStd  = [0.25, 0.25, 0.25]
 
 numSamplsTrain = 6000
 numSamplesVal  = 1390
@@ -172,7 +114,7 @@ lFilterSize = [10, 20, 40] #<! Assumption: filter_size[ii + 1] == 2 * filter_siz
 # Training
 batchSize   = 256
 numWork     = 2 #<! Number of workers
-nEpochs     = 45
+nEpochs     = 5 #<! Use the script `0002TrainModelScript.py` to run for more epochs
 
 # %% [markdown]
 
@@ -192,6 +134,7 @@ nEpochs     = 45
 
 # %% Load / Generate Data
 
+hDataTensorToImageMask = lambda tI, tM: DataTensorToImageMask(tI, tM, lMean, lStd)
 dsImgSeg = ImageSegmentationDataset(dataSetPath)
 
 # Plot Samples
@@ -219,7 +162,7 @@ oDataTrns = TorchVisionTrns.Compose([
     TorchVisionTrns.RandomGrayscale(p = 0.1),
     TorchVisionTrns.ToDtype(dtype = {tv_tensors.Image: torch.float32, 'others': None}, scale = True),
     TorchVisionTrns.ColorJitter(brightness = 0.1, contrast = 0.1, saturation = 0.1, hue = 0.05),
-    TorchVisionTrns.Normalize(mean = vMean, std = vStd),
+    TorchVisionTrns.Normalize(mean = lMean, std = lStd),
     TorchVisionTrns.ToDtype(dtype = {tv_tensors.Mask: torch.int64, 'others': None}, scale = False),
 ])
 
@@ -236,24 +179,17 @@ numSamples  = len(dsTrain)
 imgIdx      = random.randrange(numSamples)
 
 mI, mM = dsTrain[imgIdx]
+mI, mM = hDataTensorToImageMask(mI, mM)
 
-hF = PlotMasks(np.transpose(mI.cpu().numpy(), (1, 2, 0)), mM.cpu().numpy())
+hF = PlotMasks(mI, mM)
 plt.plot()
 
 
 # %% Data Loaders
 
-# dlTrain = torch.utils.data.DataLoader(dsTrain, shuffle = True, batch_size = 1 * batchSize, num_workers = numWork, persistent_workers = True)
-# dlVal   = torch.utils.data.DataLoader(dsVal, shuffle = False, batch_size = 2 * batchSize, num_workers = numWork, persistent_workers = True)
-
-# dlTrain = torch.utils.data.DataLoader(dsTrain, shuffle = True, batch_size = 1 * batchSize, num_workers = numWork)
-# dlVal   = torch.utils.data.DataLoader(dsVal, shuffle = False, batch_size = 2 * batchSize, num_workers = numWork)
-
-# dlTrain = torch.utils.data.DataLoader(dsTrain, shuffle = True, batch_size = 1 * batchSize, num_workers = 0, persistent_workers = False)
-# dlVal   = torch.utils.data.DataLoader(dsVal, shuffle = False, batch_size = 2 * batchSize, num_workers = 0, persistent_workers = False)
-
+# On Windows, numWorkers = 0 is required in Jupyter mode.
+# Hence to actually run, use the script `0002TrainModelScript`.
 dlTrain, dlVal = GenDataLoaders(dsTrain, dsVal, batchSize, numWorkers = 0, dropLast = True, PersWork = False)
-
 
 # Iterate on the Loader
 # The first batch.
@@ -343,15 +279,17 @@ oModel = oModel.to(runDevice)
 numSamples  = len(dsVal)
 imgIdx      = random.randrange(numSamples)
 
-mI, mM = dsVal[imgIdx]
-tI = mI.to(runDevice)
+tI, tM = dsVal[imgIdx]
+tI = tI.to(runDevice)
 tI = tI[None, :, :, :]
 with torch.inference_mode():
     tO = oModel(tI)
 mP = ModelToMask(tO)
 
-hF = PlotMasks(np.transpose(mI.cpu().numpy(), (1, 2, 0)), mM.cpu().numpy(), mP = mP)
-plt.plot()
+tI = tI.to('cpu')
+mI, mM = hDataTensorToImageMask(tI, tM)
+
+hF = PlotMasks(mI, mM, mP = mP)
 
 
 # %%

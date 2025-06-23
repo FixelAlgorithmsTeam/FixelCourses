@@ -37,9 +37,9 @@ from torchmetrics.classification import MulticlassAccuracy
 from torchvision import tv_tensors
 from torchvision.transforms import v2 as TorchVisionTrns
 
-
 # Miscellaneous
 import os
+import pickle
 from platform import python_version
 import random
 # import warnings
@@ -84,31 +84,11 @@ DATA_SET_FOLDER   = 'OxfordIIITPet'
 
 # %% Local Packages
 
-from DL import AdjustMask, BuildUNet, ImageSegmentationDataset
-from DL import GenDataLoaders, TrainModel
+from DL import BuildUNet, ImageSegmentationDataset
+from DL import TrainModel
 
 
 # %% Auxiliary Functions
-
-class SqueezeTrns(nn.Module):
-    def __init__(self, dim: int = None) -> None:
-        super().__init__()
-
-        self.dim = dim
-    
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        
-        return torch.squeeze(x, dim = self.dim)
-
-class SubtractConst(nn.Module):
-    def __init__(self, const: int = 0) -> None:
-        super().__init__()
-
-        self.const = const
-    
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        
-        return x - self.const
 
 
 # %% Parameters
@@ -118,8 +98,8 @@ dataSetPath = os.path.join(DATA_FOLDER_NAME, DATA_SET_FOLDER)
 
 imgSize = 128
 
-vMean = [0.5, 0.5, 0.5]
-vStd  = [0.25, 0.25, 0.25]
+lMean = [0.5, 0.5, 0.5]
+lStd  = [0.25, 0.25, 0.25]
 
 numSamplsTrain = 6000
 numSamplesVal  = 1390
@@ -130,9 +110,9 @@ lClass = ['Pet', 'Background', 'Border']
 lFilterSize = [10, 20, 40, 80] #<! Assumption: filter_size[ii + 1] == 2 * filter_size[ii]
 
 # Training
-batchSize   = 256
-numWorkers  = 4 #<! Number of workers
-nEpochs     = 100
+batchSize   = 512
+numWorkers  = 8 #<! Number of workers
+nEpochs     = 125
 
 
 # %% Load / Generate Data
@@ -151,7 +131,7 @@ oDataTrns = TorchVisionTrns.Compose([
     TorchVisionTrns.RandomGrayscale(p = 0.1),
     TorchVisionTrns.ToDtype(dtype = {tv_tensors.Image: torch.float32, 'others': None}, scale = True),
     TorchVisionTrns.ColorJitter(brightness = 0.1, contrast = 0.1, saturation = 0.1, hue = 0.05),
-    TorchVisionTrns.Normalize(mean = vMean, std = vStd),
+    TorchVisionTrns.Normalize(mean = lMean, std = lStd),
     TorchVisionTrns.ToDtype(dtype = {tv_tensors.Mask: torch.int64, 'others': None}, scale = False),
 ])
 
@@ -196,9 +176,22 @@ def Main(dsTrain, dsVal, batchSize, numWorkers, lClass, lFilterSize, nEpochs):
     # Train Model
     oModel, lTrainLoss, lTrainScore, lValLoss, lValScore, lLearnRate = TrainModel(oModel, dlTrain, dlVal, oOpt, nEpochs, hL, hS, oSch = oSch)
 
+    # Save the training results using pickle
+    with open('TrainResults.pkl', 'wb') as hF:
+        pickle.dump({
+            'lTrainLoss': lTrainLoss,
+            'lTrainScore': lTrainScore,
+            'lValLoss': lValLoss,
+            'lValScore': lValScore,
+            'lLearnRate': lLearnRate
+        }, hF)
 
 
 # %% Main
 
 if __name__ == '__main__':
     Main(dsTrain, dsVal, batchSize, numWorkers, lClass, lFilterSize, nEpochs)
+
+# %% [markdown]
+# * <font color='blue'>(**!**)</font> Use _Weights and Biases_ to tune the _Hyper Parameters_ of the model.
+

@@ -12,7 +12,7 @@
 # 
 # | Version | Date       | User        |Content / Changes                                                                         |
 # |---------|------------|-------------|------------------------------------------------------------------------------------------|
-# | 1.0.001 | 10/06/2025 | Royi Avital | Tweaked the script                                                                       |
+# | 1.1.000 | 10/06/2025 | Royi Avital | Converting `jpg` to `png` to overcome corrupted files                                    |
 # | 1.0.000 | 10/07/2024 | Royi Avital | First version                                                                            |
 # |         |            |             |                                                                                          |
 
@@ -27,6 +27,7 @@ import pandas as pd
 from typing import Any, Callable, Dict, Generator, List, Optional, Self, Set, Tuple, Union
 
 # Image Processing & Computer Vision
+from PIL import Image
 
 # Machine Learning
 
@@ -98,6 +99,7 @@ def DownloadUrl( fileUrl: str, fileName: str ) -> str:
     return fileName
 
 def ExtFileName( fullFileName: str ) -> str:
+    # Extracts the file name without the extension.
 
     fileName, fileExt = os.path.splitext(fullFileName)
 
@@ -127,9 +129,11 @@ annArchPath = os.path.join(dataFolderPath, annArchName)
 imgArchPath = os.path.join(dataFolderPath, imgArchName)
 
 if not os.path.isfile(annArchPath):
+    print(f'Downloading annotation files to {dataFolderPath}')
     DownloadUrl(ANN_FILE_URL, annArchPath)
 
 if not os.path.isfile(imgArchPath):
+    print(f'Downloading image files to {dataFolderPath}')
     DownloadUrl(IMG_FILE_URL, imgArchPath)
 
 annFolderPath = os.path.join(dataFolderPath, DATA_SET_FOLDER, 'Annotations')
@@ -144,11 +148,19 @@ if (os.path.isdir(imgFolderPath)):
 os.makedirs(annFolderPath, exist_ok = True)
 os.makedirs(imgFolderPath, exist_ok = True)
 
+print(f'Extracting annotation files to {annFolderPath}')
 shutil.unpack_archive(annArchPath, annFolderPath)
+print(f'Extracting image files to {imgFolderPath}')
 shutil.unpack_archive(imgArchPath, imgFolderPath)
 
 # Delete files
-for itmName in os.listdir(os.path.join(annFolderPath, 'annotations')):
+# The extraction creates: 'OxfordIIITPet\Annotations\annotations'
+# Annotations are inside 'OxfordIIITPet\Annotations\annotations\trimaps'
+# The rest of the files are not needed -> Deleted.
+print(f'Removing invalid files and folders in {os.path.join(annFolderPath, 'annotations')}')
+numFiles = len(os.listdir(os.path.join(annFolderPath, 'annotations')))
+for ii, itmName in enumerate(os.listdir(os.path.join(annFolderPath, 'annotations'))):
+    print(f'Processing {ii + 1}/{numFiles}: {itmName}')
     if not (itmName == 'trimaps'):
         if os.path.isfile(os.path.join(annFolderPath, 'annotations', itmName)):
             os.remove(os.path.join(annFolderPath, 'annotations', itmName))
@@ -156,20 +168,38 @@ for itmName in os.listdir(os.path.join(annFolderPath, 'annotations')):
             shutil.rmtree(os.path.join(annFolderPath, 'annotations', itmName))
 
 # Move valid annotations
-for itmName in os.listdir(os.path.join(annFolderPath, 'annotations', 'trimaps')):
+# Copy from 'OxfordIIITPet\Annotations\annotations\trimaps' to 'OxfordIIITPet\Annotations'.
+print(f'Copying annotation files from {os.path.join(annFolderPath, 'annotations')} to {annFolderPath}')
+numFiles = len(os.listdir(os.path.join(annFolderPath, 'annotations', 'trimaps')))
+for ii, itmName in enumerate(os.listdir(os.path.join(annFolderPath, 'annotations', 'trimaps'))):
+    print(f'Processing {ii + 1}/{numFiles}: {itmName}')
     if not ('._' in itmName):
         itmPath = os.path.join(annFolderPath, 'annotations', 'trimaps', itmName)
         shutil.copy(itmPath, annFolderPath)
 
+# Remove 'OxfordIIITPet\Annotations\annotations'
+print(f'Removing {os.path.join(annFolderPath, 'annotations')} folder')
 shutil.rmtree(os.path.join(annFolderPath, 'annotations'))
 
 # Move Images
-for itmName in os.listdir(os.path.join(imgFolderPath, 'images')):
+# Some images are invalid (Corrupted) `jpg` files (Issues with headers, etc...).
+# Hence they are saved as 'png' files.
+print(f'Converting (jpg -> png) image files from {os.path.join(imgFolderPath, 'images')} to {imgFolderPath}')
+numFiles = len(os.listdir(os.path.join(imgFolderPath, 'images')))
+for ii, itmName in enumerate(os.listdir(os.path.join(imgFolderPath, 'images'))):
+    print(f'Processing {ii + 1}/{numFiles}: {itmName}')
     fileName, fileExt = os.path.splitext(itmName)
     if (fileExt in L_IMG_FILE_EXT):
         itmPath = os.path.join(imgFolderPath, 'images', itmName)
-        shutil.copy(itmPath, imgFolderPath)
+        # shutil.copy(itmPath, imgFolderPath) #<! Copy files
+        # Convert files into `png`
+        oImg = Image.open(itmPath)
+        mI   = np.asarray(oImg)
+        oImg = Image.fromarray(mI)
+        oImg.save(os.path.join(imgFolderPath, f'{fileName}.png'), format = 'PNG')
 
+# Remove 'OxfordIIITPet\Images\images'
+print(f'Removing {os.path.join(imgFolderPath, 'images')} folder')
 shutil.rmtree(os.path.join(imgFolderPath, 'images'))
 
 
