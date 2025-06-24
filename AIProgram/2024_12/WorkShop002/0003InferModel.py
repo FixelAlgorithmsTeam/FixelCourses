@@ -105,9 +105,9 @@ lStd  = [0.25, 0.25, 0.25]
 
 lClass = ['Pet', 'Background', 'Border']
 
-modelFileName = 'BestModel_2025_06_22_875.pt' #<! https://drive.google.com/file/d/15UZlVEjyINpYAibETZGJDdNRsVkBRvBl
-dataFileName  = 'BestModel_2025_06_22_875_Train_Test_Split.npz' #<! https://drive.google.com/file/d/1uL08rL7IO6vv7_X-f4PjLFeyWpaArQ_m
-trainFileName = 'BestModel_2025_06_23_873_Training_Data.pkl' #<! https://drive.google.com/file/d/1uL08rL7IO6vv7_X-f4PjLFeyWpaArQ_m
+modelFileName = 'BestModel_2025_06_23_875.pt' #<! https://drive.google.com/file/d/1mPqvi9Mhvhz5GdtLtRtUDl2jVRbzzqRx
+dataFileName  = 'BestModel_2025_06_23_875_Train_Test_Split.npz' #<! https://drive.google.com/file/d/17zc8fLU_vUPns8Vb-Xg_PAgnqQs6WDac
+trainFileName = 'BestModel_2025_06_23_875_Training_Data.pkl' #<! https://drive.google.com/file/d/1woaRDepTUY6uaOebx3B0ste6nYuC7JJB
 
 
 # %% [markdown]
