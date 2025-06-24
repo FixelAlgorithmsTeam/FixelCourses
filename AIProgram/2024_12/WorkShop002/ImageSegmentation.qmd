@@ -187,7 +187,7 @@ How can one create an _Object Detector_ from _Image Segmentor_?
 
  - [Loss Functions for Image Segmentation](https://github.com/JunMa11/SegLossOdyssey).
  - [3 Common Loss Functions for Image Segmentation](https://dev.to/_aadidev/3-common-loss-functions-for-image-segmentation-545o).
- - [Instance segmentation loss functions](https://softwaremill.com/instance-segmentation-loss-functions).
+ - [Instance Segmentation Loss Functions](https://softwaremill.com/instance-segmentation-loss-functions).
  - [Focal Loss: An Efficient Way of Handling Class Imbalance](https://scribe.rip/4855ae1db4cb).
 :::
 
@@ -201,8 +201,7 @@ How can one create an _Object Detector_ from _Image Segmentor_?
     - Images: Real World / Synthetic / Specific / General.
     - Labels: Masks (Binary), Integer Maps (Multi Class).
  - There are several known datasets:
-    - [COCO Dataset](https://cocodataset.org) - Common Objects in Context.  
-    Originally by Microsoft. Labeled for many tasks (Segmentation, KeyPoints, etc...).
+    - [COCO Dataset](https://cocodataset.org) - Common Objects in Context.
     - [PASCAL VOC2012 Segmentation](http://host.robots.ox.ac.uk/pascal/VOC).
     - [BDD100K: A Large Scale Diverse Driving Video Database](https://bair.berkeley.edu/blog/2018/05/30/bdd).
     - [Motion Based Segmentation and Recognition Dataset](https://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid).
