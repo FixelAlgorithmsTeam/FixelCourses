@@ -153,6 +153,10 @@ hF = PlotMasks(mI, mM)
 
 # %% Data Transforms
 
+# There is no explicit rule to whether do normalization before or after the augmentation.
+# See https://stats.stackexchange.com/questions/337237.
+# In the case below, mainly from performance perspective, it is better to do the normalization after the augmentation.
+
 # Using TorchVision Transform v2
 # The v2 Resize automatically sets the Mask interpolation to _Nearest Neighbor_.
 oDataTrns = TorchVisionTrns.Compose([
