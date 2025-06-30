@@ -8,7 +8,7 @@
 # 2. Update the `DetectBall.yaml` file with the paths to the dataset and classes names.
 # 3. Update the UltraLytics settings in `settings.yaml` file.
 # 4. Build the Sweep configuration.
-# 5. Set teh Sweep and get the Sweep ID.
+# 5. Set the Sweep and get the Sweep ID.
 # 6. Run the Sweep. Distribute it over multiple computers if available.
 #
 # > Notebook by:
@@ -229,6 +229,15 @@ hTrainYoloModel = lambda: TrainYoloModel(projName, dataFile, numEpoch, batchSize
 
 
 # %% Configure Weights & Biases
+
+# When working on distributed systems, sharing sensitive data (API Keys, Passwords, etc.) requires caution.
+# One way to handle this is to use an environment file (`.env`) that is not shared with the public.
+# This section assumes a `.env` file exists in the current directory with the following content:
+# ```
+# WANDB_API_KEY=your_wandb_api_key_here
+# ```
+# See example at https://pastebin.com/z3K4TdJa.
+# The API Key of the user can be obtained from the Weights & Biases website: https://wandb.ai/authorize.
 
 # Parse the Environment File
 dEnv        = ParseEnvFile('.env')
