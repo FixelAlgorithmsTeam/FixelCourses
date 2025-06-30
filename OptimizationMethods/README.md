@@ -10,6 +10,7 @@ This folder is dedicated to the course [Optimization Methods](https://fixelalgor
  - [Resources](./Resources.md).
  - [Class of 12/2023](./2023_12).
  - [Class of 11/2024](./2024_11).
+ - [Class of 06/2025](./2025_06).
 
 ## Miscellaneous
 
