@@ -8,7 +8,7 @@
 # 2. Update the `DetectBall.yaml` file with the paths to the dataset and classes names.
 # 3. Update the UltraLytics settings in `settings.yaml` file.
 # 4. Build the Sweep configuration.
-# 5. Set teh Sweep and get the Sweep ID.
+# 5. Set the Sweep and get the Sweep ID.
 # 6. Run the Sweep. Distribute it over multiple computers if available.
 #
 # > Notebook by:
@@ -187,7 +187,7 @@ dataFile         = 'DetectBallReferee.yaml'
 projName = 'BallRefereeDetection' #<! Project name in Weights & Biases
 numExp   = 100 #<! Number of experiments (Runs) in the sweep
 
-# YOLO Training Parameters (Not in teh sweep)
+# YOLO Training Parameters (Not in the sweep)
 numEpoch    = 15    #<! Adjust according to time budget and complexity of the task
 batchSize   = 12    #< Adjust by the GPU memory available
 imgSize     = 640   #<! YOLO's default image size

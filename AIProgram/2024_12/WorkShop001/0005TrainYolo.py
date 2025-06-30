@@ -195,7 +195,7 @@ dataFile         = 'DetectBallReferee.yaml' #<! YOLO dataset configuration
 projName = 'BallRefereeDetection' #<! Project name in Weights & Biases
 numExp   = 10 #<! Number of experiments (Runs) in the sweep
 
-# YOLO Training Parameters (Not in teh sweep)
+# YOLO Training Parameters (Not in the sweep)
 numEpoch    = 15    #<! Adjust according to time budget and complexity of the task
 batchSize   = 12    #< Adjust by the GPU memory available
 imgSize     = 640   #<! YOLO's default image size
