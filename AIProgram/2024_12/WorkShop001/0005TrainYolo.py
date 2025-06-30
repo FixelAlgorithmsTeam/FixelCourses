@@ -234,7 +234,7 @@ hTrainYoloModel = lambda: TrainYoloModel(projName, dataFile, numEpoch, batchSize
 # One way to handle this is to use an environment file (`.env`) that is not shared with the public.
 # This section assumes a `.env` file exists in the current directory with the following content:
 # ```
-# WANDB_API_KEY=your_wandb_api_key_here
+# WANDB_API_KEY=<WandB API Key>
 # ```
 # See example at https://pastebin.com/z3K4TdJa.
 # The API Key of the user can be obtained from the Weights & Biases website: https://wandb.ai/authorize.
