@@ -11,6 +11,8 @@ dependencies:
   - pandas
   - numba
   - cvxpy
+  - ecos
+  - highs
   - pyscipopt 
   - autograd
   - scikit-learn
@@ -20,7 +22,6 @@ dependencies:
   - ipywidgets
   - scikit-image
   - matplotlib
-  - seaborn
   - plotly
   - graphviz
   - pydot
