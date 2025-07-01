@@ -40,7 +40,8 @@ The installation is configured to be _Portable_, hence does not affect any other
 5. Configure Windows Terminal
     - Open Windows Terminal.
     - Open the settings tab.
-    - Click on `Add new profile`. Choose `New empty profile`.
+    - Click on `Add new profile`.  
+      Choose `New empty profile`.
     - Set the `Name` property to `PythonMamba`.
     - Set the `Command line` property to `%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -NoExit -File "<PathPythonMamba>\PythonMamba.ps1"`.  
       Change the `<PathPythonMamba>` to the folder path.
@@ -86,7 +87,7 @@ See [`Set-ExecutionPolicy`](https://learn.microsoft.com/en-us/powershell/module/
 
 ### Images of the Installation Phase
 
-**Remark**: Naming may be different from above. Stick to the above.
+**Remark**: Naming (Files / folders) may be different from above. Stick to the above.
 
 Downloading MicroMamba (Download the latest version available):
 
