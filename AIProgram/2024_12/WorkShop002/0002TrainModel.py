@@ -12,6 +12,7 @@
 # 
 # | Version | Date       | User        |Content / Changes                                                                         |
 # |---------|------------|-------------|------------------------------------------------------------------------------------------|
+# | 1.1.001 | 07/07/2025 | Royi Avital | Reordered the augmentation (Color Jitter and Grayscale)                                  |
 # | 1.1.000 | 10/06/2025 | Royi Avital | Using TorchVision Transform v2                                                           |
 # | 1.0.000 | 10/07/2024 | Royi Avital | First version                                                                            |
 # |         |            |             |                                                                                          |
@@ -116,6 +117,7 @@ batchSize   = 256
 numWork     = 2 #<! Number of workers
 nEpochs     = 5 #<! Use the script `0002TrainModelScript.py` to run for more epochs
 
+
 # %% [markdown]
 
 ## The Oxford-IIIT Pet Dataset
@@ -163,9 +165,9 @@ oDataTrns = TorchVisionTrns.Compose([
     TorchVisionTrns.Resize(imgSize),
     TorchVisionTrns.CenterCrop(imgSize),
     TorchVisionTrns.RandomHorizontalFlip(p = 0.25),
+    TorchVisionTrns.ColorJitter(brightness = 0.1, contrast = 0.1, saturation = 0.1, hue = 0.05),
     TorchVisionTrns.RandomGrayscale(p = 0.1),
     TorchVisionTrns.ToDtype(dtype = {tv_tensors.Image: torch.float32, 'others': None}, scale = True),
-    TorchVisionTrns.ColorJitter(brightness = 0.1, contrast = 0.1, saturation = 0.1, hue = 0.05),
     TorchVisionTrns.Normalize(mean = lMean, std = lStd),
     TorchVisionTrns.ToDtype(dtype = {tv_tensors.Mask: torch.int64, 'others': None}, scale = False),
 ])
@@ -230,15 +232,12 @@ hL = hL.to(runDevice) #<! Not required!
 hS = hS.to(runDevice)
 
 # Define Optimizer
-
 oOpt = torch.optim.AdamW(oModel.parameters(), lr = 1e-3, betas = (0.9, 0.99), weight_decay = 1e-3) #<! Define optimizer
 
 # Define Scheduler
-
 oSch = torch.optim.lr_scheduler.OneCycleLR(oOpt, max_lr = 5e-3, total_steps = nEpochs)
 
 # Train Model
-
 oModel, lTrainLoss, lTrainScore, lValLoss, lValScore, lLearnRate = TrainModel(oModel, dlTrain, dlVal, oOpt, nEpochs, hL, hS, oSch = oSch)
 
 

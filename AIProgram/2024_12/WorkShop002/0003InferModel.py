@@ -236,7 +236,12 @@ dModel = torch.load(modelFileName, map_location = 'cpu') #<! Loads saved data
 oModel.load_state_dict(dModel['Model'])
 oModel = oModel.eval()
 
+# %% Model Summary
+
 torchinfo.summary(oModel, (1, 3, imgSize, imgSize), col_names = ['kernel_size', 'output_size', 'num_params'], device = 'cpu')
+
+
+# %% Move Model to Device
 
 oModel = oModel.to(runDevice) #<! We could leave it on CPU as well
 
@@ -251,7 +256,7 @@ numSamples  = len(vTrainIdx)
 imgIdx      = random.randrange(numSamples)
 imgIdx      = vTrainIdx[imgIdx]
 
-mI, mM = dsImgSeg[imgIdx]
+mI, tM = dsImgSeg[imgIdx]
 tI = mI.to(runDevice)
 tI = tI[None, :, :, :]
 with torch.inference_mode():
@@ -273,7 +278,7 @@ numSamples  = len(vValIdx)
 imgIdx      = random.randrange(numSamples)
 imgIdx      = vValIdx[imgIdx]
 
-mI, mM = dsImgSeg[imgIdx]
+mI, tM = dsImgSeg[imgIdx]
 tI = mI.to(runDevice)
 tI = tI[None, :, :, :]
 with torch.inference_mode():

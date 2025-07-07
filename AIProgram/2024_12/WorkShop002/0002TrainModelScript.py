@@ -12,6 +12,7 @@
 # 
 # | Version | Date       | User        |Content / Changes                                                                         |
 # |---------|------------|-------------|------------------------------------------------------------------------------------------|
+# | 1.1.001 | 07/07/2025 | Royi Avital | Reordered the augmentation (Color Jitter and Grayscale)                                  |
 # | 1.1.000 | 10/06/2025 | Royi Avital | Using TorchVision Transform v2                                                           |
 # | 1.0.000 | 10/07/2024 | Royi Avital | First version                                                                            |
 # |         |            |             |                                                                                          |
@@ -128,9 +129,9 @@ oDataTrns = TorchVisionTrns.Compose([
     TorchVisionTrns.Resize(imgSize),
     TorchVisionTrns.CenterCrop(imgSize),
     TorchVisionTrns.RandomHorizontalFlip(p = 0.25),
+    TorchVisionTrns.ColorJitter(brightness = 0.1, contrast = 0.1, saturation = 0.1, hue = 0.05),
     TorchVisionTrns.RandomGrayscale(p = 0.1),
     TorchVisionTrns.ToDtype(dtype = {tv_tensors.Image: torch.float32, 'others': None}, scale = True),
-    TorchVisionTrns.ColorJitter(brightness = 0.1, contrast = 0.1, saturation = 0.1, hue = 0.05),
     TorchVisionTrns.Normalize(mean = lMean, std = lStd),
     TorchVisionTrns.ToDtype(dtype = {tv_tensors.Mask: torch.int64, 'others': None}, scale = False),
 ])

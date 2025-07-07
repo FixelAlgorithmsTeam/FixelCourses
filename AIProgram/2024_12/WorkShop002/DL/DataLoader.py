@@ -15,7 +15,6 @@ from PIL import Image
 
 # Miscellaneous
 import os
-import pathlib
 
 from typing import Any, Callable, Dict, Generator, List, Optional, Self, Set, Tuple, Union
 
@@ -37,7 +36,7 @@ class ImageSegmentationDataset(VisionDataset):
         lAnnFileName = [ExtFileName(itmName) for itmName in os.listdir(self.annFolderPath)]
         lImgFileName = [ExtFileName(itmName) for itmName in os.listdir(self.imgFolderPath)]
 
-        sMatchFileName =  set(lAnnFileName) & set(lImgFileName)
+        sMatchFileName = set(lAnnFileName) & set(lImgFileName)
 
         _lAnn = [] #<! Annotations
         _lImg = [] #<! Images

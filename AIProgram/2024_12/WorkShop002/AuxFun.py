@@ -132,9 +132,9 @@ def DataTensorToImageMask( tI: torch.Tensor, tM: torch.Tensor, vMean: List[float
       - The output images `mI` and `mM` will have shapes `(H, W, C)` and `(H, W)`.
     """
     tI = torch.squeeze(tI, dim = 0) #<! Remove batch dimension (If exist)
-    tI = UnNormalizeImg(tI, vMean, vStd)
+    tI = UnNormalizeImg(tI, vMean, vStd) #<! Reverse the normalization step
     mI = np.permute_dims(tI.cpu().numpy(), (1, 2, 0)) #<! (C, H, W) -> (H, W, C)
-    mM = tM.cpu().numpy()
+    mM = tM.cpu().numpy() #<! Convert ot NumPy array
 
     return mI, mM
 
