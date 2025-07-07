@@ -3,7 +3,7 @@
 # [![Fixel Algorithms](https://fixelalgorithms.co/images/CCExt.png)](https://fixelalgorithms.gitlab.io)
 # 
 # # Image Segmentation Workshop
-# Downloads and arranges the The Oxford-IIIT Pet Dataset.
+# Downloads and arranges the [Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets).
 # 
 # > Notebook by:
 # > - Royi Avital RoyiAvital@fixelalgorithms.com

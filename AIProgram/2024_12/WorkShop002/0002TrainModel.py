@@ -3,7 +3,7 @@
 # [![Fixel Algorithms](https://fixelalgorithms.co/images/CCExt.png)](https://fixelalgorithms.gitlab.io)
 # 
 # # Image Segmentation Workshop
-# Trains a U-Net model on the The Oxford-IIIT Pet Dataset.
+# Trains a U-Net model on the [Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets).
 # 
 # > Notebook by:
 # > - Royi Avital RoyiAvital@fixelalgorithms.com

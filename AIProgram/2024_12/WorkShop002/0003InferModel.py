@@ -3,7 +3,7 @@
 # [![Fixel Algorithms](https://fixelalgorithms.co/images/CCExt.png)](https://fixelalgorithms.gitlab.io)
 # 
 # # Image Segmentation Workshop
-# Use the pre trained U-Net model on the The Oxford-IIIT Pet Dataset: 
+# Use the pre trained U-Net model on the [Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets).
 # - Weights: https://drive.google.com/file/d/15UZlVEjyINpYAibETZGJDdNRsVkBRvBl.
 # - Parameters: https://drive.google.com/file/d/1uL08rL7IO6vv7_X-f4PjLFeyWpaArQ_m.
 # 
