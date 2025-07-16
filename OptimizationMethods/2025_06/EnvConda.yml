@@ -21,6 +21,7 @@ dependencies:
   - jupyter
   - ipykernel
   - ipywidgets
+  - anywidget
   - scikit-image
   - matplotlib
   - plotly
