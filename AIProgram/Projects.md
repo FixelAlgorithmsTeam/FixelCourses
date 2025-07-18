@@ -27,7 +27,6 @@ Contains list of projects for the choice of the students.
  -  [Detecting Early Alzheimer](https://www.kaggle.com/code/hyunseokc/detecting-early-alzheimer-s).
  -  Finding all label errors in MNIST and Fashion MNIST.  
     See [Finding Label Issues in Image Classification Datasets](https://cleanlab.ai/blog/label-errors-image-datasets), [Identifying Mislabeled Instances in Classification Datasets](https://arxiv.org/abs/1912.05283), [2.56% Test Error on CIFAR-10 using PyTorch and AutoAugment](https://davidstutz.de/2-percent-test-error-on-cifar10-using-pytorch-autoagument).
- - 
 
 
 **Remark**: The projects above can be solved with Deep Learning as well.
@@ -60,6 +59,7 @@ Contains list of projects for the choice of the students.
  - [Common Voice](https://www.kaggle.com/datasets/mozillaorg/common-voice) - 500 hours of speech recordings, with speaker demographics.  
    It may used for gender recognition, age estimation, accent detection, etc...
  - [Brain Neural Computer Interaction (BNCI) Data Sets](https://bnci-horizon-2020.eu/database/data-sets) - Several data sets of EEG / EOG / fNIRS / ECoG / EMG signals.
+ - Classify Voice vs. Snoring: [How to distinguish voice from snoring](https://dsp.stackexchange.com/questions/1828), [Kaggle Snoring Dataset](https://www.kaggle.com/datasets/tareqkhanemu/snoring), [Google Research AudioSet Snoring](https://research.google.com/audioset/dataset/snoring.html), [Adriana Galer Rotaru - Snoring Detection](https://github.com/adrianagaler/Snoring-Detection), [SimuSOE: A Simulated Snoring Dataset for Obstructive Sleep Apnea Hypopnea Syndrome Evaluation during Wakefulness](https://arxiv.org/abs/2407.07397).
 
 ### Language Processing
 
