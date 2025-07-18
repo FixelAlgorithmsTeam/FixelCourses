@@ -13,7 +13,7 @@ dependencies:
   - numba
   - cvxpy
   - ecos
-  - highs
+  - highspy
   - pyscipopt 
   - autograd
   - scikit-learn
