@@ -66,6 +66,7 @@ This file is a curated list of resources related to the course.
  - [Kevin Patrick Murphy - Machine Learning: a Probabilistic Perspective](https://probml.github.io/pml-book/book0.html).
  - [Kevin Patrick Murphy - Probabilistic Machine Learning: An Introduction](https://probml.github.io/pml-book/book1.html).
  - [Kevin Patrick Murphy - Probabilistic Machine Learning: Advanced Topics](https://probml.github.io/pml-book/book2.html).
+ - [Francis Bach - Learning Theory from First Principles](https://www.di.ens.fr/~fbach/ltfp_book.pdf) - Mathematical oriented book.
 
 ### Feature Engineering
 
