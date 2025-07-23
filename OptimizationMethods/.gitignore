@@ -1,3 +1,4 @@
 CVX/**
 # Downloading files from GitHub using NumPy creates a local copy of the file with folder tree as the HTTP path.
 **/raw.githubusercontent.com/*
+**/gist.githubusercontent.com/*
