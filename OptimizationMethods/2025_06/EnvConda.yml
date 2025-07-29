@@ -1,13 +1,13 @@
 name: OptimizationMethods
 channels:
   - conda-forge
+  - mosek
 dependencies:
-  - python=3.12
+  - python=3.13
   - blas=*=mkl
   - libblas=*=*mkl
   - numpy
   - scipy
-# scikit-sparse requires Python 3.12
   - scikit-sparse
   - pandas
   - numba
@@ -15,6 +15,7 @@ dependencies:
   - ecos
   - highspy
   - pyscipopt 
+  - mosek
   - autograd
   - scikit-learn
   - kneed
