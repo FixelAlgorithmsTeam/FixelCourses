@@ -416,7 +416,7 @@ class ProxGradientDescent():
         the direction of the gradient should be.
         Range: (0, ∞).
 
-    λ : float
+    λ : float, optional
         Regularization parameter controlling the weight of the non-smooth term `g(x)` in the objective function.
         Range: (0, ∞).
 
@@ -472,7 +472,7 @@ class ProxGradientDescent():
     2. Parikh, N., & Boyd, S. (2014). Proximal Algorithms. Foundations and Trends® in Optimization, 1(3), 127-239.
     """
 
-    def __init__( self, vX: np.ndarray, hGradFun: Callable[[np.ndarray], np.ndarray], μ: float, λ: float, /, *, hProxFun: Callable[[np.ndarray, float], np.ndarray] = lambda vX, λ: vX, useAccel: bool = False ) -> None:
+    def __init__( self, vX: np.ndarray, hGradFun: Callable[[np.ndarray], np.ndarray], μ: float, /, *, λ: float = 1.0, hProxFun: Callable[[np.ndarray, float], np.ndarray] = lambda vX, λ: vX, useAccel: bool = False ) -> None:
         
         dataDim = len(vX)
         
