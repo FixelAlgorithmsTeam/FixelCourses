@@ -36,6 +36,7 @@ This file is a curated list of resources related to the course.
  - [Python 3 Quick Tutorial](https://gist.github.com/kenjyco/69eeb503125035f21a9d).
  - [Andrew Glassner's Quick Guide to Python](https://www.glassner.com/writing/tech-notes/andrews-quick-guide-to-python).
  - [The Algorithms - Python](https://github.com/TheAlgorithms/Python) - **Reference** implementation of many algorithms in Python.
+ - [Allen B. Downey - Think Python](https://allendowney.github.io/ThinkPython). See also [Allen B. Downey - Data Structures and Information Retrieval in Python](https://allendowney.github.io/DSIRP).
 
 ### Scientific Python
 
@@ -49,6 +50,8 @@ This file is a curated list of resources related to the course.
  - [Speeding Up SciKit Learn for Single Predictions](https://maxhalford.github.io/blog/speeding-up-sklearn-single-predictions).
  - [Matrix Inverse Mini Batch Updates](https://maxhalford.github.io/blog/matrix-inverse-mini-batch).
  - [A Primer on Algorithmic Differentiation](https://gdalle.github.io/AutodiffTutorial).
+ - [Scientific Python Lectures](https://lectures.scientific-python.org) - Great optimization tutorials with SciPy.
+ - [Python code section of PSCB57 Course at UTSC](https://planets.utsc.utoronto.ca/~pawel/pyth) - Code samples in Python.
 
 ### Data Visualization & Exploratory Data Analysis (EDA)
 
@@ -222,6 +225,7 @@ This file is a curated list of resources related to the course.
  - [Deep Learning — Computer Vision (CV) Using Transfer Learning (ResNet-18) in PyTorch — Skin Cancer Classification](https://scribe.rip/8d5b158893c5).
  - [Skin Cancer ISIC](https://www.kaggle.com/datasets/nodoubttome/skin-cancer9-classesisic) - Multi Class Skin Cancer.
  - [University of Freiburg - Pattern Recognition and Image Processing](https://lmb.informatik.uni-freiburg.de/resources/datasets) - Segmentation, Image Sequences, Texture, Optical Flow, Hand Gestures, etc...
+ - [UC Irvine Machine Learning Repository](https://archive.ics.uci.edu) - A collection of 682 databases classified by domains.
 
 
 ## Miscellaneous
