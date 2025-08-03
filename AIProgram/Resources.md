@@ -135,13 +135,13 @@ This file is a curated list of resources related to the course.
     - [Networks Using Blocks (VGG)](https://d2l.ai/chapter_convolutional-modern/vgg.html).
     - [Multi Branch Networks (GoogLeNet)](https://d2l.ai/chapter_convolutional-modern/googlenet.html).
     - [Residual Networks (ResNet) and ResNeXt](https://d2l.ai/chapter_convolutional-modern/resnet.html).
-    - [ResNeXt: A New Paradigm in Image Processing](https://scribe.rip/ee40425aea1f).
+    - [ResNeXt: A New Paradigm in Image Processing](https://scribe.rip/ee40425aea1f) / [Taking ResNet to the Next Level](https://towardsdatascience.com/taking-resnet-to-the-next-level).
     - [Densely Connected Networks (DenseNet)](https://d2l.ai/chapter_convolutional-modern/densenet.html).
-	- [Network Decoupling: From Regular to Depthwise Separable Convolutions](https://arxiv.org/abs/1808.05517) - Separable Convolution for Network Decoupling.
+	  - [Network Decoupling: From Regular to Depthwise Separable Convolutions](https://arxiv.org/abs/1808.05517) - Separable Convolution for Network Decoupling.
     - [EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks](https://scribe.rip/92941c5bfb95).
-	- [ConNeXt - A ConvNet for the 2020s](https://arxiv.org/abs/2201.03545).  
-	  See [Sebastian Raschka - Looking Back at 2022: A Big Year For AI](https://magazine.sebastianraschka.com/p/ahead-of-ai-4-a-big-year-for-ai).  
-	  The context is that ConvNets might be as effective as ViT given enough data and training time as in [ConvNets Match Vision Transformers at Scale](https://arxiv.org/abs/2310.16764).
+	  - [ConNeXt - A ConvNet for the 2020s](https://arxiv.org/abs/2201.03545).  
+	    See [Sebastian Raschka - Looking Back at 2022: A Big Year For AI](https://magazine.sebastianraschka.com/p/ahead-of-ai-4-a-big-year-for-ai).  
+	    The context is that ConvNets might be as effective as ViT given enough data and training time as in [ConvNets Match Vision Transformers at Scale](https://arxiv.org/abs/2310.16764).
 	- [PyTorch Image Models](https://github.com/huggingface/pytorch-image-models) - The largest collection of PyTorch image encoders / backbones. Including train, evaluation, inference, export scripts and pretrained weights.
  - Concepts  
    - [Gabor Convolutional Networks](https://arxiv.org/abs/1705.01450).
@@ -166,6 +166,7 @@ This file is a curated list of resources related to the course.
     - [mAP (mean Average Precision) for Object Detection](https://scribe.rip/45c121a31173).
 	- Ayoosh Kathuria - How to Implement a YOLO (v3) Object Detector from Scratch in PyTorch: [Part I](https://blog.paperspace.com/how-to-implement-a-yolo-object-detector-in-pytorch), [Part II](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-2), [Part III](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-3), [Part IV](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-4), [Part V](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-5).
 	- [Build YOLO Model from Scratch](https://github.com/Praveen76/Build-YOLO-Model-from-scratch).
+  - [YOLOv13: Real Time Object Detection with Hypergraph Enhanced Adaptive Visual Perception](https://scribe.rip/a93200963687) - Many links to explain sub modules of the YOLO models.
  - Image Segmentation
     - [Segmentation Models for PyTorch](https://github.com/qubvel/segmentation_models.pytorch).
     - [Jermey Jordan - An Overview of Semantic Image Segmentation](https://www.jeremyjordan.me/semantic-segmentation).
