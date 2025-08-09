@@ -2,7 +2,7 @@ name: AIProgram
 channels:
   - conda-forge
 dependencies:
-  - python=3.12
+  - python=3.13
   - blas=*=accelerate
   - libblas=*=*accelerate
   - numpy
@@ -31,6 +31,7 @@ dependencies:
   - matplotlib
   - seaborn
   - plotly
+  - tabulate
   - graphviz
   - pydot
   - distinctipy

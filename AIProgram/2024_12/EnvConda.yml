@@ -2,7 +2,7 @@ name: AIProgram
 channels:
   - conda-forge
 dependencies:
-  - python=3.12
+  - python=3.13
   - numpy
   - scipy
   - pandas
@@ -18,7 +18,7 @@ dependencies:
   - umap-learn
   - kneed 
   - pytorch
-  - cuda=12.6
+  - cuda=12.8
   - torchvision
   - torchinfo
   - torchmetrics
@@ -30,6 +30,7 @@ dependencies:
   - matplotlib
   - seaborn
   - plotly
+  - tabulate
   - graphviz
   - pydot
   - distinctipy
