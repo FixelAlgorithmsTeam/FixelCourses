@@ -61,7 +61,7 @@ def DownloadGDriveZip( fileId: str, lFileCont: List[str] ) -> None:
         shutil.unpack_archive(fileNameExt)
         os.remove(fileNameExt)
 
-def DownloadDecompressGzip( fileUrl: str, fileName: str) -> None:
+def DownloadDecompressGzip( fileUrl: str, fileName: str ) -> None:
     # Based on https://stackoverflow.com/a/61195974
 
     # Read the file inside the .gz archive located at url

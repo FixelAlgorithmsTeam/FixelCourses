@@ -86,9 +86,9 @@ data/*
 *.vscode
 *runs
 
+# Specific Files
 creditcard.csv
-
-
+JSEOKCupidProfileData.csv
 
 BCI_Data.mat
 WISDM_ar_v1.1_raw.txt

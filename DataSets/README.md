@@ -37,3 +37,7 @@ Related to [Yair Weiss - Motion Segmentation using EM - A Short Tutorial](https:
 The data is saved as CSV. Images are stacked into vectors in a row major fashion (Python).
 
 Links are archived in Web Archive.
+
+## JSE OKCupid PRofile Data
+
+The CSV from [OkCupid Profile Data for Intro Stats and Data Science Courses (Revised in 2021)](https://github.com/rudeboybert/JSE_OkCupid).
