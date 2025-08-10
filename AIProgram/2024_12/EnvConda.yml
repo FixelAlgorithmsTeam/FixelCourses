@@ -30,9 +30,14 @@ dependencies:
   - matplotlib
   - seaborn
   - plotly
+# The package `anywidget` required for Plotly's widgets 
+  - anywidget
+# The package `tabulate` required for `dfA.to_markdown()` in Pandas 
   - tabulate
   - graphviz
   - pydot
+# The package `torchvista` visualizes of PyTorch models 
+  - torchvista
   - distinctipy
   - gdown
   - onedrivedownloader

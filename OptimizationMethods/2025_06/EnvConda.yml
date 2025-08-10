@@ -22,7 +22,7 @@ dependencies:
   - jupyter
   - ipykernel
   - ipywidgets
- # The package `anywidget` required for Plotly's widgets 
+# The package `anywidget` required for Plotly's widgets 
   - anywidget
   - scikit-image
   - matplotlib
