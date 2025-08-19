@@ -52,6 +52,7 @@ This file is a curated list of resources related to the course.
  - [A Primer on Algorithmic Differentiation](https://gdalle.github.io/AutodiffTutorial).
  - [Scientific Python Lectures](https://lectures.scientific-python.org) - Great optimization tutorials with SciPy.
  - [Python code section of PSCB57 Course at UTSC](https://planets.utsc.utoronto.ca/~pawel/pyth) - Code samples in Python.
+ - [JaX Documentation - How to Think About GPUs](https://jax-ml.github.io/scaling-book/gpus).
 
 ### Data Visualization & Exploratory Data Analysis (EDA)
 
