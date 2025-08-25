@@ -37,6 +37,7 @@ This file is a curated list of resources related to the course.
  - [Andrew Glassner's Quick Guide to Python](https://www.glassner.com/writing/tech-notes/andrews-quick-guide-to-python).
  - [The Algorithms - Python](https://github.com/TheAlgorithms/Python) - **Reference** implementation of many algorithms in Python.
  - [Allen B. Downey - Think Python](https://allendowney.github.io/ThinkPython). See also [Allen B. Downey - Data Structures and Information Retrieval in Python](https://allendowney.github.io/DSIRP).
+ - [Python `f String` Cheat Sheets](https://fstring.help/cheat), [Python `f String` Format Guesser](https://www.pythonmorsels.com/format).
 
 ### Scientific Python
 
@@ -120,6 +121,7 @@ This file is a curated list of resources related to the course.
  - [Denny Britz - Deep Learning Papernotes](https://github.com/dennybritz/deeplearning-papernotes).
  - [Daniel Takeshi - Deep Learning Papernotes](https://github.com/DanielTakeshi/Paper_Notes).
  - [Kyunghyun Cho - Machine Learning - A Lecture Note](https://arxiv.org/abs/2505.03861).
+ - [Deep Learning Papers Reading Roadmap](https://github.com/floodsung/Deep-Learning-Papers-Reading-Roadmap).
 
 
 ### Computer Vision
