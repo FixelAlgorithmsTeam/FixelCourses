@@ -20,8 +20,10 @@ dependencies:
   - pytorch
   - cuda=12.8
   - torchvision
-  - torchinfo
   - torchmetrics
+  - torchinfo
+# The package `torchvista` visualizes of PyTorch models 
+  - torchvista
   - shap
   - scikit-image
   - opencv
@@ -36,8 +38,6 @@ dependencies:
   - tabulate
   - graphviz
   - pydot
-# The package `torchvista` visualizes of PyTorch models 
-  - torchvista
   - distinctipy
   - gdown
   - onedrivedownloader
