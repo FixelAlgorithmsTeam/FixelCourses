@@ -122,6 +122,7 @@ This file is a curated list of resources related to the course.
  - [Daniel Takeshi - Deep Learning Papernotes](https://github.com/DanielTakeshi/Paper_Notes).
  - [Kyunghyun Cho - Machine Learning - A Lecture Note](https://arxiv.org/abs/2505.03861).
  - [Deep Learning Papers Reading Roadmap](https://github.com/floodsung/Deep-Learning-Papers-Reading-Roadmap).
+ - [CNN Explainer](https://poloclub.github.io/cnn-explainer/) - Learn Convolutional Neural Network (CNN) in your browser.
 
 
 ### Computer Vision
