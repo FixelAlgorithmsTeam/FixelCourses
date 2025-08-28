@@ -152,8 +152,7 @@ This file is a curated list of resources related to the course.
  - Layers
     - [Deformable Convolutions](https://arxiv.org/abs/1811.11168).  
 	  See [Deformable Convolutional Networks (DCNs) : A Complete Guide](https://scribe.rip/eadd9f1f8ce2), [Notes on “Deformable Convolutional Networks”](https://scribe.rip/baaabbc11cf3), [Deformable Convolution](https://leimao.github.io/blog/Deformable-Convolution).  
-	  Te idea generalizes the Convolution layer. Yet it is hard to implement efficiently.
-	- 
+	  The idea generalizes the Convolution layer. Yet it is hard to implement efficiently.
  - [LightLy](https://github.com/lightly-ai/lightly) - A python library for self-supervised learning on images.
  - Features Visualization
     - [Visualizing and Understanding Convolutional Networks](https://arxiv.org/abs/1311.2901).
@@ -167,10 +166,11 @@ This file is a curated list of resources related to the course.
       - [Part 2: CNN, DPM and Overfeat](https://lilianweng.github.io/posts/2017-12-15-object-recognition-part-2).
       - [Part 3: R-CNN Family](https://lilianweng.github.io/posts/2017-12-31-object-recognition-part-3).
       - [Part 4: Fast Detection Models](https://lilianweng.github.io/posts/2018-12-27-object-recognition-part-4).
-    - [mAP (mean Average Precision) for Object Detection](https://scribe.rip/45c121a31173).
-	- Ayoosh Kathuria - How to Implement a YOLO (v3) Object Detector from Scratch in PyTorch: [Part I](https://blog.paperspace.com/how-to-implement-a-yolo-object-detector-in-pytorch), [Part II](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-2), [Part III](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-3), [Part IV](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-4), [Part V](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-5).
-	- [Build YOLO Model from Scratch](https://github.com/Praveen76/Build-YOLO-Model-from-scratch).
-  - [YOLOv13: Real Time Object Detection with Hypergraph Enhanced Adaptive Visual Perception](https://scribe.rip/a93200963687) - Many links to explain sub modules of the YOLO models.
+    - [mAP (Mean Average Precision) for Object Detection](https://scribe.rip/45c121a31173).
+    - [Marc Tornero - YOLO Series](https://www.youtube.com/@marc_tornero/playlists) - A step by step videos on the YOLO v5, YOLO v11 and YOLO v12 architectures.
+	  - Ayoosh Kathuria - How to Implement a YOLO (v3) Object Detector from Scratch in PyTorch: [Part I](https://blog.paperspace.com/how-to-implement-a-yolo-object-detector-in-pytorch), [Part II](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-2), [Part III](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-3), [Part IV](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-4), [Part V](https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-5).
+	  - [Build YOLO Model from Scratch](https://github.com/Praveen76/Build-YOLO-Model-from-scratch).
+    - [YOLOv13: Real Time Object Detection with Hypergraph Enhanced Adaptive Visual Perception](https://scribe.rip/a93200963687) - Many links to explain sub modules of the YOLO models.
  - Image Segmentation
     - [Segmentation Models for PyTorch](https://github.com/qubvel/segmentation_models.pytorch).
     - [Jermey Jordan - An Overview of Semantic Image Segmentation](https://www.jeremyjordan.me/semantic-segmentation).
