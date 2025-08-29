@@ -1,0 +1,32 @@
+name: TimeSeries
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - numpy
+  - scipy
+  - pandas
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - scikit-learn
+  - xgboost
+  - lightgbm
+  - umap-learn
+  - pycatch22
+  - tsfresh
+  - kneed 
+  - scikit-image
+  - autograd
+  - matplotlib
+  - seaborn
+  - plotly
+# The package `anywidget` required for Plotly's widgets 
+  - anywidget
+# The package `tabulate` required for `dfA.to_markdown()` in Pandas 
+  - tabulate
+  - graphviz
+  - pydot
+  - distinctipy
+  - gdown
+  - onedrivedownloader
