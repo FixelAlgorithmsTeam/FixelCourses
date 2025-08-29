@@ -57,7 +57,7 @@ import seaborn as sns
 
 # %matplotlib inline
 
-# warnings.filterwarnings("ignore")
+# warnings.filterwarnings('ignore')
 
 seedNum = 512
 np.random.seed(seedNum)
