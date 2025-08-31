@@ -291,7 +291,7 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
             numSamples += batchSize
             oModel.train(trainMode) #<! Restore original mode
 
-        print(f'\r{"Train" if trainMode else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}, loss: {valLoss:.6f}', end = '')
+        print(f'\r{"Train" if trainMode else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}, Loss: {valLoss:.6f}', end = '')
     
     print('', end = '\r')
             
@@ -389,7 +389,7 @@ def RunEpochSch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callab
                 oTBLogger.oTBWriter.add_scalar('Train Score', valScore.item(), oTBLogger.iiItr)
                 oTBLogger.oTBWriter.add_scalar('Learning Rate', learnRate, oTBLogger.iiItr)
 
-        print(f'\r{"Train" if trainMode else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}, loss: {valLoss:.6f}', end = '')
+        print(f'\r{"Train" if trainMode else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}, Loss: {valLoss:.6f}', end = '')
     
     print('', end = '\r')
             
@@ -411,11 +411,11 @@ def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt:
         oSch        - PyTorch `Scheduler` (`LRScheduler`) object.
         oTBWriter   - PyTorch `SummaryWriter` object (TensorBoard).
     Output:
-        lTrainLoss     - Scalar of the loss.
-        lTrainScore    - Scalar of the score.
+        lTrainLoss  - Scalar of the loss.
+        lTrainScore - Scalar of the score.
         lValLoss    - Scalar of the score.
-        lValScore    - Scalar of the score.
-        lLearnRate    - Scalar of the score.
+        lValScore   - Scalar of the score.
+        lLearnRate  - Scalar of the score.
     Remarks:
       - The `oDataSet` object returns a Tuple of (mX, vY) per batch.
       - The `hL` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
