@@ -1,0 +1,45 @@
+name: AIProgram
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - blas=*=mkl
+  - libblas=*=*mkl
+  - numpy
+  - scipy
+  - pandas
+  - numba
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - cvxpy
+  - scikit-learn
+  - xgboost
+  - lightgbm
+  - nltk
+  - umap-learn
+  - kneed 
+  - pytorch
+  - cuda=12.8
+  - torchvision
+  - torchmetrics
+  - torchinfo
+# The package `torchvista` visualizes of PyTorch models 
+  - torchvista
+  - shap
+  - scikit-image
+  - opencv
+  - autograd
+  - tensorboard
+  - matplotlib
+  - seaborn
+  - plotly
+# The package `anywidget` required for Plotly's widgets 
+  - anywidget
+# The package `tabulate` required for `dfA.to_markdown()` in Pandas 
+  - tabulate
+  - graphviz
+  - pydot
+  - distinctipy
+  - gdown
+  - onedrivedownloader

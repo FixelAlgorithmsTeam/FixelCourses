@@ -6,7 +6,7 @@
 [![Visitors](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FRoyiAvital%2FStackExchangeCodes&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=Visitors+%28Daily+%2F+Total%29&edge_flat=false)](https://github.com/FixelAlgorithmsTeam/FixelCourses)
 [![Visitors](https://api.visitorbadge.io/api/combined?path=https%3A%2F%2Fgithub.com%2FRoyiAvital%2FStackExchangeCodes&labelColor=%23f47373&countColor=%23555555&style=plastic)](https://github.com/FixelAlgorithmsTeam/FixelCourses) <!-- https://www.visitorbadge.io -->
 
-This folder is dedicated to the course [Technion AI Program](https://cont-edu.technion.ac.il/programs/%D7%A7%D7%95%D7%A8%D7%A1%D7%99%D7%9D-%D7%91%D7%A9%D7%99%D7%AA%D7%95%D7%A3-%D7%94%D7%A8%D7%A9%D7%95%D7%AA-%D7%9C%D7%97%D7%93%D7%A9%D7%A0%D7%95%D7%AA/%D7%94%D7%9B%D7%A9%D7%A8%D7%AA-%D7%9E%D7%A4%D7%AA%D7%97%D7%99-ai) designed, built and administrated by [Royi Avital](https://fixelalgorithms.gitlab.io).
+This folder is dedicated to the course [Technion AI Program](https://cont-edu.technion.ac.il/programs/%D7%A7%D7%95%D7%A8%D7%A1%D7%99%D7%9D-%D7%91%D7%A9%D7%99%D7%AA%D7%95%D7%A3-%D7%94%D7%A8%D7%A9%D7%95%D7%AA-%D7%9C%D7%97%D7%93%D7%A9%D7%A0%D7%95%D7%AA/%D7%94%D7%9B%D7%A9%D7%A8%D7%AA-%D7%9E%D7%A4%D7%AA%D7%97%D7%99-ai) designed, built, tutoring and administrated by [Royi Avital](https://fixelalgorithms.gitlab.io).
 
 ## Class 001 (February 2024)
 
@@ -27,9 +27,19 @@ This folder is dedicated to the course [Technion AI Program](https://cont-edu.te
  - [Syllabus](https://cdn.prod.website-files.com/66cda18ee79e3818e9bbd4d1/673f55ffb2df314ef2b7cfb7_AI%20Training%20Program%20-%20ATLAS.pdf).
  - [Resources](./Resources.md).
  - [Projects](./Projects.md).
+ - [Conda Environment File](./2024_12/EnvConda.yml).
+
+## Class 003 (December 2024)
+
+ - Third session of the program (Technion + [Atlas](https://www.atlastech.co.il)).
+ - [Program Files](./2025_09).
+ - [Syllabus](https://www.atlastech.co.il/courses/hkshrt-mptkhy-ai).
+ - [Resources](./Resources.md).
+ - [Projects](./Projects.md).
+ - [Conda Environment File](./2025_09/EnvConda.yml).
 
 
 ## Miscellaneous
 
+ - [Install Conda Environment with MicroMamba Package Manager](./../InstallMicroMamba.md).
  - [Install Conda Environment](./../InstallCondaEnv.md).
- - [Install MicroMamba Environment](./../InstallMicroMamba.md).
