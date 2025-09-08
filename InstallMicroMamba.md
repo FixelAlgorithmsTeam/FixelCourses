@@ -55,9 +55,12 @@ This guide is composed of the following high level steps:
 
  - Prerequisites  
    Requirements to be able to successfully accomplish all steps.
- - Installing MicroMamba Package Manager
- - Installing a Conda Environment
- - Activating Conda Environment
+ - Installing MicroMamba Package Manager  
+   Creating a _portable_ installation of MicroMamba and configure Windows Terminal profile to launch it.
+ - Installing a Conda Environment  
+   Install a _Conda Environment_ given a specification file.
+ - Activating Conda Environment  
+   Activating an environment and launching VS Code from it.
 
 ## Prerequisites
 
@@ -110,12 +113,23 @@ Then create a Windows Terminal profile which executes the `PythonMamba.ps1` scri
 
 ## Create a Conda Environment
 
-The `micromamba` command can replace `conda` in most commands.  
-Yet there are subtle differences as described in [Micromamba User Guide](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html).  
+Creating an environment requires a specification.  
+One way to define a specification is using a [Conda Format YAML file](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#create-env-file-manually).  
+
+> ![NOTE]
+> Each course defines it own environment file.   
+> For example the `AI Program 2024_12` has [AI Program 2024_12 `EnvConda.yml`](./AIProgram/2024_24/EnvConda.yml).
+
+> ![TIP]
+> The `micromamba` command can replace `conda` in most commands.  
+> Yet there are subtle differences as described in [Micromamba User Guide](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html).  
 
 For instance, to install a `conda` environment from file, use `micromamba create -f <PathToFile>`.  
 See [Fixel Courses - Install Conda Environment](./InstallCondaEnv.md).  
 Replace `conda` with `micromamba` with the note about the `create` case as above.
+
+## Activating Conda Environment
+
 
 
 ## Remarks
@@ -147,7 +161,7 @@ In order to manually enter a path to a Python interpreter:
    You may enter the path or browse to select an interpreter.
 
 ![](https://i.imgur.com/0tlfrEv.png)
-![](https://i.postimg.cc/9fBv3G8W/image.png)
+<!-- ![](https://i.postimg.cc/9fBv3G8W/image.png) -->
 
 
 ### Images of the Installation Phase
