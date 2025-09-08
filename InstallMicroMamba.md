@@ -38,7 +38,7 @@ A Conda Environment is composed of few components:
  - Environments Defined on the Hard Disk  
    On the Hard Disk there might be several environments which can co exist independently.   
    Environment is defined by the Python interpreter and site packages available to it.   
-   Each session (CLI / VSCode / PyCharm / etc...) can be attached to a single environment.
+   Each session (CLI / VSCode / PyCharm / etc...) can be attached to a single environment.  
    **Remark**: It means any VS Code instance may be connected to a single activated environment. Yet there might be several instances of VS Code.
  - Activated Environment  
    Using the package manager one may activate an environment.  
@@ -120,17 +120,36 @@ One way to define a specification is using a [Conda Format YAML file](https://do
 > Each course defines it own environment file.   
 > For example the `AI Program 2024_12` has [AI Program 2024_12 `EnvConda.yml`](./AIProgram/2024_12/EnvConda.yml).
 
+
 > ![TIP]
 > The `micromamba` command can replace `conda` in most commands.  
 > Yet there are subtle differences as described in [Micromamba User Guide](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html).  
 
-For instance, to install a `conda` environment from file, use `micromamba create -f <PathToFile>`.  
-See [Fixel Courses - Install Conda Environment](./InstallCondaEnv.md).  
-Replace `conda` with `micromamba` with the note about the `create` case as above.
+1. Download the Environment Specification File  
+   Download the environment file specific to the course.  
+   Move into a folder with a known path.
+2. Open a Terminal Session  
+   Open the Windows Terminal using the `PythonMamba` profile.
+3. Create the Environment  
+   Run `micromamba create -f <Path\To\File\EnvConda.yml>` with the path to the YAML file of the course.
+4. Approve the Installation of the Packages  
+   The _MicroMamba Package Manager_ will solve the specification file into a specific list of packages to be installed.
+   Confirm the installation.
 
 ## Activating Conda Environment
 
+1. Open a Terminal Session  
+   Open the Windows Terminal using the `PythonMamba` profile.
+2. Activate the Environment
+   Using the name defined for the course environment (See the `name` field in the specification file) run: `micromamba activate <EnvName>`.  
+3. Launch IDE  
+   Launch VSCode from the session command line by `code`.
+4. Chose Kernel  
+   Chose the appropriate Kernel in VS Code.
 
+
+> ![TIP]
+> One may use any IDE. Yet it is important to launch it from teh activated environment.
 
 ## Remarks
 
