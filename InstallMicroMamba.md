@@ -118,7 +118,7 @@ One way to define a specification is using a [Conda Format YAML file](https://do
 
 > ![NOTE]
 > Each course defines it own environment file.   
-> For example the `AI Program 2024_12` has [AI Program 2024_12 `EnvConda.yml`](./AIProgram/2024_24/EnvConda.yml).
+> For example the `AI Program 2024_12` has [AI Program 2024_12 `EnvConda.yml`](./AIProgram/2024_12/EnvConda.yml).
 
 > ![TIP]
 > The `micromamba` command can replace `conda` in most commands.  
