@@ -1,4 +1,4 @@
-# Fixel Courses - Install MicroMamba
+# Fixel Courses - Install Conda Environment with MicroMamba Package Manager
 
 [![](./FixelAlgorithmsLogo.png)](https://fixelalgorithms.gitlab.io)
 
@@ -6,7 +6,58 @@
 [![Visitors](https://api.visitorbadge.io/api/combined?path=https%3A%2F%2Fgithub.com%2FRoyiAvital%2FStackExchangeCodes&labelColor=%23f47373&countColor=%23555555&style=plastic)](https://github.com/FixelAlgorithmsTeam/FixelCourses) <!-- https://www.visitorbadge.io -->
 
 This guide shows how to install [MicroMamba](https://github.com/mamba-org/mamba) on Windows computer.  
-The installation is configured to be _Portable_, hence does not affect any other configuration on the computer.
+The installation is configured to be _Portable_, hence does not affect any other configuration on the computer.  
+MicroMamaba is a Conda Package Manager which is known for being a fast solver of the environment.
+
+## Overview
+
+```mermaid
+flowchart TD
+ subgraph E1["Environments"]
+        C["EnvC"]
+        B["EnvB"]
+        A["EnvA"]
+  end
+    F["🗎Env.yml"] --> S["Solver"]
+    S --> C
+    Comm["Command Line"] --"activate"--> A
+    PyFile["🗎PythonFile"] --"python &ltMyFile.py&gt"--> A
+    S@{ shape: diam}
+    style A stroke:#2962FF
+```
+
+A Conda Environment is composed of few components:
+
+ - An Environment Definition File  
+   A file which defines the environment name and packages to be installed.  
+   A package definition may include a [Package Match Specifications](https://docs.conda.io/projects/conda-build/en/stable/resources/package-spec.html#package-match-specifications).
+ - A Conda Solver  
+   Given an environment file (Or other specification format) it solves a specific package given the constraints.  
+   In case the constraints are not solvable (at least by the solver), it will fail.  
+   Otherwise, it will generate a new environment with the specified name.
+ - Environments Defined on the Hard Disk  
+   On the Hard Disk there might be several environments which can co exist independently.   
+   Environment is defined by the Python interpreter and site packages available to it.   
+   Each session (CLI / VSCode / PyCharm / etc...) can be attached to a single environment.
+   **Remark**: It means any VS Code instance may be connected to a single activated environment. Yet there might be several instances of VS Code.
+ - Activated Environment  
+   Using the package manager one may activate an environment.  
+   Activated environment defines system variables which activates a specific combination of a Python interpreter and site packages.
+
+> [!NOTE]
+> To use a specific Conda Environment using MicroMamba one should activate the environment: `micromamba activate <EnvName>`.  
+> Then anything launched form this process will inherit the _System Variables_ configured by the environment.
+
+> [!TIP]
+> Launch the IDE (VS Code, PyCharm, Spyder) from a command line where the environment is activated.
+
+This guide is composed of the following high level steps:
+
+ - Prerequisites  
+   Requirements to be able to successfully accomplish all steps.
+ - Installing MicroMamba Package Manager
+ - Installing a Conda Environment
+ - Activating Conda Environment
 
 ## Prerequisites
 
@@ -18,7 +69,7 @@ The installation is configured to be _Portable_, hence does not affect any other
  - Microsoft C and C++ (MSVC) Runtime Libraries  
    Install the latest [Microsoft C and C++ (MSVC) Runtime Libraries](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist).
 
-## Install MicroMamaba Environment
+## Install MicroMamaba Package Manager
 
 1. `PythonMamba` Folder  
    Create a folder for the MicroMamba environment.  
@@ -50,14 +101,14 @@ The installation is configured to be _Portable_, hence does not affect any other
     - Click `Save`.
 6. Open `MambaPython`  
    Run the `PythonMamba` profile from _Windows Terminal_.
-7. Validate the Environment  
+7. Validate the Installation  
    Run `micromamba --version` to verify installation.  
    From now on auto complete using `Tab` will be available.
 
 The end game of the process is a single folder with 3 files: `micromamba.exe`, `PythonMamba.ps1` and `PythonMamba.png`.  
 Then create a Windows Terminal profile which executes the `PythonMamba.ps1` script.
 
-## Install Conda Environment
+## Create a Conda Environment
 
 The `micromamba` command can replace `conda` in most commands.  
 Yet there are subtle differences as described in [Micromamba User Guide](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html).  
@@ -83,6 +134,20 @@ See [`Set-ExecutionPolicy`](https://learn.microsoft.com/en-us/powershell/module/
 
 1. Open `Windows PowerShell` profile as Administrator.
 2. Run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`.
+
+### Selecting an Interpreter Manually in VSCode
+
+In order to manually enter a path to a Python interpreter:
+
+1. Launch VS Code Command Palette  
+   Use <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>p</kbd> to launch VS Code _Command Palette_.
+2. Search for `Python: Select Interpreter`  
+   In the text box start typing `Python: Select Interpreter` and choose the option.
+3. Browse to Select the Python Interpreter  
+   You may enter the path or browse to select an interpreter.
+
+![](https://i.imgur.com/0tlfrEv.png)
+![](https://i.postimg.cc/9fBv3G8W/image.png)
 
 
 ### Images of the Installation Phase
