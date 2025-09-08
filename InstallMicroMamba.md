@@ -120,10 +120,16 @@ One way to define a specification is using a [Conda Format YAML file](https://do
 > Each course defines it own environment file.   
 > For example the `AI Program 2024_12` has [AI Program 2024_12 `EnvConda.yml`](./AIProgram/2024_12/EnvConda.yml).
 
-
 > ![TIP]
 > The `micromamba` command can replace `conda` in most commands.  
 > Yet there are subtle differences as described in [Micromamba User Guide](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html).  
+
+> [!NOTE]
+> To use a specific Conda Environment using MicroMamba one should activate the environment: `micromamba activate <EnvName>`.  
+> Then anything launched form this process will inherit the _System Variables_ configured by the environment.
+
+> [!TIP]
+> Launch the IDE (VS Code, PyCharm, Spyder) from a command line where the environment is activated.
 
 1. Download the Environment Specification File  
    Download the environment file specific to the course.  
@@ -149,7 +155,7 @@ One way to define a specification is using a [Conda Format YAML file](https://do
 
 
 > ![TIP]
-> One may use any IDE. Yet it is important to launch it from teh activated environment.
+> One may use a different IDE. Yet it is important to launch it from the activated environment.
 
 ## Remarks
 
