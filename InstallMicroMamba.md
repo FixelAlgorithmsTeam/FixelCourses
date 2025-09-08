@@ -126,7 +126,7 @@ One way to define a specification is using a [Conda Format YAML file](https://do
 
 > [!NOTE]
 > To use a specific Conda Environment using MicroMamba one should activate the environment: `micromamba activate <EnvName>`.  
-> Then anything launched form this process will inherit the _System Variables_ configured by the environment.
+> Then anything launched form this process will inherit the [Micromamba User Guide](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html).
 
 > [!TIP]
 > Launch the IDE (VS Code, PyCharm, Spyder) from a command line where the environment is activated.
