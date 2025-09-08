@@ -117,12 +117,8 @@ Creating an environment requires a specification.
 One way to define a specification is using a [Conda Format YAML file](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#create-env-file-manually).  
 
 > [!NOTE]
-> Each course defines it own environment file.   
+> Each course defines its own environment file.   
 > For example the `AI Program 2024_12` has [AI Program 2024_12 `EnvConda.yml`](./AIProgram/2024_12/EnvConda.yml).
-
-> [!TIP]
-> The `micromamba` command can replace `conda` in most commands.  
-> Yet there are subtle differences as described in [Micromamba User Guide](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html).  
 
 1. Download the Environment Specification File  
    Download the environment file specific to the course.  
@@ -134,6 +130,10 @@ One way to define a specification is using a [Conda Format YAML file](https://do
 4. Approve the Installation of the Packages  
    The _MicroMamba Package Manager_ will solve the specification file into a specific list of packages to be installed.
    Confirm the installation.
+
+> [!TIP]
+> The `micromamba` command can replace `conda` in most commands.  
+> Yet there are subtle differences as described in [Micromamba User Guide](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html). 
 
 ## Activating Conda Environment
 
