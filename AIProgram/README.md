@@ -29,7 +29,7 @@ This folder is dedicated to the course [Technion AI Program](https://cont-edu.te
  - [Projects](./Projects.md).
  - [Conda Environment File](./2024_12/EnvConda.yml).
 
-## Class 003 (December 2024)
+## Class 003 (September 2025)
 
  - Third session of the program (Technion + [Atlas](https://www.atlastech.co.il)).
  - [Program Files](./2025_09).
