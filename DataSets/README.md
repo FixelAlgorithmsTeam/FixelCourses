@@ -41,3 +41,8 @@ Links are archived in Web Archive.
 ## JSE OKCupid PRofile Data
 
 The CSV from [OkCupid Profile Data for Intro Stats and Data Science Courses (Revised in 2021)](https://github.com/rudeboybert/JSE_OkCupid).
+
+## Concrete Compressive Strength
+
+The data from [UC Irvine (UCI) Machine Learning Repository - Concrete Compressive Strength](https://archive.ics.uci.edu/dataset/165).  
+Changed the `xls` file into a `csv` file.
