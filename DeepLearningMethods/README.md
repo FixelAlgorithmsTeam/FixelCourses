@@ -9,7 +9,7 @@ A folder dedicated to _Deep Learning Methods_ courses.
 
 ## Class 001 (2023)
 
-Full course in the defense industry.  
+Full course (10 Days) in the defense industry.  
 
 Agenda:
  - Basics.
