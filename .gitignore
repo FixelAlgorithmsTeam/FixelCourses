@@ -66,6 +66,7 @@ Archive/*
 *TEMP*.py
 
 # Miscellaneous 
+*.drawio.bkp
 Report*.html
 KaggleWhatsCooking.json
 IMDBReviews*.*
