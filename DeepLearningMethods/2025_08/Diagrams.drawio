@@ -183,6 +183,24 @@
         <mxCell id="vzIr1YLEcBWOXwNROeN2-11" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;rotation=90;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;sketch=1;curveFitting=1;jiggle=2;container=0;" parent="vzIr1YLEcBWOXwNROeN2-1" vertex="1">
           <mxGeometry x="670" y="40" width="40" height="40" as="geometry" />
         </mxCell>
+        <mxCell id="SPqvK6SlEZI-qp0hrQ3g-0" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;sketch=1;curveFitting=1;jiggle=2;strokeColor=#E51400;" edge="1" parent="vzIr1YLEcBWOXwNROeN2-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="420" as="sourcePoint" />
+            <mxPoint x="530" y="330" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="380" y="390" />
+              <mxPoint x="410" y="380" />
+              <mxPoint x="430" y="360" />
+              <mxPoint x="470" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6LI0RvODkxJETyg9Jlqd-0" value="Validation" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#F0A30A;" vertex="1" parent="vzIr1YLEcBWOXwNROeN2-1">
+          <mxGeometry x="540" y="340" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="6LI0RvODkxJETyg9Jlqd-1" value="Training" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#E51400;" vertex="1" parent="vzIr1YLEcBWOXwNROeN2-1">
+          <mxGeometry x="540" y="310" width="60" height="30" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
