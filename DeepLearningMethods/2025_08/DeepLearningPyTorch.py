@@ -32,7 +32,6 @@ import os
 # Auxiliary
 
 # Visualization
-import matplotlib.pyplot as plt
 
 # Miscellaneous
 import time
