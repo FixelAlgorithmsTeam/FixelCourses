@@ -19,10 +19,10 @@
    Run the following:
    * `pip install torchmetrics`.
    * `pip install torchinfo`.
+   * `pip install distinctipy`.
    * `pip install torchvista`.  
      Install only if required.
-   * `pip install distinctipy`.
-   * `pip install onedrivedownloader`.
+   * `pip install onedrivedownloader`.  
      Install only if required.
 5. (Optional) Click on Cog (Settings) of Google Colab and change Theme into `dark`.  
    The notebooks are optimized to dark background (As in VS Code by default).
