@@ -28,22 +28,23 @@ This file is a curated list of resources related to the course.
 
 ### Python
 
- - [MyPy Python Type Hints Cheat Sheet](https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html).
+ - [Allen B. Downey - Think Python](https://allendowney.github.io/ThinkPython). See also [Allen B. Downey - Data Structures and Information Retrieval in Python](https://allendowney.github.io/DSIRP).
  - [Introduction to Computer Science and Programming in Python](https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016).
+ - [Python 3 Quick Tutorial](https://gist.github.com/kenjyco/69eeb503125035f21a9d).
+ - [Andrew Glassner's Quick Guide to Python](https://www.glassner.com/writing/tech-notes/andrews-quick-guide-to-python).
+ - [MyPy Python Type Hints Cheat Sheet](https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html).
  - [A Quick Introduction to List Comprehensions with Python](https://github.com/mrdbourke/python-list-comprehensions-tutorial/blob/master/python-list-comprehensions-in-5-minutes.ipynb).
  - [Free Python Books](https://github.com/pamoroso/free-python-books) - A curated list of _free_ Python books.
  - [CalmCode](https://calmcode.io) - Code. Simply. Clearly. Calmly. Video tutorials for modern ideas and open source tools. 
- - [Python 3 Quick Tutorial](https://gist.github.com/kenjyco/69eeb503125035f21a9d).
- - [Andrew Glassner's Quick Guide to Python](https://www.glassner.com/writing/tech-notes/andrews-quick-guide-to-python).
  - [The Algorithms - Python](https://github.com/TheAlgorithms/Python) - **Reference** implementation of many algorithms in Python.
- - [Allen B. Downey - Think Python](https://allendowney.github.io/ThinkPython). See also [Allen B. Downey - Data Structures and Information Retrieval in Python](https://allendowney.github.io/DSIRP).
  - [Python `f String` Cheat Sheets](https://fstring.help/cheat), [Python `f String` Format Guesser](https://www.pythonmorsels.com/format).
 
 ### Scientific Python
 
+ - [Sebastian Raschka - Scientific Computing in Python: Introduction to NumPy and Matplotlib](https://sebastianraschka.com/blog/2020/numpy-intro.html).
  - [100 NumPy Exercises with Solutions](https://github.com/rougier/numpy-100).
- - [Project Euler](https://projecteuler.net).
  - [NumPy Fundamentals for Data Science and Machine Learning](https://pabloinsente.github.io/intro-numpy-fundamentals).
+ - [Project Euler](https://projecteuler.net).
  - [Introduction to Linear Algebra for Applied Machine Learning with Python](https://pabloinsente.github.io/intro-linear-algebra).
  - [Weighted Sampling without Replacement in Pure Python](https://maxhalford.github.io/blog/weighted-sampling-without-replacement).
  - [A Few Pandas Tricks](https://maxhalford.github.io/blog/pandas-tricks).
