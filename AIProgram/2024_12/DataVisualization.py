@@ -29,6 +29,7 @@ from enum import auto, Enum, unique
 
 # Typing
 from typing import Callable, Dict, List, Optional, Set, Tuple, Union
+from numpy.typing import ArrayLike, NDArray
 
 # Course Packages
 from DataManipulation import BBoxFormat
@@ -50,7 +51,7 @@ EDGE_COLOR      = 'k'
 MARKER_SIZE_DEF = 10
 LINE_WIDTH_DEF  = 2
 
-def PlotBinaryClassData( mX: np.ndarray, vY: np.ndarray, /, *, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF, 
+def PlotBinaryClassData( mX: NDArray, vY: NDArray, /, *, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF, 
                         elmSize: int = ELM_SIZE_DEF, classColor: Tuple[str, str] = CLASS_COLOR, axisTitle: Optional[str] = None ) -> plt.Axes:
     """
     Plots binary 2D data as a scatter plot.
@@ -86,7 +87,7 @@ def PlotBinaryClassData( mX: np.ndarray, vY: np.ndarray, /, *, hA: Optional[plt.
     
     return hA
 
-def Plot2DLinearClassifier( mX: np.ndarray, vY: np.ndarray, vW: np.ndarray, mX1: np.ndarray, mX2: np.ndarray, hA: plt.Axes ) -> None:
+def Plot2DLinearClassifier( mX: NDArray, vY: NDArray, vW: NDArray, mX1: NDArray, mX2: NDArray, hA: plt.Axes ) -> None:
     """
     Plots a binary 2D classifier.
     Input:
@@ -129,7 +130,7 @@ def Plot2DLinearClassifier( mX: np.ndarray, vY: np.ndarray, vW: np.ndarray, mX1:
 
     return
 
-def PlotMnistImages( mX: np.ndarray, vY: np.ndarray, numRows: int, numCols: Optional[int] = None, tuImgSize: Tuple = (28, 28), randomChoice: bool = True, lClasses: Optional[List] = None, hF: Optional[plt.Figure] = None ) -> plt.Figure:
+def PlotMnistImages( mX: NDArray, vY: NDArray, numRows: int, numCols: Optional[int] = None, tuImgSize: Tuple = (28, 28), randomChoice: bool = True, lClasses: Optional[List] = None, hF: Optional[plt.Figure] = None ) -> plt.Figure:
 
     numSamples  = mX.shape[0]
     numPx       = mX.shape[1]
@@ -167,7 +168,7 @@ def PlotMnistImages( mX: np.ndarray, vY: np.ndarray, numRows: int, numCols: Opti
     
     return hF
 
-def PlotLabelsHistogram( vY: np.ndarray, hA: Optional[plt.Axes] = None, lClass: Optional[List] = None, xLabelRot: Optional[int] = None ) -> plt.Axes:
+def PlotLabelsHistogram( vY: NDArray, hA: Optional[plt.Axes] = None, lClass: Optional[List] = None, xLabelRot: Optional[int] = None ) -> plt.Axes:
 
     if hA is None:
         hF, hA = plt.subplots(figsize = (8, 6))
@@ -188,9 +189,9 @@ def PlotLabelsHistogram( vY: np.ndarray, hA: Optional[plt.Axes] = None, lClass: 
 
     return hA
 
-def PlotConfusionMatrix(vY: np.ndarray, vYPred: np.ndarray, normMethod: str = None, hA: Optional[plt.Axes] = None, 
+def PlotConfusionMatrix(vY: NDArray, vYPred: NDArray, /, *, normMethod: str = None, hA: Optional[plt.Axes] = None, 
                         lLabels: Optional[List] = None, dScore: Optional[Dict] = None, titleStr: str = 'Confusion Matrix', 
-                        xLabelRot: Optional[int] = None, valFormat: Optional[str] = None) -> Tuple[plt.Axes, np.ndarray]:
+                        xLabelRot: Optional[int] = None, valFormat: Optional[str] = None) -> Tuple[plt.Axes, NDArray]:
 
     # Calculation of Confusion Matrix
     mConfMat = confusion_matrix(vY, vYPred, normalize = normMethod)
@@ -210,7 +211,7 @@ def PlotConfusionMatrix(vY: np.ndarray, vYPred: np.ndarray, normMethod: str = No
 
     return hA, mConfMat
 
-def PlotDecisionBoundaryClosure( numGridPts: int, gridXMin: float, gridXMax: float, gridYMin: float, gridYMax: float, clsColors: Tuple = CLASS_COLOR, numDigits: int = 1 ) -> Callable:
+def PlotDecisionBoundaryClosure( numGridPts: int, gridXMin: float, gridXMax: float, gridYMin: float, gridYMax: float, /, *, clsColors: Tuple = CLASS_COLOR, numDigits: int = 1 ) -> Callable:
 
     roundFctr = 10 ** numDigits
     
@@ -239,7 +240,7 @@ def PlotDecisionBoundaryClosure( numGridPts: int, gridXMin: float, gridXMax: flo
 
     return PlotDecisionBoundary
 
-def PlotRegressionData( mX: np.ndarray, vY: np.ndarray, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF, elmSize: int = ELM_SIZE_DEF, classColor: Tuple[str, str] = CLASS_COLOR, axisTitle: Optional[str] = None ) -> plt.Axes:
+def PlotRegressionData( mX: NDArray, vY: NDArray, /, *, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF, elmSize: int = ELM_SIZE_DEF, classColor: Tuple[str, str] = CLASS_COLOR, axisTitle: Optional[str] = None ) -> plt.Axes:
 
     if hA is None:
         hF, hA = plt.subplots(figsize = figSize)
@@ -267,7 +268,7 @@ def PlotRegressionData( mX: np.ndarray, vY: np.ndarray, hA: Optional[plt.Axes] =
     
     return hA
 
-def PlotRegressionResults( vY, vYPred, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF, lineWidth: int = LINE_WIDTH_DEF, elmSize: int = ELM_SIZE_DEF, classColor: Tuple[str, str] = CLASS_COLOR, axisTitle: Optional[str] = None ) -> plt.Axes:
+def PlotRegressionResults( vY, vYPred, /, *, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF, lineWidth: int = LINE_WIDTH_DEF, elmSize: int = ELM_SIZE_DEF, classColor: Tuple[str, str] = CLASS_COLOR, axisTitle: Optional[str] = None ) -> plt.Axes:
 
     if hA is None:
         hF, hA = plt.subplots(figsize = figSize)
@@ -289,7 +290,7 @@ def PlotRegressionResults( vY, vYPred, hA: Optional[plt.Axes] = None, figSize: T
     
     return hA
 
-def PlotScatterData( mX: np.ndarray, vL: Optional[np.ndarray] = None, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF, markerSize: int = ELM_SIZE_DEF, edgeColor: int = EDGE_COLOR ) -> plt.Axes:
+def PlotScatterData( mX: NDArray, vL: Optional[NDArray] = None, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF, markerSize: int = ELM_SIZE_DEF, edgeColor: int = EDGE_COLOR ) -> plt.Axes:
 
     if hA is None:
         hF, hA = plt.subplots(figsize = figSize)
@@ -315,7 +316,7 @@ def PlotScatterData( mX: np.ndarray, vL: Optional[np.ndarray] = None, hA: Option
 
     return hA
 
-def PlotScatterData3D( mX: np.ndarray, vL: Optional[np.ndarray] = None, vC: Optional[np.ndarray] = None, axesProjection: Optional[str] = '3d', hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF ) -> plt.Axes:
+def PlotScatterData3D( mX: NDArray, vL: Optional[NDArray] = None, vC: Optional[NDArray] = None, axesProjection: Optional[str] = '3d', hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF ) -> plt.Axes:
 
     if hA is None:
         hF, hA = plt.subplots(figsize = figSize, subplot_kw = {'projection': axesProjection})
@@ -346,7 +347,7 @@ def PlotScatterData3D( mX: np.ndarray, vL: Optional[np.ndarray] = None, vC: Opti
 
     return hA
 
-def PlotDendrogram( dfX: Union[np.ndarray, pd.DataFrame], linkageMethod: str, valP: int, thrLvl: int, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF ) -> plt.Axes:
+def PlotDendrogram( dfX: Union[NDArray, pd.DataFrame], linkageMethod: str, valP: int, thrLvl: int, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF ) -> plt.Axes:
 
     if hA is None:
         hF, hA = plt.subplots(1, 1, figsize = figSize)
@@ -359,7 +360,7 @@ def PlotDendrogram( dfX: Union[np.ndarray, pd.DataFrame], linkageMethod: str, va
 
     return hA
 
-def PlotBox( mI: np.ndarray, vLabel: Union[int, np.ndarray], mBox: np.ndarray, *, hA: Optional[plt.Axes] = None, lLabelText: Optional[List] = None ) -> plt.Axes:
+def PlotBox( mI: NDArray, vLabel: Union[int, NDArray], mBox: NDArray, *, hA: Optional[plt.Axes] = None, lLabelText: Optional[List] = None ) -> plt.Axes:
     # Assumes data in YOLO Format: [x, y, w, h] (Center, Height, Width)
     
     if hA is None:
@@ -382,7 +383,7 @@ def PlotBox( mI: np.ndarray, vLabel: Union[int, np.ndarray], mBox: np.ndarray, *
 
     return hA
 
-def PlotBBox( hA: plt.Axes, boxLabel: int, vBox: np.ndarray, labelText: str = '_' ) -> plt.Axes:
+def PlotBBox( hA: plt.Axes, boxLabel: int, vBox: NDArray, labelText: str = '_' ) -> plt.Axes:
     # Assumes data in YOLO Format
     # Legend Text: https://stackoverflow.com/questions/24680981
 
