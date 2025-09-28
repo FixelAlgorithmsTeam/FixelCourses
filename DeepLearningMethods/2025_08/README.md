@@ -28,6 +28,9 @@
    The notebooks are optimized to dark background (As in VS Code by default).
 6. Work on the Jupyter Notebook.
 
+> [!TIP]
+> Single line: `pip install torchmetrics torchinfo distinctipy torchvista onedrivedownloader`
+
 
 **Images**
 
