@@ -26,6 +26,7 @@ from enum import auto, Enum, unique
 
 # Typing
 from typing import Callable, Dict, List, Tuple
+from numpy.typing import NDArray
 
 # See https://docs.python.org/3/library/enum.html
 @unique
@@ -37,7 +38,7 @@ class DiffMode(Enum):
     COMPLEX     = auto()
 
 
-def CalcFunGrad( vX: np.ndarray, hF: Callable, /, *, diffMode: DiffMode = DiffMode.CENTRAL, ε: float = 1e-6 ):
+def CalcFunGrad( vX: NDArray, hF: Callable, /, *, diffMode: DiffMode = DiffMode.CENTRAL, ε: float = 1e-6 ) -> NDArray:
     """
     Calculates the gradient of `hF` using finite differences method (Numerical differentiation).
     Input:
@@ -46,7 +47,7 @@ def CalcFunGrad( vX: np.ndarray, hF: Callable, /, *, diffMode: DiffMode = DiffMo
         diffMode    - The method to use for the numeric calculation.
         ε           - A positive float number as the "step size".
     Output:
-        vG          - Vector of the gradient.
+        vG          - Vector of the gradient at `hF(vX)`.
     """
 
     numElements = np.size(vX)
@@ -55,20 +56,22 @@ def CalcFunGrad( vX: np.ndarray, hF: Callable, /, *, diffMode: DiffMode = DiffMo
     vG          = np.zeros_like(vX)
     vE          = np.zeros_like(vX)
 
+    # Auxiliary function to calculate the directional derivative by
     if (diffMode is DiffMode.BACKWARD):
-        hGradFun = lambda vP: (objFunRef - hF(vX - vP)) / ε
+        hDirDerv = lambda vEi: (objFunRef - hF(vX - vEi)) / ε
     elif (diffMode is DiffMode.CENTRAL):
-        hGradFun = lambda vP: (hF(vX + vP) - hF(vX - vP)) / (2 * ε)
+        hDirDerv = lambda vEi: (hF(vX + vEi) - hF(vX - vEi)) / (2 * ε)
     elif (diffMode is DiffMode.FORWARD):
-        hGradFun = lambda vP: (hF(vX + vP) - objFunRef) / ε
+        hDirDerv = lambda vEi: (hF(vX + vEi) - objFunRef) / ε
     elif (diffMode is DiffMode.COMPLEX):
-        hGradFun = lambda vP: np.imag(hF(vX + 1j * vP)) / ε
+        hDirDerv = lambda vEi: np.imag(hF(vX + 1j * vEi)) / ε
     else:
         raise ValueError('Invalid value for `diffMode` parameter')
     
+    # Iterate over all directions
     for ii in range(numElements):
-        vE.flat[ii] = ε
-        vG.flat[ii] = hGradFun(vE)
+        vE.flat[ii] = ε            #<! Generate the basis direction (`vEi`)
+        vG.flat[ii] = hDirDerv(vE) #<! Calculate the directional derivative
         vE.flat[ii] = 0.0
     
     return vG
