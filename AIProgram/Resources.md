@@ -10,6 +10,8 @@ This file is a curated list of resources related to the course.
 
 ### Mathematics
 
+ - [The Little Book of Linear Algebra](https://github.com/little-book-of/linear-algebra) - A concise, beginner friendly introduction to the core ideas of linear algebra.
+ - [The Little Book of Multi Linear Algebra](https://github.com/little-book-of/matrix-calculus) - A concise, beginner friendly introduction to the core ideas of matrix calculus.
  - [Nick Higham's _What Is_ Series](https://nhigham.com/index-of-what-is-articles).
  - [Matrix Calculus for Machine Learning and Beyond](https://github.com/mitmath/matrixcalc).  
    See the course notes: [ArXiV - Matrix Calculus for Machine Learning and Beyond](https://arxiv.org/abs/2501.14787).
