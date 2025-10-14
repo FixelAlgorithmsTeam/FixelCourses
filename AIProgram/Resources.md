@@ -215,7 +215,7 @@ This file is a curated list of resources related to the course.
    - [ADAHESSIAN: An Adaptive Second Order Optimizer for Machine Learning](https://github.com/amirgholami/adahessian). See [AdaHessian](https://github.com/davda54/ada-hessian).  
      [FastAI Discussion on `ADAHESSIAN`](https://forums.fast.ai/t/76214), [YouTube Recordings](https://www.youtube.com/watch?v=S87ancnZ0MM), [Reddit Discussion](https://www.reddit.com/r/MachineLearning/comments/i76wxd).
    - [Best Deep Learning Optimizers](https://github.com/lessw2020/Best-Deep-Learning-Optimizers).
- - 
+ - [WhyTorch](https://github.com/Kukanani/whytorch) - [A visual explainer](https://whytorch.org) for PyTorch tensor operations.
 
 ## Data Sets
 
