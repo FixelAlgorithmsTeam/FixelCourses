@@ -28,7 +28,6 @@ dependencies:
   - torchvista
   - shap
   - scikit-image
-  - opencv
   - autograd
   - tensorboard
   - matplotlib

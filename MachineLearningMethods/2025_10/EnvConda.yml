@@ -1,0 +1,35 @@
+name: MLMethods
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - blas=*=mkl
+  - libblas=*=*mkl
+  - numpy
+  - scipy
+  - pandas
+# The package `tabulate` required for `dfA.to_markdown()` in Pandas 
+  - tabulate
+  - numba
+  - scikit-learn
+  - xgboost
+  - lightgbm
+  - umap-learn
+  - kneed
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - cvxpy
+  - scikit-image
+  - matplotlib
+  - seaborn
+  - plotly
+# The package `anywidget` required for Plotly's widgets 
+  - anywidget
+  - graphviz
+  - pydot
+  - distinctipy
+  - rich
+  - autograd
+  - gdown
+  - onedrivedownloader

@@ -52,7 +52,7 @@ Contains list of projects for the choice of the students.
    See [Semantic Segmentation for Flood Recognition Using PyTorch](https://debuggercafe.com/semantic-segmentation-for-flood-recognition).
  - [Visual Object Tracking](https://github.com/DavidZhangdw/Visual-Tracking-Development).
    - [OSTrack](https://github.com/botaoye/OSTrack).
- - 
+ - Classification of Breast Lesions - Follow the paper [Transformer Classification of Breast Lesions: The `BreastDCEDL_AMBL` Benchmark Dataset and 0.92 AUC Baseline](https://arxiv.org/abs/2509.26440).
 
 ### Signal Processing
 
@@ -66,7 +66,6 @@ Contains list of projects for the choice of the students.
  - Text Sentiment Labeling  
    For instance see [Sentiment Classifier for User Requests in the Banking Domain](https://rubrix.readthedocs.io/en/master/tutorials/01-labeling-finetuning.html).
  - 
-
 
 ### Data Resources
 
