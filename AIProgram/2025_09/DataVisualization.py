@@ -189,7 +189,7 @@ def PlotLabelsHistogram( vY: NDArray, hA: Optional[plt.Axes] = None, lClass: Opt
 
     return hA
 
-def PlotConfusionMatrix(vY: NDArray, vYPred: NDArray, /, *, normMethod: str = None, hA: Optional[plt.Axes] = None, 
+def PlotConfusionMatrix(vY: NDArray, vYPred: NDArray, *, normMethod: str = None, hA: Optional[plt.Axes] = None, 
                         lLabels: Optional[List] = None, dScore: Optional[Dict] = None, titleStr: str = 'Confusion Matrix', 
                         xLabelRot: Optional[int] = None, valFormat: Optional[str] = None) -> Tuple[plt.Axes, NDArray]:
 
