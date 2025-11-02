@@ -57,6 +57,8 @@ This file is a curated list of resources related to the course.
  - [Scientific Python Lectures](https://lectures.scientific-python.org) - Great optimization tutorials with SciPy.
  - [Python code section of PSCB57 Course at UTSC](https://planets.utsc.utoronto.ca/~pawel/pyth) - Code samples in Python.
  - [JaX Documentation - How to Think About GPUs](https://jax-ml.github.io/scaling-book/gpus).
+ - [Stay](https://staying.fun) - Visualize Data Structures& Algorithms in Real Time.
+ - [Yellowbrick: Machine Learning Visualization](https://github.com/DistrictDataLabs/yellowbrick).
 
 ### Data Visualization & Exploratory Data Analysis (EDA)
 
@@ -75,6 +77,7 @@ This file is a curated list of resources related to the course.
  - [Kevin Patrick Murphy - Probabilistic Machine Learning: An Introduction](https://probml.github.io/pml-book/book1.html).
  - [Kevin Patrick Murphy - Probabilistic Machine Learning: Advanced Topics](https://probml.github.io/pml-book/book2.html).
  - [Francis Bach - Learning Theory from First Principles](https://www.di.ens.fr/~fbach/ltfp_book.pdf) - Mathematical oriented book.
+ - [Frank E Harrell Jr - Regression Modeling Strategies](https://hbiostat.org/rmsc).
 
 ### Feature Engineering
 
@@ -107,13 +110,17 @@ This file is a curated list of resources related to the course.
  - [Ian Goodfellow and Yoshua Bengio and Aaron Courville - Deep Learning](https://www.deeplearningbook.org).  
    A [Full PDF Link](https://github.com/janishar/mit-deep-learning-book-pdf).
  - Model Visualization Tools
-    - [NN-SVG](https://alexlenail.me/NN-SVG).
+    - [NN SVG](https://github.com/alexlenail/NN-SVG) - Publication ready NN architecture schematics ([NN-SVG](https://alexlenail.me/NN-SVG)).
     - [NNViz](https://github.com/LucaBonfiglioli/nnviz).
     - [TorchLens](https://github.com/johnmarktaylor91/torchlens).
     - [Tools to Design or Visualize Architecture of Neural Network](https://github.com/ashishpatel26/Tools-to-Design-or-Visualize-Architecture-of-Neural-Network).
     - [Netron](https://github.com/lutzroeder/Netron) - Visualizer for neural network, deep learning and machine learning models.
 	  - [TorchView](https://github.com/mert-kurttutan/torchview) - Visualize PyTorch models.
 	  - [TorchExplorer](https://github.com/spfrommer/torchexplorer) - Interactively inspect module inputs, outputs, parameters, and gradients.
+    - [Neural Network Architecture Diagrams](https://github.com/kennethleungty/Neural-Network-Architecture-Diagrams).
+    - [DrawIO Neural Network Templates](https://github.com/WangX0111/drawio-nn-templates).
+    - [StackExchange Data Science - How to Draw Deep Learning Network Architecture Diagram](https://datascience.stackexchange.com/questions/14899).
+    - [Kaggle - Awesome Drawing Tools for Neural Net Architecture](https://www.kaggle.com/discussions/getting-started/253300).
  - [TorchDrift: Drift Detection for PyTorch](https://torchdrift.org) - A data and concept drift library for PyTorch. It lets you monitor your PyTorch models to see if they operate within spec.
  - [What Does It Mean that Deep Learning is NoN Parametric](https://lernapparat.de/statistics-deep-learning-nonparametric) - The regularization point of view on a Neural Network.
  - [Machine (Deep) Learning Articles](https://github.com/christianversloot/machine-learning-articles) - A set of Markdown posts on applications and theory in Machine Learning. Focused on Deep Learning.
