@@ -18,8 +18,9 @@ dependencies:
   - umap-learn
   - kneed 
   - pytorch
-  - cuda=12.8
+  - cuda
   - torchvision
+  - torchcodec 
   - torchmetrics
   - torchinfo
 # The package `torchvista` visualizes of PyTorch models 
