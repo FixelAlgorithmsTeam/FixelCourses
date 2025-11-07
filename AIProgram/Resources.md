@@ -78,6 +78,10 @@ This file is a curated list of resources related to the course.
  - [Kevin Patrick Murphy - Probabilistic Machine Learning: Advanced Topics](https://probml.github.io/pml-book/book2.html).
  - [Francis Bach - Learning Theory from First Principles](https://www.di.ens.fr/~fbach/ltfp_book.pdf) - Mathematical oriented book.
  - [Frank E Harrell Jr - Regression Modeling Strategies](https://hbiostat.org/rmsc).
+ - SciKit Learn Extensions
+  - [SciKit Learn Contribute](https://github.com/scikit-learn-contrib) - SciKit Learn compatible packages to extend SciKit Learn capabilities.
+  - [ML Extend](https://github.com/rasbt/mlxtend) - A library of extension and helper modules for Python's data analysis and machine learning libraries.
+
 
 ### Feature Engineering
 
