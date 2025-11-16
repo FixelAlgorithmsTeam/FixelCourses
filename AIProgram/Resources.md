@@ -81,6 +81,7 @@ This file is a curated list of resources related to the course.
  - SciKit Learn Extensions
   - [SciKit Learn Contribute](https://github.com/scikit-learn-contrib) - SciKit Learn compatible packages to extend SciKit Learn capabilities.
   - [ML Extend](https://github.com/rasbt/mlxtend) - A library of extension and helper modules for Python's data analysis and machine learning libraries.
+  * [NJIT CS 301 - Introduction to Data Science](https://pantelis.github.io/cs301).
 
 
 ### Feature Engineering
