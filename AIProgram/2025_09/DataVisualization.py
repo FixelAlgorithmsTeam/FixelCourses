@@ -125,8 +125,8 @@ def Plot2DLinearClassifier( mX: NDArray, vY: NDArray, vW: NDArray, mX1: NDArray,
     
     hA.set_xlim([-2, 2])
     hA.set_ylim([-2, 2])
-    hA.set_xlabel('$x_1$')
-    hA.set_ylabel('$x_2$')
+    hA.set_xlabel(r'$x_1$')
+    hA.set_ylabel(r'$x_2$')
 
     return
 
