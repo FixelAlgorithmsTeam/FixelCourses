@@ -46,3 +46,7 @@ The CSV from [OkCupid Profile Data for Intro Stats and Data Science Courses (Rev
 
 The data from [UC Irvine (UCI) Machine Learning Repository - Concrete Compressive Strength](https://archive.ics.uci.edu/dataset/165).  
 Changed the `xls` file into a `csv` file.
+
+## Spirals
+
+The data in `Spirals.csv` (Binary) and `SpiralsMulti.csv` (Multi Class) are from the R Package [`ELMnet`](https://github.com/davpinto/elmnet).  
