@@ -211,8 +211,9 @@ def PlotConfusionMatrix(vY: NDArray, vYPred: NDArray, *, normMethod: str = None,
 
     return hA, mConfMat
 
-def PlotDecisionBoundaryClosure( numGridPts: int, gridXMin: float, gridXMax: float, gridYMin: float, gridYMax: float, /, *, clsColors: Tuple = CLASS_COLOR, numDigits: int = 1 ) -> Callable:
+def PlotDecisionBoundaryClosure( numGridPts: int, gridXMin: float, gridXMax: float, gridYMin: float, gridYMax: float, /, *, lClsLabels: List[Union[float, int]] = [-1, 1], clsColors: Tuple = CLASS_COLOR, numDigits: int = 1 ) -> Callable:
 
+    numCls    = len(lClsLabels)
     roundFctr = 10 ** numDigits
     
     # For equal axis
@@ -224,6 +225,10 @@ def PlotDecisionBoundaryClosure( numGridPts: int, gridXMin: float, gridXMax: flo
     mX1, mX2 = np.meshgrid(vX1, vX2)
     mX       = np.c_[mX1.ravel(), mX2.ravel()] #<! Features (2D)
 
+    lLevels =  [(lClsLabels[ii] + lClsLabels[ii + 1]) / 2.0 for ii in range(numCls - 1)]
+    lLevels.append(lClsLabels[-1] + 1)
+    lLevels.insert(0, lClsLabels[0] - 1)
+
     # A closure
     def PlotDecisionBoundary(hDecFun: Callable, hA: plt.Axes = None) -> plt.Axes:
         
@@ -234,7 +239,7 @@ def PlotDecisionBoundaryClosure( numGridPts: int, gridXMin: float, gridXMax: flo
         mZ = mZ.reshape(mX1.shape)
 
         # Assumes values {0, 1}
-        hA.contourf(mX1, mX2, mZ, colors = clsColors, alpha = 0.3, levels = [-0.5, 0.5, 1.5])
+        hA.contourf(mX1, mX2, mZ, colors = clsColors[:numCls], alpha = 0.3, levels = lLevels)
 
         return hA
 
