@@ -246,6 +246,7 @@ This file is a curated list of resources related to the course.
  - [Skin Cancer ISIC](https://www.kaggle.com/datasets/nodoubttome/skin-cancer9-classesisic) - Multi Class Skin Cancer.
  - [University of Freiburg - Pattern Recognition and Image Processing](https://lmb.informatik.uni-freiburg.de/resources/datasets) - Segmentation, Image Sequences, Texture, Optical Flow, Hand Gestures, etc...
  - [UC Irvine Machine Learning Repository](https://archive.ics.uci.edu) - A collection of 682 databases classified by domains.
+ - [Dataset Ninja](https://datasetninja.com) - Curated Dataset Datasets for Computer Vision.
 
 
 ## Miscellaneous
