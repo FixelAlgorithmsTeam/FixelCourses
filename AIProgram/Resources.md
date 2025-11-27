@@ -64,7 +64,7 @@ This file is a curated list of resources related to the course.
 
  - [From Data to Viz](https://www.data-to-viz.com)  
    Leads you to the most appropriate graph for your data. It links to the code to build it and lists common caveats you should avoid.
- - 
+ - [Voxel51](https://voxel51.com) - A framework for Digital Asset Management with built in insights.
 
 ## Classic Machine Learning
 
