@@ -60,6 +60,7 @@ Contains list of projects for the choice of the students.
    It may used for gender recognition, age estimation, accent detection, etc...
  - [Brain Neural Computer Interaction (BNCI) Data Sets](https://bnci-horizon-2020.eu/database/data-sets) - Several data sets of EEG / EOG / fNIRS / ECoG / EMG signals.
  - Classify Voice vs. Snoring: [How to Distinguish Voice from Snoring](https://dsp.stackexchange.com/questions/1828), [Kaggle Snoring Dataset](https://www.kaggle.com/datasets/tareqkhanemu/snoring), [Google Research AudioSet Snoring](https://research.google.com/audioset/dataset/snoring.html), [Adriana Galer Rotaru - Snoring Detection](https://github.com/adrianagaler/Snoring-Detection), [SimuSOE: A Simulated Snoring Dataset for Obstructive Sleep Apnea Hypopnea Syndrome Evaluation during Wakefulness](https://arxiv.org/abs/2407.07397).
+ - [AeroSonicDB](https://zenodo.org/records/10215080) - Labelled audio dataset for acoustic detection and classification of aircraft. A starting point is given by [PANNs: Large Scale Pretrained Audio Neural Networks for Audio Pattern Recognition](https://github.com/qiuqiangkong/audioset_tagging_cnn).
 
 ### Language Processing
 
