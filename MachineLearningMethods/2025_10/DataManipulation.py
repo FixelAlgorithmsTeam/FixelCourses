@@ -61,25 +61,59 @@ def DownloadGDriveZip( fileId: str, lFileCont: List[str] ) -> None:
         shutil.unpack_archive(fileNameExt)
         os.remove(fileNameExt)
 
-def DownloadDecompressGzip( fileUrl: str, fileName: str) -> None:
+def DownloadDecompressGzip( fileUrl: str, fileName: str ) -> None:
     # Based on https://stackoverflow.com/a/61195974
 
     # Read the file inside the .gz archive located at url
-    with urllib.request.urlopen(fileUrl) as response:
-        with gzip.GzipFile(fileobj = response) as uncompressed:
-            file_content = uncompressed.read()
+    with urllib.request.urlopen(fileUrl) as urlResponse:
+        with gzip.GzipFile(fileobj = urlResponse) as uncompressedData:
+            fileContent = uncompressedData.read()
         # write to file in binary mode 'wb'
-        with open(fileName, 'wb') as f:
-            f.write(file_content)
-            f.close()
-        return
+        with open(fileName, 'wb') as hFile:
+            hFile.write(fileContent)    
+    
+    return
+
+def ParseEnvFile( fileName: str = '.env', *, filePath: str = '.', keyValSep: str = '=' ) -> Dict[str, str]:
+    # Read the file and parse it into a dictionary
+    dEnv = {}
+    with open(os.path.join(filePath, fileName), 'r') as hF:
+        for line in hF:
+            if line.startswith('#') or not line.strip():
+                continue
+            key, value = line.strip().split(keyValSep, 1)
+            dEnv[key]  = value.strip()
+    return dEnv
+
+def DownloadProgress(blockNum, blockSize, totalSize):
+    # https://stackoverflow.com/a/74314365
+
+    bytesDownloaded   = blockNum * blockSize
+    relativeProgress  = blockNum * blockSize / totalSize
+    bytesDownloadedKb = bytesDownloaded // 1024
+    totalSizeKb       = totalSize // 1024
+
+    print(f'Downloaded: {relativeProgress:0.2%} of the file ({bytesDownloadedKb} [Kilo Byte] / {totalSizeKb} [Kilo Bytes])', end = '\r')
 
 def DownloadUrl( fileUrl: str, fileName: str ) -> str:
     
     if not os.path.exists(fileName):
-        urllib.request.urlretrieve(fileUrl, fileName)
+        urllib.request.urlretrieve(fileUrl, fileName, DownloadProgress)
 
     return fileName
+
+def DownloadKaggleDataset( userName: str, datasetName: str, fileName: str ) -> None:
+    # Downloads the Kaggle Dataset using `curl` like command
+    # The `userName` and `datasetName` are in the form 'userName/datasetName': 
+    # `https://www.kaggle.com/datasets/girish17019/mobile-phone-defect-segmentation-dataset` -> `girish17019`, `mobile-phone-defect-segmentation-dataset`
+
+    # Converts: `curl -L -o <fileName> https://www.kaggle.com/api/v1/datasets/download/<userName>/<datasetName>` into Python
+
+    kaggleUrl = f'https://www.kaggle.com/api/v1/datasets/download/{userName}/{datasetName}'
+
+    DownloadUrl(kaggleUrl, fileName)
+
+    return
 
 def ConvertMnistDataDf( imgFilePath: str, labelFilePath: str ) -> Tuple[np.ndarray, np.ndarray]:
     numPx = 28 * 28
@@ -99,7 +133,6 @@ def ConvertMnistDataDf( imgFilePath: str, labelFilePath: str ) -> Tuple[np.ndarr
     l.close()
 
     return mX, vY
-
 
 def ConvertBBoxFormat( vBox: np.ndarray, tuImgSize: Tuple[int, int], boxFormatIn: BBoxFormat, boxFormatOut: BBoxFormat ) -> np.ndarray:
     # tuImgSize = (numRows, numCols) <=> (imgHeight, imgWidth)
@@ -158,8 +191,8 @@ def GenLabeldEllipseImg( tuImgSize: Tuple[int, int], numObj: int, *, boxFormat: 
     mBB = np.zeros(shape = (numObj, 4)) #<! [x1, y1, x2, y2]
 
     for ii in range(numObj):
-        cIdx    = np.random.randint(3) #<! R, G, B -> [0, 1, 2]
-        rotDeg  = np.pi * np.random.rand()
+        cIdx    = np.random.randint(3)     #<! R, G, B -> [0, 1, 2]
+        rotDeg  = np.pi * np.random.rand() #<! [0, π]
         centRow = np.random.randint(low = int(np.ceil(0.1 * tuImgSize[0])), high = int(np.ceil(0.9 * tuImgSize[0])))
         centCol = np.random.randint(low = int(np.ceil(0.1 * tuImgSize[1])), high = int(np.ceil(0.9 * tuImgSize[1])))
         majAxis = (tuImgSize[0] / 16) + ((tuImgSize[0] / 4) * np.random.rand()) #<! Major Axis
@@ -168,18 +201,20 @@ def GenLabeldEllipseImg( tuImgSize: Tuple[int, int], numObj: int, *, boxFormat: 
         # Generate the Ellipse
         vR, vC = ski.draw.ellipse(centRow, centCol, majAxis, minAxis, shape = tuImgSize, rotation = rotDeg)
 
-        mI[vR, vC, cIdx] = 1.0
+        mI[vR, vC, cIdx] = 1.0 #<! Class of the ellipse
 
+        # Bounding Box
         xLeft   = np.min(vC)
         xRight  = np.max(vC)
         yTop    = np.min(vR)
         yBottom = np.max(vR)
 
-        vY[ii]     = cIdx       #<! Label
-        mBB[ii, 0] = xLeft      #<! x Min
-        mBB[ii, 1] = yTop       #<! y Min
-        mBB[ii, 2] = xRight     #<! x Max
-        mBB[ii, 3] = yBottom    #<! y Max
+        # PASCAL VOC format
+        vY[ii]     = cIdx    #<! Label
+        mBB[ii, 0] = xLeft   #<! x Min
+        mBB[ii, 1] = yTop    #<! y Min
+        mBB[ii, 2] = xRight  #<! x Max
+        mBB[ii, 3] = yBottom #<! y Max
 
         if (boxFormat != BBoxFormat.PASCAL_VOC):
             mBB[ii] = ConvertBBoxFormat(mBB[ii], tuImgSize, BBoxFormat.PASCAL_VOC, boxFormat)

@@ -65,14 +65,14 @@ def DownloadDecompressGzip( fileUrl: str, fileName: str ) -> None:
     # Based on https://stackoverflow.com/a/61195974
 
     # Read the file inside the .gz archive located at url
-    with urllib.request.urlopen(fileUrl) as response:
-        with gzip.GzipFile(fileobj = response) as uncompressed:
-            file_content = uncompressed.read()
+    with urllib.request.urlopen(fileUrl) as urlResponse:
+        with gzip.GzipFile(fileobj = urlResponse) as uncompressedData:
+            fileContent = uncompressedData.read()
         # write to file in binary mode 'wb'
-        with open(fileName, 'wb') as f:
-            f.write(file_content)
-            f.close()
-        return
+        with open(fileName, 'wb') as hFile:
+            hFile.write(fileContent)    
+    
+    return
 
 def ParseEnvFile( fileName: str = '.env', *, filePath: str = '.', keyValSep: str = '=' ) -> Dict[str, str]:
     # Read the file and parse it into a dictionary
@@ -85,12 +85,35 @@ def ParseEnvFile( fileName: str = '.env', *, filePath: str = '.', keyValSep: str
             dEnv[key]  = value.strip()
     return dEnv
 
+def DownloadProgress(blockNum, blockSize, totalSize):
+    # https://stackoverflow.com/a/74314365
+
+    bytesDownloaded   = blockNum * blockSize
+    relativeProgress  = blockNum * blockSize / totalSize
+    bytesDownloadedKb = bytesDownloaded // 1024
+    totalSizeKb       = totalSize // 1024
+
+    print(f'Downloaded: {relativeProgress:0.2%} of the file ({bytesDownloadedKb} [Kilo Byte] / {totalSizeKb} [Kilo Bytes])', end = '\r')
+
 def DownloadUrl( fileUrl: str, fileName: str ) -> str:
     
     if not os.path.exists(fileName):
-        urllib.request.urlretrieve(fileUrl, fileName)
+        urllib.request.urlretrieve(fileUrl, fileName, DownloadProgress)
 
     return fileName
+
+def DownloadKaggleDataset( userName: str, datasetName: str, fileName: str ) -> None:
+    # Downloads the Kaggle Dataset using `curl` like command
+    # The `userName` and `datasetName` are in the form 'userName/datasetName': 
+    # `https://www.kaggle.com/datasets/girish17019/mobile-phone-defect-segmentation-dataset` -> `girish17019`, `mobile-phone-defect-segmentation-dataset`
+
+    # Converts: `curl -L -o <fileName> https://www.kaggle.com/api/v1/datasets/download/<userName>/<datasetName>` into Python
+
+    kaggleUrl = f'https://www.kaggle.com/api/v1/datasets/download/{userName}/{datasetName}'
+
+    DownloadUrl(kaggleUrl, fileName)
+
+    return
 
 def ConvertMnistDataDf( imgFilePath: str, labelFilePath: str ) -> Tuple[np.ndarray, np.ndarray]:
     numPx = 28 * 28
