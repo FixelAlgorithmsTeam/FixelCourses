@@ -10,6 +10,8 @@ dependencies:
   - pandas
 # The package `tabulate` required for `dfA.to_markdown()` in Pandas 
   - tabulate
+# The package `pyarrow` required for `parquet` files support in Pandas 
+  - pyarrow
   - numba
   - scikit-learn
   - xgboost
