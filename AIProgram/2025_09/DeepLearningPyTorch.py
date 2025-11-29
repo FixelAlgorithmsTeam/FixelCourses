@@ -43,6 +43,8 @@ from DeepLearningBlocks import NNMode
 
 # Typing
 from typing import Any, Callable, Dict, Generator, List, Literal, Optional, Self, Set, Tuple, Union
+from numpy.typing import NDArray
+from torch import Tensor
 
 # Auxiliary Classes
 
@@ -82,7 +84,7 @@ class TestDataSet( torchvision.datasets.VisionDataset ):
         return imgSample
 
 class ObjectLocalizationDataset( Dataset ):
-    def __init__( self, tX: np.ndarray, vY: np.ndarray, mB: np.ndarray, singleY: bool = True ) -> None:
+    def __init__( self, tX: NDArray, vY: NDArray, mB: NDArray, singleY: bool = True ) -> None:
 
         if (tX.shape[0] != vY.shape[0]):
             raise ValueError(f'The number of samples in `tX` and `vY` does not match!')
@@ -99,7 +101,7 @@ class ObjectLocalizationDataset( Dataset ):
         
         return self.numSamples
 
-    def __getitem__( self: Self, idx: int ) -> Union[Tuple[np.ndarray, int, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
+    def __getitem__( self: Self, idx: int ) -> Union[Tuple[NDArray, int, NDArray], Tuple[NDArray, NDArray]]:
         
         tXi   = self.tX[idx] #<! Image
         valYi = self.vY[idx] #<! Label
@@ -115,7 +117,7 @@ class ObjectLocalizationDataset( Dataset ):
             return tXi, valYi, vBi
 
 class ObjectDetectionDataset( Dataset ):
-    def __init__( self, tX: np.ndarray, lY: List[np.ndarray], lB: List[np.ndarray], hDataTrans: Optional[Callable] = None ) -> None:
+    def __init__( self, tX: NDArray, lY: List[NDArray], lB: List[NDArray], hDataTrans: Optional[Callable] = None ) -> None:
 
         if (tX.shape[0] != len(lY)):
             raise ValueError(f'The number of samples in `tX` and `lY` does not match!')
@@ -132,7 +134,7 @@ class ObjectDetectionDataset( Dataset ):
         
         return self.numSamples
 
-    def __getitem__( self: Self, idx: int ) -> Union[Tuple[np.ndarray, int, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
+    def __getitem__( self: Self, idx: int ) -> Union[Tuple[NDArray, int, NDArray], Tuple[NDArray, NDArray]]:
         
         tXi = self.tX[idx] #<! Image
         vYi = self.lY[idx] #<! Labels
@@ -174,15 +176,21 @@ def InitWeightsKaiNorm( oLayer: nn.Module, tuLyrClas: Tuple = (nn.Linear, nn.Con
         nn.init.kaiming_normal_(oLayer.weight.data)
 
 
-def GenDataLoaders( dsTrain: Dataset, dsVal: Dataset, batchSize: int, *, numWorkers: int = 0, CollateFn: Callable = default_collate, dropLast: bool = True, PersWork: bool = False ) -> Tuple[DataLoader, DataLoader]:
+def GenDataLoaders( dsTrain: Dataset, dsVal: Dataset, batchSize: int, *, valBatchFctr: int = 2, numWorkers: int = 0, CollateFn: Callable = default_collate, dropLast: bool = True, persWork: bool = False ) -> Tuple[DataLoader, DataLoader]:
 
     if numWorkers == 0: 
-        PersWork = False
+        persWork = False
 
-    dlTrain = torch.utils.data.DataLoader(dsTrain, shuffle = True, batch_size = 1 * batchSize, num_workers = numWorkers, collate_fn = CollateFn, drop_last = dropLast, persistent_workers = PersWork)
-    dlVal   = torch.utils.data.DataLoader(dsVal, shuffle = False, batch_size = 2 * batchSize, num_workers = numWorkers, persistent_workers = PersWork)
+    dlTrain = torch.utils.data.DataLoader(dsTrain, shuffle = True, batch_size = batchSize, num_workers = numWorkers, collate_fn = CollateFn, drop_last = dropLast, persistent_workers = persWork)
+    dlVal   = torch.utils.data.DataLoader(dsVal, shuffle = False, batch_size = valBatchFctr * batchSize, num_workers = numWorkers, persistent_workers = persWork)
 
     return dlTrain, dlVal
+
+def GetBatch( dlData: DataLoader ) -> Tuple[Tensor, Union[Tensor, int, float]]:
+    # Returns a single batch from the DataLoader
+    tX, tY = next(iter(dlData))
+
+    return tX, tY
 
 def GenResNetModel( trainedModel: bool, numCls: int, resNetDepth: Literal[18, 34, 50] = 18 ) -> nn.Module:
     # Read on the API change at: How to Train State of the Art Models Using TorchVision’s Latest Primitives
@@ -258,17 +266,17 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
     else:
         raise ValueError(f'The `opMode` value {opMode} is not supported!')
     
-    for ii, (mX, vY) in enumerate(dlData):
+    for ii, (tX, tY) in enumerate(dlData):
         # Move Data to Model's device
-        mX = mX.to(runDevice) #<! Lazy
-        vY = vY.to(runDevice) #<! Lazy
+        tX = tX.to(runDevice) #<! Lazy
+        tY = tY.to(runDevice) #<! Lazy
 
-        batchSize = mX.shape[0]
+        batchSize = tX.shape[0]
         
         if opMode == NNMode.TRAIN:
             # Forward
-            mZ      = oModel(mX) #<! Model output
-            valLoss = hL(mZ, vY) #<! Loss
+            mZ      = oModel(tX) #<! Model output
+            valLoss = hL(mZ, tY) #<! Loss
             
             # Backward
             oOpt.zero_grad()    #<! Set gradients to zeros
@@ -278,13 +286,13 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
         else: #<! Value of `opMode` was already validated
             with torch.inference_mode(): #<! The `torch.inference_mode()` scope is more optimized than `torch.no_grad()` 
                 # No computational graph
-                mZ      = oModel(mX) #<! Model output
-                valLoss = hL(mZ, vY) #<! Loss
+                mZ      = oModel(tX) #<! Model output
+                valLoss = hL(mZ, tY) #<! Loss
 
         with torch.inference_mode():
             # Score
             oModel.eval() #<! Ensure Evaluation Mode (Dropout / Normalization layers)
-            valScore = hS(mZ, vY)
+            valScore = hS(mZ, tY)
             # Normalize so each sample has the same weight
             epochLoss  += batchSize * valLoss.item()
             epochScore += batchSize * valScore.item()
@@ -565,7 +573,7 @@ class ResidualBlock( nn.Module ):
         self.oBatchNorm2    = nn.BatchNorm2d(numChnl)
         self.oReLU2         = nn.ReLU(inplace = True) #<! No need for it, for better visualization
             
-    def forward( self: Self, tX: torch.Tensor ) -> torch.Tensor:
+    def forward( self: Self, tX: Tensor ) -> Tensor:
         
         tY = self.oReLU1(self.oBatchNorm1(self.oConv2D1(tX)))
         tY = self.oBatchNorm2(self.oConv2D2(tY))
@@ -581,7 +589,7 @@ class YoloGrid( nn.Module ):
         
         self.gridSize = gridSize
             
-    def forward( self: Self, tX: torch.Tensor, tB: torch.Tensor ) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward( self: Self, tX: Tensor, tB: Tensor ) -> Tuple[Tensor, Tensor]:
         """
         Converts YOLO bounding box into a target grid.  
         Input:
@@ -625,7 +633,7 @@ class YoloBox( nn.Module ):
 
         self.gridSize = gridSize
             
-    def forward( self: Self, tX: torch.Tensor, tY: torch.Tensor ) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward( self: Self, tX: Tensor, tY: Tensor ) -> Tuple[Tensor, Tensor]:
         """
         Converts YOLO target grid into a bounding box.  
         Input:
@@ -666,7 +674,7 @@ class NetToTgt( nn.Module ):
         self.gridSize = gridSize
         self.numCls   = numCls
             
-    def forward( self: Self, tX: torch.Tensor, tY: torch.Tensor ) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward( self: Self, tX: Tensor, tY: Tensor ) -> Tuple[Tensor, Tensor]:
         """
         Converts net (Model) output to YOLO Grid format.  
         Input:
@@ -706,7 +714,7 @@ class ToTensor( nn.Module ):
     def __init__( self ) -> None:
         super(ToTensor, self).__init__()
             
-    def forward( self: Self, *args ) -> Tuple[torch.Tensor]:
+    def forward( self: Self, *args ) -> Tuple[Tensor]:
         """
         Converts input to Tensor.  
         """
