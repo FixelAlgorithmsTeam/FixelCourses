@@ -45,7 +45,8 @@ The CSV from [OkCupid Profile Data for Intro Stats and Data Science Courses (Rev
 ## Concrete Compressive Strength
 
 The data from [UC Irvine (UCI) Machine Learning Repository - Concrete Compressive Strength](https://archive.ics.uci.edu/dataset/165).  
-Changed the `xls` file into a `csv` file.
+Changed the `xls` file into a `csv` file.  
+Files: `UCIConcreteCompressiveStrength.csv`, `UCIConcreteCompressiveStrengthReadme.txt`.
 
 ## Spirals
 
