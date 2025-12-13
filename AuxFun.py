@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 
 # Set of Function to Manage the Project
 
-def ShiftIndexedFilenames(inDir: str, outDir: str, startIndex: int, valShift: int) -> None:
+def ShiftIndexedFilenames(inDir: str, outDir: str, startIndex: int, endIdx: int, valShift: int, *, moveFile: bool = True) -> None:
     """
     Copies or renames files with a 4-digit numeric prefix, adding `valShift`
     to the prefix starting at `startIndex`.
@@ -50,8 +50,9 @@ def ShiftIndexedFilenames(inDir: str, outDir: str, startIndex: int, valShift: in
         if os.path.isfile(os.path.join(inDir, f)) and rePattern.match(f)
     ])
 
-    # Reverse order for in place renaming to avoid collisions
-    lFiles = list(reversed(lFiles))
+    if valShift > 0:
+        # Reverse order for in place renaming to avoid collisions
+        lFiles = list(reversed(lFiles))
 
     for ii, fileName in enumerate(lFiles, start = 1):
         match = rePattern.match(fileName)
@@ -62,15 +63,18 @@ def ShiftIndexedFilenames(inDir: str, outDir: str, startIndex: int, valShift: in
         fileIdx = int(fileIdxStr)
 
         # Shift only from `startIndex` and onward
-        if fileIdx >= startIndex:
+        if (fileIdx >= startIndex) and (fileIdx <= endIdx):
             newIndex = fileIdx + valShift
         else:
             newIndex = fileIdx
 
-        fileNameNew = f"{newIndex:04d}{fileNameSuffix}"
+        fileNameNew = f'{newIndex:04d}{fileNameSuffix}'
 
         srcPath = os.path.join(inDir, fileName)
         dstPath = os.path.join(outDir, fileNameNew)
 
         if srcPath != dstPath:
-            shutil.copy2(srcPath, dstPath)
+            if moveFile:
+                shutil.move(srcPath, dstPath)
+            else:   
+                shutil.copy(srcPath, dstPath)
