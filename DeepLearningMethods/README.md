@@ -35,23 +35,28 @@ Agenda:
    - Development Environement.
    - Python.
    - Linear Algebra.
+   - Scientific Python.
+   - Introduction to Optimization.
  - Neural Nets and Intro to Deep Learning
-   - Motivation and Overview.
-   - The Multi Layer Perceptron Model.
-   - Training Loop: Optimization, BackPropagation.
-   - Loss, Score.
+   - The Multi Layer Perceptron (MLP) Model.
+   - Universal Approximation Theorem, Depth vs. Width.
+   - Layers and Activations.
+   - Batch Stochastic Gradient Descent.
+   - Training Loop: BackPropagation, Loss, Score.
+   - PyTorch.
+   - Optimizers and Schedulers.
+   - Initialization and Regularization.
    - Tasks: Regression, Classification.
  - Deep Learning
-   - PyTorch.
-   - Layers.
-   - Initialization and Regularization.
- - Computer Vision
-   - The Convolutional Layer.
-   - Architectures.
+   - Convlutional Layer.
+   - Normalization Layer.
+   - Architectures (CNN).
    - Transfer Learning.
-   - Augmentation.
+   - Augmentations.
+   - Experiments Logging with TensorBoard.
    - Applications.
    - Auto Encoders.
+   - The Vision Transformer (ViT).
 
 
 ## Resources
