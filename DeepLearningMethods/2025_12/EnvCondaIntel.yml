@@ -20,7 +20,7 @@ dependencies:
   - umap-learn
   - kneed 
   - pytorch
-  - cuda
+  - cuda=12.9
   - torchvision
   - torchmetrics
   - torchinfo
