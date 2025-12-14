@@ -9,7 +9,8 @@ A folder dedicated to _Deep Learning Methods_ courses.
 
 ## Class 001 (2023)
 
-Full course (10 Days) in the defense industry.  
+Full course (10 Days) in the defense industry.    
+Taught with Machine Learning Methods.
 
 Agenda:
  - Basics.
@@ -26,6 +27,31 @@ Agenda:
 ## Class 002 (2025)
 
 A single day on the basics of Deep Learning and 1D signals.
+
+## Class 003 (2025)
+
+Agenda:
+ - Foundations
+   - Development Environement.
+   - Python.
+   - Linear Algebra.
+ - Neural Nets and Intro to Deep Learning
+   - Motivation and Overview.
+   - The Multi Layer Perceptron Model.
+   - Training Loop: Optimization, BackPropagation.
+   - Loss, Score.
+   - Tasks: Regression, Classification.
+ - Deep Learning
+   - PyTorch.
+   - Layers.
+   - Initialization and Regularization.
+ - Computer Vision
+   - The Convolutional Layer.
+   - Architectures.
+   - Transfer Learning.
+   - Augmentation.
+   - Applications.
+   - Auto Encoders.
 
 
 ## Resources
