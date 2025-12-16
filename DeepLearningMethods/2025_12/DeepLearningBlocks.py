@@ -250,15 +250,18 @@ class ModelNN():
         
         self.lLayers    = lLayers
         self.opMode     = opMode
+        self.numParams  = CountModelParams(self)
     
     def __repr__( self: Self ) -> str:
 
         sLayers = [f'Layer {(ii + 1):03d}: ' + str(oLayer) for ii, oLayer in enumerate(self.lLayers)]
         sLayers = '\n'.join(sLayers)
+        sLayers += f'\nNumber of Parameters: {self.numParams: ,}'
         
         return f'ModelNN:\n{sLayers}'
     
     def __str__( self: Self ) -> str:
+        
         return self.__repr__()
     
     def Init( self ) -> None:
@@ -283,6 +286,10 @@ class ModelNN():
         
         for oLayer in reversed(self.lLayers):
             mDz = oLayer.Backward(mDz)
+    
+    def GetNumParams( self: Self ) -> int:
+        
+        return self._numParams
 
 # Optimizers
 
