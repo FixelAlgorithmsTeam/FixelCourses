@@ -1052,7 +1052,7 @@
           <mxGeometry x="240" y="240" width="40" height="40" as="geometry" />
         </mxCell>
         <mxCell id="IuYVdySm6xmoRHwSF-sz-44" value="" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.annotation_2;align=left;labelPosition=right;pointerEvents=1;rotation=-90;strokeColor=#E6E6E6;" vertex="1" parent="ZrpcOUMIazMm7oz_nzAi-1">
-          <mxGeometry x="550" y="410" width="20" height="110" as="geometry" />
+          <mxGeometry x="555" y="410" width="20" height="100" as="geometry" />
         </mxCell>
         <mxCell id="IuYVdySm6xmoRHwSF-sz-45" value="\( {c}_{\text{out}} \)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#E6E6E6;fontSize=18;" vertex="1" parent="ZrpcOUMIazMm7oz_nzAi-1">
           <mxGeometry x="540" y="480" width="40" height="40" as="geometry" />
