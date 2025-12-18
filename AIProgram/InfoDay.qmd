@@ -47,18 +47,11 @@ The AI Program was initiative by the industry, asking for a program to counter t
  - MSc in EE from the Technion.
  - Owner of [_Fixel Algorithms_](https://fixelalgorithms.gitlab.io)  
    Consulting, Outsourcing and Training for Algorithms.
- - Algorithm team leader for many years in the defense industry.
- - Specializations: Signal and Image Processing, Computer Vision, Machine Learning (Deep Learning), Optimization, Estimation...
- - AI Director of [ValidIt AI](https://validit.ai).
- - Teaching: Technion, Reichman Univeristy, IAI, etc...
+ - Algorithm group leader for many years in the defense industry.
+ - Specializations: Signal and Image Processing, Computer Vision, Optimization, Estimation, Machine Learning, Deep Learning, ...
+ - CTO on 3 Start Up's.
+ - Teaching: Technion, Rafael, IAI, Samsung, etc...
  - Contact: `royia@technion.ac.il`.
-
-## Eilam Shapira
-
- - PhD Student in Data Science and Engineering.
- - Specialization in _Generalization Methods for Training Large Language Model Based Agents in Non Cooperative Games_.
- - Previously Data Scientist at [Augury](https://www.augury.com).
- - Contact `eilamshapira@campus.technion.ac.il`.
 
 # The Program
 
@@ -71,14 +64,14 @@ The AI Program was initiative by the industry, asking for a program to counter t
    * _Scientific_ Python.
    * Development Environment.
  * Classic Machine Learning
-   * Concepts.
+   * Overview and Concepts.
    * Supervised
-     * Classification
-     * Regression
+     * Classification.
+     * Regression.
    * Unsupervised
-     * Clustering
-     * Dimensionality Reduction
-     * Anomaly Detection
+     * Clustering.
+     * Dimensionality Reduction.
+     * Anomaly Detection.
 :::
 
 ## Syllabus {.unlisted auto-animate=true}
@@ -86,19 +79,28 @@ The AI Program was initiative by the industry, asking for a program to counter t
 :::{.incremental style="font-size: 70%;"}
  * Deep Learning - Neural Networks
    * Motivation & Concept.
-   * Components and Architecture of Deep Learning Framework.
+   * Deep Learning Framework.
    * Feed Forward Networks.
    * Training & Regularization.
- * Deep Learning - Computer Vision
+ * Deep Learning for Computer Vision
+   * Convolutional Neural Networks (CNN).
+   * Signal Classification.
    * Architectures.
    * Training Phase & Augmentation.
    * Transfer Learning & Active Learning.
-   * Detection, Segmentation, Labeling, Generative.
-   * Production.
- * Deep Learning - Language Models
-   * Intro to Natural Language Processing (NLP).
-   * RNN & Attention Models.
-   * Hugging Face Workshop.
+   * Image Classification.
+   * Object Detection.
+:::
+
+## Workshops
+
+:::{.incremental}
+ * Working with Cloud based Virtual Machine.
+ * Object Detection with YOLO Models.
+ * Image Segmentation with U-Net Models.
+ * Processing Text / Image Data.
+ * Object Tracking with Large Vision Models (Optional).
+ * Contrastive Learning for Object Recognition (Optional).
 :::
 
 ## Projects
@@ -120,12 +122,17 @@ Gaining experience in solving _real world_ problems using AI.
 
 :::
 
-## The Learning Material
+## The Learning Experience
 
  - _Self Contained_ slides.
- - Exercises in class based on _Jupyter Notebooks_.
- - Home exercises based on _Jupyter Notebooks_.
+ - Hands on Code in _Jupyter Notebooks_.  
+   Over 100 Code Notebooks!
+ - Exercises (Self / Class) based on _Jupyter Notebooks_.
  - Learning Session / Exercise Session.
+ - Technion backed: 
+   - Student Email.
+   - Moodle Course Site.
+   - 200 Hours Cloud VM for DL.
 
 ## Prerequisites
 
