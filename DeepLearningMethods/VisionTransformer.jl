@@ -58,7 +58,8 @@ refPxIdx      = 185; #<! (17, 8)
 
 ## Drawing
 
-mI = load("ColourfulParrot1200800.png");
+mG = load("ColourfulParrot.png"); #<! Result of Gemini
+mI = load("ColourfulParrot1200800.png"); #<! From Paint.Net which altered color profile
 tuImgSize = size(mI); #<! (numRows, numCols)
 tuOutSize = (tuImgSize[1] ÷ 50, tuImgSize[2] ÷ 50);
 
@@ -114,9 +115,9 @@ vIdxImg = [1, 10, 50, 100, 150, 250]
 global imgIdx = 3;
 for (pos, n) in itrTile
     pos += Point(250, 0) + Point(tuSizeU[2] ÷ 2, tuSizeU[1] ÷ 2);
-    # box(pos, upScaleFctr, upScaleFctr, :stroke);
     arrow(pxPos, pos; linewidth = 0.25);
     if n ∈ vIdxImg
+        global imgIdx;
         imgIdx += 1;
         imgStr = @sprintf("%03dMatchImage.png", imgIdx);
         display(snapshot(fname = imgStr));
