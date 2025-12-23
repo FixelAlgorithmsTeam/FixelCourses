@@ -132,7 +132,7 @@ Gaining experience in solving _real world_ problems using AI.
  - Technion backed: 
    - Student Email.
    - Moodle Course Site.
-   - 200 Hours Cloud VM for DL.
+   - Cloud VM for DL (Hours Budget).
 
 ## Prerequisites
 
