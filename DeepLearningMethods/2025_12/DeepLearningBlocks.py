@@ -295,11 +295,17 @@ class ModelNN():
 # Optimizers
 
 class SGD():
-    def __init__( self, μ: float = 1e-3, β: float = 0.9, λ = 0.0 ) -> None:
+    def __init__( self, μ: float = 1e-3, β: float = 0.9, λ: float = 0.0 ) -> None:
         
         self.μ = μ
         self.β = β
         self.λ = λ #<! Weight Decay (L2 Squared)
+    
+    def __repr__( self: Self ) -> str:
+        return f'SGD Optimizer (μ = {self.μ}, β = {self.β}, λ = {self.λ})'
+    
+    def __str__( self: Self ) -> str:
+        return self.__repr__()
 
     def Step( self: Self, mW: NDArray, mDw: NDArray, dState: Dict = {} ) -> Tuple[NDArray, Dict]:
         
@@ -311,12 +317,18 @@ class SGD():
         return mW, dState
     
 class Adam():
-    def __init__( self, μ: float = 1e-3, β1: float = 0.9, β2: float = 0.99, ϵ: float = 1e-8, λ = 0.0 ) -> None:
+    def __init__( self, μ: float = 1e-3, β1: float = 0.9, β2: float = 0.99, ϵ: float = 1e-8, λ: float = 0.0 ) -> None:
         self.μ  = μ
         self.β1 = β1
         self.β2 = β2
         self.ϵ  = ϵ
         self.λ  = λ #<! Weight Decay (L2 Squared)
+    
+    def __repr__( self: Self ) -> str:
+        return f'Adam Optimizer (μ = {self.μ}, β1 = {self.β1}, β2 = {self.β2}, ϵ = {self.ϵ}, λ = {self.λ})'
+    
+    def __str__( self: Self ) -> str:
+        return self.__repr__()
 
     def Step( self: Self, mW: NDArray, mDw: NDArray, dState: Dict = {} ) -> Tuple[NDArray, Dict]:
         
@@ -344,24 +356,30 @@ class Optimizer():
         self.oUpdateRule = oOptType #<! SGD, ADAM
         self.dStates     = {}
 
+    def __repr__( self: Self ) -> str:
+        return f'Optimizer with update rule: {str(self.oUpdateRule)}'
+    
+    def __str__( self: Self ) -> str:
+        return self.__repr__()
+
     def Step( self: Self, oModel: ModelNN, learnRate: Optional[float] = None ) -> None:
         
         if learnRate is not None:
             self.oUpdateRule.μ = learnRate
 
         for ii, oLayer in enumerate(oModel.lLayers):
-            for sParamKey in oLayer.dGrads:
+            for paramKey in oLayer.dGrads:
                 # Get parameters, gradient and history
-                mP       = oLayer.dParams[sParamKey]
-                mDp      = oLayer.dGrads [sParamKey]
-                sParamID = f'{ii}_{sParamKey}'            #<! Unique identifier per layer
+                mP       = oLayer.dParams[paramKey]
+                mDp      = oLayer.dGrads [paramKey]
+                sParamID = f'{ii}_{paramKey}'             #<! Unique identifier per layer
                 dState   = self.dStates.get(sParamID, {}) #<! Default for 1st iteration
 
                 # Apply Step
                 mP, dState = self.oUpdateRule.Step(mP, mDp, dState)
 
                 # Set parameters and history
-                oLayer.dParams[sParamKey] = mP
+                oLayer.dParams[paramKey] = mP
                 self.dStates  [sParamID ] = dState
 
 # Data
@@ -415,6 +433,12 @@ class DataSet():
             vYBatch   = self.vY[vBatchIdx]
 
             yield mXBatch, vYBatch #<! See https://stackoverflow.com/questions/231767
+    
+    def __repr__( self: Self ) -> str:
+        return f'DataSet (numSamples = {self.numSamples}, batchSize = {self.batchSize}, numBatches = {self.numBatches}, shuffleData = {self.shuffleData})'
+    
+    def __str__( self: Self ) -> str:
+        return self.__repr__()
 
 # Training Loop
 
