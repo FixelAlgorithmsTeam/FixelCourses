@@ -176,15 +176,21 @@ def InitWeightsKaiNorm( oLayer: nn.Module, tuLyrClas: Tuple = (nn.Linear, nn.Con
         nn.init.kaiming_normal_(oLayer.weight.data)
 
 
-def GenDataLoaders( dsTrain: Dataset, dsVal: Dataset, batchSize: int, *, numWorkers: int = 0, CollateFn: Callable = default_collate, dropLast: bool = True, PersWork: bool = False ) -> Tuple[DataLoader, DataLoader]:
+def GenDataLoaders( dsTrain: Dataset, dsVal: Dataset, batchSize: int, *, valBatchFctr: int = 2, numWorkers: int = 0, CollateFn: Callable = default_collate, dropLast: bool = True, persWork: bool = False ) -> Tuple[DataLoader, DataLoader]:
 
     if numWorkers == 0: 
-        PersWork = False
+        persWork = False
 
-    dlTrain = torch.utils.data.DataLoader(dsTrain, shuffle = True, batch_size = 1 * batchSize, num_workers = numWorkers, collate_fn = CollateFn, drop_last = dropLast, persistent_workers = PersWork)
-    dlVal   = torch.utils.data.DataLoader(dsVal, shuffle = False, batch_size = 2 * batchSize, num_workers = numWorkers, persistent_workers = PersWork)
+    dlTrain = torch.utils.data.DataLoader(dsTrain, shuffle = True, batch_size = batchSize, num_workers = numWorkers, collate_fn = CollateFn, drop_last = dropLast, persistent_workers = persWork)
+    dlVal   = torch.utils.data.DataLoader(dsVal, shuffle = False, batch_size = valBatchFctr * batchSize, num_workers = numWorkers, persistent_workers = persWork)
 
     return dlTrain, dlVal
+
+def GetBatch( dlData: DataLoader ) -> Tuple[Tensor, Union[Tensor, int, float]]:
+    # Returns a single batch from the DataLoader
+    tX, tY = next(iter(dlData))
+
+    return tX, tY
 
 def GenResNetModel( trainedModel: bool, numCls: int, resNetDepth: Literal[18, 34, 50] = 18 ) -> nn.Module:
     # Read on the API change at: How to Train State of the Art Models Using TorchVision’s Latest Primitives
@@ -260,17 +266,17 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
     else:
         raise ValueError(f'The `opMode` value {opMode} is not supported!')
     
-    for ii, (mX, vY) in enumerate(dlData):
+    for ii, (tX, tY) in enumerate(dlData):
         # Move Data to Model's device
-        mX = mX.to(runDevice) #<! Lazy
-        vY = vY.to(runDevice) #<! Lazy
+        tX = tX.to(runDevice) #<! Lazy
+        tY = tY.to(runDevice) #<! Lazy
 
-        batchSize = mX.shape[0]
+        batchSize = tX.shape[0]
         
         if opMode == NNMode.TRAIN:
             # Forward
-            mZ      = oModel(mX) #<! Model output
-            valLoss = hL(mZ, vY) #<! Loss
+            mZ      = oModel(tX) #<! Model output
+            valLoss = hL(mZ, tY) #<! Loss
             
             # Backward
             oOpt.zero_grad()    #<! Set gradients to zeros
@@ -280,13 +286,13 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
         else: #<! Value of `opMode` was already validated
             with torch.inference_mode(): #<! The `torch.inference_mode()` scope is more optimized than `torch.no_grad()` 
                 # No computational graph
-                mZ      = oModel(mX) #<! Model output
-                valLoss = hL(mZ, vY) #<! Loss
+                mZ      = oModel(tX) #<! Model output
+                valLoss = hL(mZ, tY) #<! Loss
 
         with torch.inference_mode():
             # Score
             oModel.eval() #<! Ensure Evaluation Mode (Dropout / Normalization layers)
-            valScore = hS(mZ, vY)
+            valScore = hS(mZ, tY)
             # Normalize so each sample has the same weight
             epochLoss  += batchSize * valLoss.item()
             epochScore += batchSize * valScore.item()
@@ -713,4 +719,4 @@ class ToTensor( nn.Module ):
         Converts input to Tensor.  
         """
 		
-        return tuple(Tensor(itm) for itm in args)
+        return tuple(torch.tensor(itm) for itm in args)

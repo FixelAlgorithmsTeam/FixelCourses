@@ -17,7 +17,7 @@ import scipy as sp
 # Auxiliary
 
 # Visualization
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 # Miscellaneous
 
@@ -26,6 +26,7 @@ import matplotlib.pyplot as plt
 
 # Typing
 from typing import Callable, Dict, Generator, List, Optional, Self, Set, Tuple, Union
+from numpy.typing import NDArray
 
 # See https://docs.python.org/3/library/enum.html
 @unique
@@ -85,7 +86,7 @@ class LinearLayer():
         self.dGrads['mW']   = None
         self.dGrads['vB']   = None
         
-    def Forward( self, mX: np.ndarray ) -> np.ndarray:
+    def Forward( self, mX: NDArray ) -> NDArray:
         self.mX = mX #<! Required for the backward pass
         
         mW      = self.dParams['mW'] #<! Shape: (dimOut, dimIn)
@@ -94,7 +95,7 @@ class LinearLayer():
         
         return mZ
     
-    def Backward( self, mDz: np.ndarray ) -> np.ndarray:
+    def Backward( self, mDz: NDArray ) -> NDArray:
         # Supports batch onf input by summing the gradients over each input.
         # Summing instead of averaging to support the case the loss is scaled by N.
         mW  = self.dParams['mW']
@@ -125,7 +126,7 @@ class DropoutLayer():
         return self.__repr__()
 
     # Train Time
-    def Forward( self, mX: np.ndarray ) -> np.ndarray:
+    def Forward( self, mX: NDArray ) -> NDArray:
         
         self.mMask = (np.random.rand(*mX.shape) < self.p) / self.p
         mZ         = mX * self.mMask
@@ -133,11 +134,11 @@ class DropoutLayer():
         return mZ
 
     # Test Time
-    def Predict( self, mX: np.ndarray ) -> np.ndarray:
+    def Predict( self, mX: NDArray ) -> NDArray:
         
         return mX
     
-    def Backward( self, mDz: np.ndarray) -> np.ndarray:
+    def Backward( self, mDz: NDArray) -> NDArray:
         
         mDx   = mDz * self.mMask
 
@@ -160,14 +161,14 @@ class ReLULayer():
     def __str__( self: Self ) -> str:
         return self.__repr__()
     
-    def Forward( self, mX: np.ndarray ) -> np.ndarray:
+    def Forward( self, mX: NDArray ) -> NDArray:
         
         self.mX = mX #<! Store for Backward pass
         mZ      = np.maximum(mX, 0)
         
         return mZ
     
-    def Backward( self, mDz: np.ndarray ) -> np.ndarray:
+    def Backward( self, mDz: NDArray ) -> NDArray:
         
         mX  = self.mX
         mDx = np.where(mX > 0, mDz, 0.0)
@@ -190,14 +191,14 @@ class LeakyReLULayer():
     def __str__( self: Self ) -> str:
         return self.__repr__()
     
-    def Forward( self: Self, mX: np.ndarray ) -> np.ndarray:
+    def Forward( self: Self, mX: NDArray ) -> NDArray:
 
         self.mX = mX #<! Store for Backward pass
         mZ      = np.where(mX > 0, mX, self.α * mX)
         
         return mZ
     
-    def Backward( self: Self, mDz: np.ndarray ) -> np.ndarray:
+    def Backward( self: Self, mDz: NDArray ) -> NDArray:
         
         mX  = self.mX
         mDx = np.where(mX > 0, mDz, self.α * mDz)
@@ -209,7 +210,7 @@ class LeakyReLULayer():
 
 # Cross Entropy Loss
 
-def CrossEntropyLoss( vY: np.ndarray, mZ: np.ndarray ) -> Tuple[np.float64, np.ndarray]:
+def CrossEntropyLoss( vY: NDArray, mZ: NDArray ) -> Tuple[np.float64, NDArray]:
     '''
     Returns both the loss and the gradient w.r.t the input (mZ).
     Assumes the input is logits (Before applying probability like transformation).
@@ -229,7 +230,7 @@ def CrossEntropyLoss( vY: np.ndarray, mZ: np.ndarray ) -> Tuple[np.float64, np.n
 
 # MSE Loss
 
-def MseLoss( vY: np.ndarray, vZ: np.ndarray ) -> Tuple[np.float64, np.ndarray]:
+def MseLoss( vY: NDArray, vZ: NDArray ) -> Tuple[np.float64, NDArray]:
     '''
     Returns both the loss and the gradient w.r.t the input (vZ).
     The function uses the mean loss (Normalized by N). 
@@ -270,7 +271,7 @@ class ModelNN():
             if hasattr(oLayer, 'Init'):
                 oLayer.Init()
         
-    def Forward( self: Self, mX: np.ndarray ) -> np.ndarray:
+    def Forward( self: Self, mX: NDArray ) -> NDArray:
         
         for oLayer in self.lLayers:
             if self.opMode == NNMode.INFERENCE and hasattr(oLayer, 'Predict'):
@@ -282,7 +283,7 @@ class ModelNN():
         
         return mX
     
-    def Backward( self: Self, mDz: np.ndarray ) -> None:
+    def Backward( self: Self, mDz: NDArray ) -> None:
         
         for oLayer in reversed(self.lLayers):
             mDz = oLayer.Backward(mDz)
@@ -294,13 +295,19 @@ class ModelNN():
 # Optimizers
 
 class SGD():
-    def __init__( self, μ: float = 1e-3, β: float = 0.9, λ = 0.0 ) -> None:
+    def __init__( self, μ: float = 1e-3, β: float = 0.9, λ: float = 0.0 ) -> None:
         
         self.μ = μ
         self.β = β
         self.λ = λ #<! Weight Decay (L2 Squared)
+    
+    def __repr__( self: Self ) -> str:
+        return f'SGD Optimizer (μ = {self.μ}, β = {self.β}, λ = {self.λ})'
+    
+    def __str__( self: Self ) -> str:
+        return self.__repr__()
 
-    def Step( self: Self, mW: np.ndarray, mDw: np.ndarray, dState: Dict = {} ) -> Tuple[np.ndarray, Dict]:
+    def Step( self: Self, mW: NDArray, mDw: NDArray, dState: Dict = {} ) -> Tuple[NDArray, Dict]:
         
         mV            = dState.get('mV', np.zeros(mW.shape)) #<! Default for 1st iteration
         mV            = self.β * mV - self.μ * mDw
@@ -310,14 +317,20 @@ class SGD():
         return mW, dState
     
 class Adam():
-    def __init__( self, μ: float = 1e-3, β1: float = 0.9, β2: float = 0.99, ϵ: float = 1e-8, λ = 0.0 ) -> None:
+    def __init__( self, μ: float = 1e-3, β1: float = 0.9, β2: float = 0.99, ϵ: float = 1e-8, λ: float = 0.0 ) -> None:
         self.μ  = μ
         self.β1 = β1
         self.β2 = β2
         self.ϵ  = ϵ
         self.λ  = λ #<! Weight Decay (L2 Squared)
+    
+    def __repr__( self: Self ) -> str:
+        return f'Adam Optimizer (μ = {self.μ}, β1 = {self.β1}, β2 = {self.β2}, ϵ = {self.ϵ}, λ = {self.λ})'
+    
+    def __str__( self: Self ) -> str:
+        return self.__repr__()
 
-    def Step( self: Self, mW: np.ndarray, mDw: np.ndarray, dState: Dict = {} ) -> Tuple[np.ndarray, Dict]:
+    def Step( self: Self, mW: NDArray, mDw: NDArray, dState: Dict = {} ) -> Tuple[NDArray, Dict]:
         
         mV            = dState.get('mV', np.zeros(mW.shape)) #<! Default for 1st iteration 
         mS            = dState.get('mS', np.zeros(mW.shape)) #<! Default for 1st iteration
@@ -343,30 +356,36 @@ class Optimizer():
         self.oUpdateRule = oOptType #<! SGD, ADAM
         self.dStates     = {}
 
+    def __repr__( self: Self ) -> str:
+        return f'Optimizer with update rule: {str(self.oUpdateRule)}'
+    
+    def __str__( self: Self ) -> str:
+        return self.__repr__()
+
     def Step( self: Self, oModel: ModelNN, learnRate: Optional[float] = None ) -> None:
         
         if learnRate is not None:
             self.oUpdateRule.μ = learnRate
 
         for ii, oLayer in enumerate(oModel.lLayers):
-            for sParamKey in oLayer.dGrads:
+            for paramKey in oLayer.dGrads:
                 # Get parameters, gradient and history
-                mP       = oLayer.dParams[sParamKey]
-                mDp      = oLayer.dGrads [sParamKey]
-                sParamID = f'{ii}_{sParamKey}'            #<! Unique identifier per layer
+                mP       = oLayer.dParams[paramKey]
+                mDp      = oLayer.dGrads [paramKey]
+                sParamID = f'{ii}_{paramKey}'             #<! Unique identifier per layer
                 dState   = self.dStates.get(sParamID, {}) #<! Default for 1st iteration
 
                 # Apply Step
                 mP, dState = self.oUpdateRule.Step(mP, mDp, dState)
 
                 # Set parameters and history
-                oLayer.dParams[sParamKey] = mP
+                oLayer.dParams[paramKey] = mP
                 self.dStates  [sParamID ] = dState
 
 # Data
 
 class DataSet():
-    def __init__( self, mX: np.ndarray, vY: np.ndarray, batchSize: int, shuffleData: bool = True, dropLast: bool = True ) -> None:
+    def __init__( self, mX: NDArray, vY: NDArray, batchSize: int, shuffleData: bool = True, dropLast: bool = True ) -> None:
         """
         Creates a DataSet object for training a model.
         Input:
@@ -397,8 +416,9 @@ class DataSet():
         
         return self.numBatches
     
-    def __iter__( self: Self ) -> Generator[Tuple[np.ndarray, np.ndarray], None, None]:
+    def __iter__( self: Self ) -> Generator[Tuple[NDArray, NDArray], None, None]:
 
+        # Runs once per `for` loop
         if self.shuffleData:
             vIdx = np.random.permutation(self.numSamples)
         else:
@@ -413,6 +433,12 @@ class DataSet():
             vYBatch   = self.vY[vBatchIdx]
 
             yield mXBatch, vYBatch #<! See https://stackoverflow.com/questions/231767
+    
+    def __repr__( self: Self ) -> str:
+        return f'DataSet (numSamples = {self.numSamples}, batchSize = {self.batchSize}, numBatches = {self.numBatches}, shuffleData = {self.shuffleData})'
+    
+    def __str__( self: Self ) -> str:
+        return self.__repr__()
 
 # Training Loop
 
@@ -450,8 +476,8 @@ def TrainEpoch( oModel: ModelNN, oDataSet: DataSet, learnRate: float, hL: Callab
         
         # Gradient Descent (Update parameters
         for oLayer in oModel.lLayers:
-            for sParam in oLayer.dGrads:
-                oLayer.dParams[sParam] -= learnRate * oLayer.dGrads[sParam]
+            for paramKey in oLayer.dGrads:
+                oLayer.dParams[paramKey] -= learnRate * oLayer.dGrads[paramKey]
         
         # Score
         valScore = hS(mZ, vY)
@@ -553,7 +579,7 @@ def RunEpoch( oModel: ModelNN, oDataSet: DataSet, oOpt: Optimizer, hL: Callable,
 
 # Score Functions
 
-def ScoreAccLogits( mScore: np.ndarray, vY: np.ndarray ) -> np.float64:
+def ScoreAccLogits( mScore: NDArray, vY: NDArray ) -> np.float64:
     """
     Calculates the classification accuracy.  
     Input:
