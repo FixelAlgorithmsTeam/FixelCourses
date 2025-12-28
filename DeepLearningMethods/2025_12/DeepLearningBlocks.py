@@ -450,8 +450,8 @@ def TrainEpoch( oModel: ModelNN, oDataSet: DataSet, learnRate: float, hL: Callab
         
         # Gradient Descent (Update parameters
         for oLayer in oModel.lLayers:
-            for sParam in oLayer.dGrads:
-                oLayer.dParams[sParam] -= learnRate * oLayer.dGrads[sParam]
+            for paramKey in oLayer.dGrads:
+                oLayer.dParams[paramKey] -= learnRate * oLayer.dGrads[paramKey]
         
         # Score
         valScore = hS(mZ, vY)
