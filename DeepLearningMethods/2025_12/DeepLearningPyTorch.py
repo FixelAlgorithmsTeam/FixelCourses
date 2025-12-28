@@ -43,6 +43,8 @@ from DeepLearningBlocks import NNMode
 
 # Typing
 from typing import Any, Callable, Dict, Generator, List, Literal, Optional, Self, Set, Tuple, Union
+from numpy.typing import NDArray
+from torch import Tensor
 
 # Auxiliary Classes
 
@@ -82,7 +84,7 @@ class TestDataSet( torchvision.datasets.VisionDataset ):
         return imgSample
 
 class ObjectLocalizationDataset( Dataset ):
-    def __init__( self, tX: np.ndarray, vY: np.ndarray, mB: np.ndarray, singleY: bool = True ) -> None:
+    def __init__( self, tX: NDArray, vY: NDArray, mB: NDArray, singleY: bool = True ) -> None:
 
         if (tX.shape[0] != vY.shape[0]):
             raise ValueError(f'The number of samples in `tX` and `vY` does not match!')
@@ -99,7 +101,7 @@ class ObjectLocalizationDataset( Dataset ):
         
         return self.numSamples
 
-    def __getitem__( self: Self, idx: int ) -> Union[Tuple[np.ndarray, int, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
+    def __getitem__( self: Self, idx: int ) -> Union[Tuple[NDArray, int, NDArray], Tuple[NDArray, NDArray]]:
         
         tXi   = self.tX[idx] #<! Image
         valYi = self.vY[idx] #<! Label
@@ -115,7 +117,7 @@ class ObjectLocalizationDataset( Dataset ):
             return tXi, valYi, vBi
 
 class ObjectDetectionDataset( Dataset ):
-    def __init__( self, tX: np.ndarray, lY: List[np.ndarray], lB: List[np.ndarray], hDataTrans: Optional[Callable] = None ) -> None:
+    def __init__( self, tX: NDArray, lY: List[NDArray], lB: List[NDArray], hDataTrans: Optional[Callable] = None ) -> None:
 
         if (tX.shape[0] != len(lY)):
             raise ValueError(f'The number of samples in `tX` and `lY` does not match!')
@@ -132,7 +134,7 @@ class ObjectDetectionDataset( Dataset ):
         
         return self.numSamples
 
-    def __getitem__( self: Self, idx: int ) -> Union[Tuple[np.ndarray, int, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
+    def __getitem__( self: Self, idx: int ) -> Union[Tuple[NDArray, int, NDArray], Tuple[NDArray, NDArray]]:
         
         tXi = self.tX[idx] #<! Image
         vYi = self.lY[idx] #<! Labels
@@ -565,7 +567,7 @@ class ResidualBlock( nn.Module ):
         self.oBatchNorm2    = nn.BatchNorm2d(numChnl)
         self.oReLU2         = nn.ReLU(inplace = True) #<! No need for it, for better visualization
             
-    def forward( self: Self, tX: torch.Tensor ) -> torch.Tensor:
+    def forward( self: Self, tX: Tensor ) -> Tensor:
         
         tY = self.oReLU1(self.oBatchNorm1(self.oConv2D1(tX)))
         tY = self.oBatchNorm2(self.oConv2D2(tY))
@@ -581,7 +583,7 @@ class YoloGrid( nn.Module ):
         
         self.gridSize = gridSize
             
-    def forward( self: Self, tX: torch.Tensor, tB: torch.Tensor ) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward( self: Self, tX: Tensor, tB: Tensor ) -> Tuple[Tensor, Tensor]:
         """
         Converts YOLO bounding box into a target grid.  
         Input:
@@ -625,7 +627,7 @@ class YoloBox( nn.Module ):
 
         self.gridSize = gridSize
             
-    def forward( self: Self, tX: torch.Tensor, tY: torch.Tensor ) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward( self: Self, tX: Tensor, tY: Tensor ) -> Tuple[Tensor, Tensor]:
         """
         Converts YOLO target grid into a bounding box.  
         Input:
@@ -666,7 +668,7 @@ class NetToTgt( nn.Module ):
         self.gridSize = gridSize
         self.numCls   = numCls
             
-    def forward( self: Self, tX: torch.Tensor, tY: torch.Tensor ) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward( self: Self, tX: Tensor, tY: Tensor ) -> Tuple[Tensor, Tensor]:
         """
         Converts net (Model) output to YOLO Grid format.  
         Input:
@@ -706,9 +708,9 @@ class ToTensor( nn.Module ):
     def __init__( self ) -> None:
         super(ToTensor, self).__init__()
             
-    def forward( self: Self, *args ) -> Tuple[torch.Tensor]:
+    def forward( self: Self, *args ) -> Tuple[Tensor]:
         """
         Converts input to Tensor.  
         """
 		
-        return tuple(torch.tensor(itm) for itm in args)
+        return tuple(Tensor(itm) for itm in args)
