@@ -1,23 +1,15 @@
-# General Tools
+# Scientific Python
 import numpy as np
 import scipy as sp
 import pandas as pd
 
-# Image Processing & Computer Vision
-
-# Machine Learning
-
-# Deep Learning
-
-# Miscellaneous
+# Standard Library
 import os
-from platform import python_version
-import random
 import re
 import shutil
 
 # Visualization
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 # Set of Function to Manage the Project
 
