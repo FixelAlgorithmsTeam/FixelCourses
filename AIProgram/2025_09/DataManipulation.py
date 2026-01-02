@@ -96,6 +96,7 @@ def DownloadProgress(blockNum, blockSize, totalSize):
     print(f'Downloaded: {relativeProgress:0.2%} of the file ({bytesDownloadedKb} [Kilo Byte] / {totalSizeKb} [Kilo Bytes])', end = '\r')
 
 def DownloadUrl( fileUrl: str, fileName: str ) -> str:
+    # See improvement in https://stackoverflow.com/a/63832993
     
     if not os.path.exists(fileName):
         urllib.request.urlretrieve(fileUrl, fileName, DownloadProgress)
