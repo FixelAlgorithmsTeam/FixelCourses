@@ -380,7 +380,7 @@ class Optimizer():
 
                 # Set parameters and history
                 oLayer.dParams[paramKey] = mP
-                self.dStates  [sParamID ] = dState
+                self.dStates  [sParamID] = dState
 
 # Data
 
