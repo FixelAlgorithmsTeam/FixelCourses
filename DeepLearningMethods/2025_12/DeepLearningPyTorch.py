@@ -61,6 +61,39 @@ class TBLogger():
 
         self.oTBWriter.close()
 
+class SubSet( Dataset ):
+    def __init__( self, oDataset: Dataset, lIdx: List[int], *, hFeatTrns: Optional[Callable] = None, hTgtTrns: Optional[Callable] = None ) -> None:
+        # Works for datasets which the __getitem__ returns (tX, tY).
+        # Assumes the transformations for features and targets are separate / independent.
+
+        self._oDataset  = oDataset
+        self._lIdx      = lIdx
+        self._hFeatTrns = hFeatTrns
+        self._hTgtTrns  = hTgtTrns
+
+    def __len__( self: Self ) -> int:
+        
+        return len(self._lIdx)
+
+    def __getitem__( self: Self, idx: int ) -> Any:
+        
+        tX, tY = self._oDataset[self._lIdx[idx]]
+
+        if self._hFeatTrns is not None:
+            tX = self._hFeatTrns(tX)
+        if self._hTgtTrns is not None:
+            tY = self._hTgtTrns(tY)
+
+        return tX, tY
+    
+    def SetFeatTrans( self: Self, hFeatTrns: Callable ) -> None:
+        
+        self._hFeatTrns = hFeatTrns
+
+    def SetTgtTrans( self: Self, hTgtTrns: Callable ) -> None:
+        
+        self._hTgtTrns = hTgtTrns
+
 class TestDataSet( torchvision.datasets.VisionDataset ):
     def __init__(self, root: str = None, transforms: Callable[..., Any] | None = None, transform: Callable[..., Any] | None = None, target_transform: Callable[..., Any] | None = None) -> None:
         super().__init__(root, transforms, transform, target_transform)
