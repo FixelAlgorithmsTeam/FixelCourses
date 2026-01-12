@@ -100,7 +100,7 @@ This guide is composed of the following high level steps:
     - Set the `Command line` property to `%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -NoExit -File "<PathPythonMamba>\PythonMamba.ps1"`.  
       Change the `<PathPythonMamba>` to the folder path.
     - Set the `Icon` property to `"<PathPythonMamba>\PythonMamba.png"`.  
-      You may chose `Browse` and navigate manually.
+      You may choose `Browse` and navigate manually.
     - Click `Save`.
 6. Open `MambaPython`  
    Run the `PythonMamba` profile from _Windows Terminal_.
@@ -143,8 +143,8 @@ One way to define a specification is using a [Conda Format YAML file](https://do
    Using the name defined for the course environment (See the `name` field in the specification file) run: `micromamba activate <EnvName>`.  
 3. Launch IDE  
    Launch VSCode from the session command line by `code`.
-4. Chose Kernel  
-   Chose the appropriate Kernel in VS Code.
+4. Choose Kernel  
+   Choose the appropriate Kernel in VS Code.
 
 
 > [!TIP]
@@ -157,7 +157,7 @@ One way to define a specification is using a [Conda Format YAML file](https://do
 The _Windows Terminal_ profile runs the following command:
 
 ```cmd
-%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -NoExit -File "<PathPython>\MambaPython.ps1" 
+%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -NoExit -File "<PathPythonMamba>\PythonMamba.ps1" 
 ```
 
 The `-ExecutionPolicy Bypass` parameter should allow the file to run.  
