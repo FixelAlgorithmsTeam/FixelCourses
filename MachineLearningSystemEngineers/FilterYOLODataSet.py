@@ -67,7 +67,7 @@ figIdx = 0
 
 PROJECT_NAME     = 'FixelCourses'
 DATA_FOLDER_PATH = 'DataSets'
-BASE_FOLDER      = os.getcwd()[:len(os.getcwd()) - (os.getcwd()[::-1].lower().find(PROJECT_NAME.lower()[::-1]))]
+BASE_FOLDER      = os.getcwd()[:(len(os.getcwd()) - (os.getcwd()[::-1].lower().find(PROJECT_NAME.lower()[::-1])))]
 
 L_IMG_EXT = ['.png', '.jpeg', '.jpg']
 

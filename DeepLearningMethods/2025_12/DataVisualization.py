@@ -51,6 +51,43 @@ EDGE_COLOR      = 'k'
 MARKER_SIZE_DEF = 10
 LINE_WIDTH_DEF  = 2
 
+def AnnotateImage( mX: NDArray, hA: plt.Axes, /, *, strFmt: Optional[str] = None, fontSize: int = 8 ) -> None:
+    """
+    Annotates a scatter plot with images at each data point.
+    Input:
+        mX          - Matrix (numRows, numCols) of the data points.
+        hA          - Axes handler with the image displayed on.
+        strFmt      - String format for the annotation. If None, it will be determined based on the data type.
+        fontSize    - Font size for the annotations.
+    """
+
+    # The input must be 2D image
+    if np.ndim(mX) != 2:
+        raise ValueError(f'The input data must be 2D, the input shape is: {mX.shape}')
+
+    numRows, numCols = mX.shape
+
+    if strFmt is None:
+        # By data `dtype`
+        if np.issubdtype(mX.dtype, np.integer):
+            strFmt = 'd'
+        elif np.issubdtype(mX.dtype, np.floating):
+            strFmt = '0.2f'
+    
+    if np.issubdtype(mX.dtype, np.integer):
+        colorThr = np.iinfo(mX.dtype).max / 3.0
+    elif np.issubdtype(mX.dtype, np.floating):
+        colorThr = 1.0 / 3.0
+
+    for jj in range(numCols):
+        for ii in range(numRows):
+            valImg = mX[ii, jj]
+            if valImg >= colorThr:
+                colorStr = 'k'
+            else:
+                colorStr = 'w'
+            hA.annotate(f'{valImg: {strFmt}}', xy = (jj, ii), horizontalalignment = 'center', verticalalignment = 'center', multialignment = 'center', color = colorStr, fontsize = fontSize)
+
 def PlotBinaryClassData( mX: NDArray, vY: NDArray, /, *, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF, 
                         elmSize: int = ELM_SIZE_DEF, classColor: Tuple[str, str] = CLASS_COLOR, axisTitle: Optional[str] = None ) -> plt.Axes:
     """

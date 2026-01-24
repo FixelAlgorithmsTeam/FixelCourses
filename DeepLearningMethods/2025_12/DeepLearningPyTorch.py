@@ -42,7 +42,7 @@ from DeepLearningBlocks import NNMode
 
 
 # Typing
-from typing import Any, Callable, Dict, Generator, List, Literal, Optional, Self, Set, Tuple, Union
+from typing import Any, Callable, Dict, Generator, List, Literal, Mapping, Optional, Self, Sequence, Set, Tuple, Union
 from numpy.typing import NDArray
 from torch import Tensor
 
@@ -261,6 +261,46 @@ def GenResNetModel( trainedModel: bool, numCls: int, resNetDepth: Literal[18, 34
 
     return oModel
 
+def _ToDevice( oObj: Any, runDevice: torch.device ) -> Any:
+    """
+    Recursively move all torch.Tensors inside `obj` to `device`,
+    preserving the container structure.
+    """
+    # Base case: Tensor
+    if torch.is_tensor(oObj):
+        return oObj.to(runDevice)
+
+    # Avoid treating strings / bytes as sequences
+    if isinstance(oObj, (str, bytes)):
+        return oObj
+
+    # Dict like: recurse on values
+    if isinstance(oObj, Mapping):
+        return type(oObj)({
+            k: _ToDevice(v, runDevice) for k, v in oObj.items()
+        })
+
+    # Sequence like (list, tuple, etc.)
+    if isinstance(oObj, Sequence):
+        lConverted = [ _ToDevice(x, runDevice) for x in oObj ]
+        # Preserve original type (list, tuple, etc.)
+        try:
+            return type(oObj)(lConverted)
+        except TypeError:
+            # Fallback for exotic sequence types
+            return lConverted
+
+    # Fallback: leave as is
+    return oObj
+
+
+def ToDevice( runDevice: torch.device, *args: Sequence[Any] ) -> Tuple:
+    """
+    Apply `.to(runDevice)` to every torch.Tensor found at any depth
+    inside `args`, and return the transformed arguments as a tuple.
+    """
+    return tuple(_ToDevice(arg, runDevice) for arg in args)
+
 def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable, oOpt: Optional[Optimizer] = None, opMode: NNMode = NNMode.TRAIN ) -> Tuple[float, float]:
     """
     Runs a single Epoch (Train / Test) of a model.  
@@ -301,8 +341,10 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
     
     for ii, (tX, tY) in enumerate(dlData):
         # Move Data to Model's device
-        tX = tX.to(runDevice) #<! Lazy
-        tY = tY.to(runDevice) #<! Lazy
+        # tX = ToDevice(runDevice, tX) #<! Lazy
+        # tY = ToDevice(runDevice, tY) #<! Lazy
+
+        tX, tY = ToDevice(runDevice, tX, tY) #<! Lazy
 
         batchSize = tX.shape[0]
         
