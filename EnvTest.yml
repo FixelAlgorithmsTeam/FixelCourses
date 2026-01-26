@@ -2,30 +2,7 @@ name: Test
 channels:
   - conda-forge
 dependencies:
-  - python=3.12
-  - blas=*=mkl
-  - libblas=*=*mkl
-  - numpy
-  - scipy
-  - pandas
-  - numba
-  - jupyter
-  - ipykernel
-  - ipywidgets
-  - cvxpy
-  - scikit-learn
-  - xgboost
-  - lightgbm
-  - umap-learn
-  - kneed 
-  - nltk
-  - autograd
-  - scikit-image
-  - matplotlib
-  - seaborn
-  - bokeh
-  - plotly
-  - graphviz
-  - pydot
-  - distinctipy
-  - gdown
+  - python=3.13
+  - cuda
+  - pytorch
+#  - torchvision

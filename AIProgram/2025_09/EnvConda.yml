@@ -6,6 +6,10 @@ dependencies:
   - numpy
   - scipy
   - pandas
+# The package `pyarrow` required for `parquet` files support in Pandas 
+  - pyarrow
+# The package `tabulate` required for `dfA.to_markdown()` in Pandas 
+  - tabulate
   - numba
   - jupyter
   - ipykernel
@@ -18,7 +22,7 @@ dependencies:
   - umap-learn
   - kneed 
   - pytorch
-  - cuda
+  - cuda=12.9
   - torchvision
   - torchcodec 
   - torchmetrics
@@ -34,10 +38,6 @@ dependencies:
   - plotly
 # The package `anywidget` required for Plotly's widgets 
   - anywidget
-# The package `tabulate` required for `dfA.to_markdown()` in Pandas 
-  - tabulate
-# The package `pyarrow` required for `parquet` files support in Pandas 
-  - pyarrow
   - graphviz
   - pydot
   - distinctipy
