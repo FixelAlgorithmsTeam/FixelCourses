@@ -398,7 +398,7 @@ def PlotDendrogram( dfX: Union[NDArray, pd.DataFrame], linkageMethod: str, valP:
     return hA
 
 def PlotBox( mI: NDArray, vLabel: Union[int, NDArray], mBox: NDArray, *, hA: Optional[plt.Axes] = None, lLabelText: Optional[List] = None ) -> plt.Axes:
-    # Assumes data in YOLO Format: [x, y, w, h] (Center, Height, Width)
+    # Assumes data in YOLO Format: [x, y, w, h] (Cx, cY, Height, Width) Normalized
     
     if hA is None:
         dpi = 72

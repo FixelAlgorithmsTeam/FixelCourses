@@ -154,39 +154,83 @@ class ObjectLocalizationDataset( Dataset ):
         return lCls
 
 class ObjectDetectionDataset( Dataset ):
-    def __init__( self, tX: NDArray, lY: List[NDArray], lB: List[NDArray], hDataTrans: Optional[Callable] = None ) -> None:
+    def __init__( self, tX: NDArray, lY: List[NDArray], lB: List[NDArray] ) -> None:
 
         if (tX.shape[0] != len(lY)):
             raise ValueError(f'The number of samples in `tX` and `lY` does not match!')
         if (tX.shape[0] != len(lB)):
             raise ValueError(f'The number of samples in `tX` and `lB` does not match!')
         
-        self.tX = tX
-        self.lY = lY
-        self.lB = lB
-        self.numSamples = tX.shape[0]
-        self.hDataTrans = hDataTrans
+        self._tX = tX
+        self._lY = lY
+        self._lB = lB
+        self._numSamples = tX.shape[0]
 
     def __len__( self: Self ) -> int:
         
-        return self.numSamples
+        return self._numSamples
 
     def __getitem__( self: Self, idx: int ) -> Union[Tuple[NDArray, int, NDArray], Tuple[NDArray, NDArray]]:
         
-        tXi = self.tX[idx] #<! Image
-        vYi = self.lY[idx] #<! Labels
-        mBi = self.lB[idx] #<! Bounding Boxes
+        tXi = self._tX[idx] #<! Image
+        vYi = self._lY[idx] #<! Labels
+        mBi = self._lB[idx] #<! Bounding Boxes
 
         tXi = tXi.astype(np.float32)
-        vYi = vYi.astype(np.float32)
         mBi = mBi.astype(np.float32)
-
-        mYi = np.c_[vYi, mBi]
-
-        if self.hDataTrans is not None:
-            tXi, mYi = self.hDataTrans(tXi, mYi)
         
-        return tXi, mYi
+        return tXi, (vYi, mBi) #<! Must return 2 objects
+    
+    def GetLabels(self, uniqueCls: bool = False) -> List:
+
+        vY = np.r_[*self._lY]
+
+        if uniqueCls:
+            lCls = np.unique(vY).tolist()
+        else:
+            lCls = vY.tolist()
+
+        return lCls
+
+
+# Collate Functions
+
+def CollateObjectDetection( lBatch: List[Tuple[NDArray, Tuple[NDArray, NDArray]]] ) -> Tuple[Tensor, List[Dict[str, Tensor]]]:
+        """Collate function for object detection with variable number of boxes per image.
+
+        Expects each dataset item to be:
+            (x, (y, b))
+        where:
+            x : image-like array/tensor (same shape across the batch)
+            y : labels with shape (Di,) (variable Di)
+            b : boxes with shape (Di,4) (variable Di)
+
+        Returns:
+            tX : Tensor of shape (N, ...) stacked over the batch
+            lT : list (len N) of dicts: {'labels': Tensor[Di], 'boxes': Tensor[Di,4]}
+        """
+
+        lX: List[Tensor] = []
+        lT: List[Dict[str, Tensor]] = []
+
+        for x, (y, b) in lBatch:
+                tX = torch.tensor(x)
+                tY = torch.tensor(y)
+                tB = torch.tensor(b)
+
+                # Common dtypes for detection targets
+                tX = tX.to(torch.float32)
+                if tY.dtype not in (torch.int64, torch.int32, torch.int16, torch.int8):
+                        tY = tY.to(torch.int64)
+                tB = tB.to(torch.float32)
+
+                lX.append(tX)
+                lT.append({'Labels': tY, 'Boxes': tB})
+
+        # Images must be stackable (same shape). If not, pad/resize upstream.
+        tXb = torch.stack(lX, dim = 0)
+
+        return tXb, lT
 
 # Auxiliary Functions
 
