@@ -117,37 +117,41 @@ class TestDataSet( torchvision.datasets.VisionDataset ):
         return imgSample
 
 class ObjectLocalizationDataset( Dataset ):
-    def __init__( self, tX: NDArray, vY: NDArray, mB: NDArray, singleY: bool = True ) -> None:
+    def __init__( self, tX: NDArray, vY: NDArray, mB: NDArray ) -> None:
 
         if (tX.shape[0] != vY.shape[0]):
             raise ValueError(f'The number of samples in `tX` and `vY` does not match!')
         if (tX.shape[0] != mB.shape[0]):
             raise ValueError(f'The number of samples in `tX` and `mB` does not match!')
         
-        self.tX         = tX #<! (numSamples, H, W, C)
-        self.vY         = vY #<! (numSamples, )
-        self.mB         = mB #<! (numSamples, 4)
-        self.singleY    = singleY #<! Return label and box, or a single vector
-        self.numSamples = tX.shape[0]
+        self._tX         = tX #<! (numSamples, H, W, C)
+        self._vY         = vY #<! (numSamples, )
+        self._mB         = mB #<! (numSamples, 4)
+        self._numSamples = tX.shape[0]
 
     def __len__( self: Self ) -> int:
         
-        return self.numSamples
+        return self._numSamples
 
     def __getitem__( self: Self, idx: int ) -> Union[Tuple[NDArray, int, NDArray], Tuple[NDArray, NDArray]]:
         
-        tXi   = self.tX[idx] #<! Image
-        valYi = self.vY[idx] #<! Label
-        vBi   = self.mB[idx] #<! Bounding Box
+        tXi   = self._tX[idx] #<! Image
+        valYi = self._vY[idx] #<! Label
+        vBi   = self._mB[idx] #<! Bounding Box
 
         tXi   = tXi.astype(np.float32)
         vBi   = vBi.astype(np.float32)
+        
+        return tXi, (valYi, vBi) #<! Must return 2 objects
+    
+    def GetLabels(self, uniqueCls: bool = False) -> List:
 
-        if self.singleY:
-            valYi = valYi.astype(np.float32)
-            return tXi, np.r_[valYi, vBi]
+        if uniqueCls:
+            lCls = np.unique(self._vY).tolist()
         else:
-            return tXi, valYi, vBi
+            lCls = self._vY.tolist()
+
+        return lCls
 
 class ObjectDetectionDataset( Dataset ):
     def __init__( self, tX: NDArray, lY: List[NDArray], lB: List[NDArray], hDataTrans: Optional[Callable] = None ) -> None:
