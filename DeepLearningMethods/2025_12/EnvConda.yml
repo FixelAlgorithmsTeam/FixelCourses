@@ -22,6 +22,7 @@ dependencies:
   - cuda=12.9
   - torchvision
   - torchmetrics
+  - faster-coco-eval
   - torchinfo
 # The package `torchvista` visualizes of PyTorch models 
   - torchvista

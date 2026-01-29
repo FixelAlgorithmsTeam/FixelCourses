@@ -417,8 +417,8 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
             oModel.eval() #<! Ensure Evaluation Mode (Dropout / Normalization layers)
             valScore = hS(mZ, tY)
             # Normalize so each sample has the same weight
-            epochLoss  += batchSize * valLoss.item()
-            epochScore += batchSize * valScore.item()
+            epochLoss  += float(batchSize * valLoss)
+            epochScore += float(batchSize * valScore)
             numSamples += batchSize
             oModel.train(trainMode) #<! Restore original mode
 
