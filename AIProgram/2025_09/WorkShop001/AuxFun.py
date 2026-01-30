@@ -10,6 +10,7 @@ import pandas as pd
 
 # Typing
 from typing import Any, Callable, Dict, Generator, List, Literal, Optional, Self, Set, Tuple, Union
+from numpy.typing import NDArray
 
 # Image Processing & Computer Vision
 import skimage as ski
@@ -50,7 +51,7 @@ L_MATPLOTLIB_COLOR = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8
 
 # %% Auxiliary Functions
 
-def GenTileImg( mI: np.ndarray, lTileSize: Union[List[int], Tuple[int]], lRow: List, lCol: List ) -> List:
+def GenTileImg( mI: NDArray, lTileSize: Union[List[int], Tuple[int]], lRow: List, lCol: List ) -> List:
 
     lTile = []
     for rowIdx in lRow:
@@ -59,7 +60,7 @@ def GenTileImg( mI: np.ndarray, lTileSize: Union[List[int], Tuple[int]], lRow: L
     
     return lTile
 
-def ConvertPascalVocYolo( vBoxVoc: np.ndarray, imgW: int, imgH: int ) -> np.ndarray:
+def ConvertPascalVocYolo( vBoxVoc: NDArray, imgW: int, imgH: int ) -> NDArray:
     # vBoxVoc: `[xmin, ymin, xmax, ymax]`
 
     boxCenterX = (vBoxVoc[0] + vBoxVoc[2]) / 2.0
@@ -70,7 +71,7 @@ def ConvertPascalVocYolo( vBoxVoc: np.ndarray, imgW: int, imgH: int ) -> np.ndar
 
     return np.array([boxCenterX / imgW, boxCenterY / imgH, boxWidth / imgW, boxHeight / imgH])
 
-def ConvertRectPascalVoc( mBox: np.ndarray ) -> np.ndarray:
+def ConvertRectPascalVoc( mBox: NDArray ) -> NDArray:
     # https://github.com/labelmeai/labelme/issues/552
     # LabelMe Doesn't guarantee [x_min, y_min, x_max, y_max] (Works like the actual annotation).
     # This function convert it into such case.
@@ -88,7 +89,7 @@ def ConvertRectPascalVoc( mBox: np.ndarray ) -> np.ndarray:
     
     return mB
 
-def ConvertBBoxFormat( vBox: np.ndarray, tuImgSize: Tuple[int, int], boxFormatIn: BBoxFormat, boxFormatOut: BBoxFormat ) -> np.ndarray:
+def ConvertBBoxFormat( vBox: NDArray, tuImgSize: Tuple[int, int], boxFormatIn: BBoxFormat, boxFormatOut: BBoxFormat ) -> NDArray:
     # tuImgSize = (numRows, numCols) <=> (imgHeight, imgWidth)
 
     vB = vBox.copy()
@@ -138,7 +139,7 @@ def ConvertBBoxFormat( vBox: np.ndarray, tuImgSize: Tuple[int, int], boxFormatIn
     return vB
 
 
-def PlotBox( mI: np.ndarray, vLabel: Union[int, np.ndarray], mBox: np.ndarray, *, hA: Optional[plt.Axes] = None, lLabelText: Optional[List] = None ) -> plt.Axes:
+def PlotBox( mI: NDArray, vLabel: Union[int, NDArray], mBox: NDArray, *, hA: Optional[plt.Axes] = None, lLabelText: Optional[List] = None ) -> plt.Axes:
     # Assumes data in YOLO Format: [x, y, w, h] (Center, Height, Width)
     
     if hA is None:
@@ -161,7 +162,7 @@ def PlotBox( mI: np.ndarray, vLabel: Union[int, np.ndarray], mBox: np.ndarray, *
 
     return hA
 
-def PlotBBox( hA: plt.Axes, boxLabel: int, vBox: np.ndarray, labelText: str = '_' ) -> plt.Axes:
+def PlotBBox( hA: plt.Axes, boxLabel: int, vBox: NDArray, labelText: str = '_' ) -> plt.Axes:
     # Assumes data in YOLO Format
     # Legend Text: https://stackoverflow.com/questions/24680981
 

@@ -23,20 +23,16 @@ import scipy as sp
 import pandas as pd
 
 # Image Processing & Computer Vision
+import skimage as ski
 
 # Machine Learning
 
 # Deep Learning
-from ultralytics import YOLO
-# from ultralytics.yolo.utils import get_settings
-# from ultralytics.yolo.cfg import get_cfg
 
 # Miscellaneous
 import os
 from platform import python_version
 import random
-# import warnings
-
 
 # Visualization
 import matplotlib as mpl
@@ -99,30 +95,59 @@ WANDB_SWEEP_ID     = 'WANDB_SWEEP_ID'
 
 # %% Local Packages
 
-
+from AuxFun import BBoxFormat
+from AuxFun import ConvertBBoxFormat, PlotBox, PlotBBox
+from TiledYoloDetector import TiledDetector #<! Supports tiling detection
 
 # %% Parameters
 
+imgFileExt  = 'png'
+
 # Should be the path to the model file.
 # Extract it from the optimal sweep folder.
-modelPath = ???
+# modelPath = ???
+modelPath = r'D:\Applications\Documents\FixelAlgorithms\Courses\FixelCourses\AIProgram\2025_09\WorkShop001\runs\detect\Sweep_92xbm5j6\weights\best.pt'
 
 # Set parameters to load pre trained model
 
 
 # %% Define Model
 
+oTileDet = TiledDetector(modelFilePath = modelPath, confThr = 0.25)
+
 
 # %% Inference Using the Model
 
-# Run the model through the validation data.
-# Do analysis per class, show the score compared ot the actual error.
-# Code a function to display prediction and ground truth on the images.
+dataFolderPath  = os.path.join(DATA_FOLDER_PATH, SUB_PROJECT_FOLDER_NAME) #<! Path to folder with images and labels (LabelMe JSON Files)
+
+# Show a single image with its labels
+lFile    = [fileName for fileName in os.listdir(dataFolderPath) if fileName.endswith(imgFileExt)] #<! Assuming all images are labeled
+numFiles = len(lFile)
+
+# %%
+
+imgIdx = random.randrange(numFiles)
+# imgIdx = 224 #<! Used in the slides
+
+imgFullName          = lFile[imgIdx]
+fileName, imgFileExt = os.path.splitext(imgFullName)
+
+# Read image
+mI = ski.io.imread(os.path.join(dataFolderPath, imgFullName))
+tuImgSize = (mI.shape[0], mI.shape[1]) #<! (numRows, numCols) = (imgHeight, imgWidth)
+# Return Boxes and Confidence levels
+# The boxes are Pascal VOC format: `(xmin, ymin, xmax, ymax)`
+mB, vConf = oTileDet.Predict(mI)
+
+mB = mB[vConf > 0] #<! Keep only detected boxes (Classes)
+for ii in range(mB.shape[0]):
+    mB[ii] = ConvertBBoxFormat(mB[ii], tuImgSize, BBoxFormat.PASCAL_VOC, BBoxFormat.YOLO)
+vLbl = np.arange(mB.shape[0])
+lLbl = [oTileDet.GetLabelName(ii) for ii in vLbl]
+
+hA = PlotBox(mI, vLbl, mB, lLabelText = lLbl)
+hA.set_title(f'Image: {imgIdx}')
+hA.legend();
 
 
-# %% Bonus
-
-# Create a model which works on the 1920x1080 image.
-# Use a new class to wrap the model and do a sliding window inference.
-# Make sure to merge the detection of the same object from 2 different tiles.
-
+# %%
