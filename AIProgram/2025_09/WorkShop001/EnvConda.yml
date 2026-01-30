@@ -1,0 +1,30 @@
+name: ObjectDetectionWorkshop
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - numpy
+  - scipy
+  - pandas
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - scikit-learn
+  - pytorch
+  - cuda=12.9
+  - torchvision
+  - torchmetrics
+  - torchinfo
+  - torchvista
+  - ultralytics
+  - scikit-image
+  - tensorboard
+  - wandb
+  - matplotlib
+  - seaborn
+  - plotly
+  - graphviz
+  - pydot
+  - distinctipy
+  - gdown
+  - onedrivedownloader

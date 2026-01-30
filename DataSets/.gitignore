@@ -1,13 +1,16 @@
 # Folders
+AudioMNIST/*
+BallRefereeDetection/*
+cifar-10-batches-py/*
+Flickr8K/*
+IntelImgCls/*
 MNIST/*
 MNISTStroke/*
+NewsAggregator/*
 NotMNIST/*
 ShipsAerialImages/*
-Flickr8K/*
-NewsAggregator/*
-AudioMNIST/*
-cifar-10-batches-py/*
+
+# Files
 cifar-10-python.tar.gz
-IntelImgCls/*
-MNIST.csv
 FashionMNIST.csv
+MNIST.csv
