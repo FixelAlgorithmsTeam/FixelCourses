@@ -38,6 +38,15 @@ This folder is dedicated to the course [Technion AI Program](https://cont-edu.te
  - [Projects](./Projects.md).
  - [Conda Environment File](./2025_09/EnvConda.yml).
 
+## Class 004 (Ferbruary 2026)
+
+ - Fourth session of the program (Technion).
+ - [Program Files](./2026_02).
+ - [Resources](./Resources.md).
+ - [Projects](./Projects.md).
+ - [Conda Environment File](./2026_02/EnvConda.yml).
+ - [Azure Labs](https://labs.azure.com) - Virtual Machines.
+
 
 ## Miscellaneous
 
