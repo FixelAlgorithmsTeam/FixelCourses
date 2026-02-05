@@ -47,7 +47,6 @@ This folder is dedicated to the course [Technion AI Program](https://cont-edu.te
  - [Conda Environment File](./2026_02/EnvConda.yml).
  - [Azure Labs](https://labs.azure.com) - Virtual Machines.
 
-
 ## Miscellaneous
 
  - [Install Conda Environment with MicroMamba Package Manager](./../InstallMicroMamba.md).
