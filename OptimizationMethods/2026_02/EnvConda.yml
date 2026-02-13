@@ -1,0 +1,39 @@
+name: OptimizationMethods
+channels:
+  - conda-forge
+  - mosek
+dependencies:
+  - python=3.13
+  - blas=*=mkl
+  - libblas=*=*mkl
+  - numpy
+  - scipy
+  - scikit-sparse
+  - pandas
+# The package `pyarrow` required for `parquet` files support in Pandas 
+  - pyarrow
+# The package `tabulate` required for `dfA.to_markdown()` in Pandas 
+  - tabulate
+  - numba
+  - cvxpy
+  - ecos
+  - highspy
+  - pyscipopt 
+  - mosek
+  - autograd
+  - scikit-learn
+  - kneed
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - scikit-image
+  - matplotlib
+  - plotly
+# The package `anywidget` required for Plotly's widgets 
+  - anywidget
+  - graphviz
+  - pydot
+  - distinctipy
+  - rich
+  - gdown
+  - onedrivedownloader
