@@ -28,6 +28,7 @@ import urllib.request
 
 # Typing
 from typing import Callable, Dict, List, Optional, Set, Tuple, Union
+from numpy.typing import NDArray
 
 # See https://docs.python.org/3/library/enum.html
 @unique
@@ -116,7 +117,7 @@ def DownloadKaggleDataset( userName: str, datasetName: str, fileName: str ) -> N
 
     return
 
-def ConvertMnistDataDf( imgFilePath: str, labelFilePath: str ) -> Tuple[np.ndarray, np.ndarray]:
+def ConvertMnistDataDf( imgFilePath: str, labelFilePath: str ) -> Tuple[NDArray, NDArray]:
     numPx = 28 * 28
     # Merge of https://pjreddie.com/projects/mnist-in-csv/ and https://github.com/keras-team/keras/blob/master/keras/datasets/fashion_mnist.py
     f = open(imgFilePath, "rb")
@@ -135,7 +136,7 @@ def ConvertMnistDataDf( imgFilePath: str, labelFilePath: str ) -> Tuple[np.ndarr
 
     return mX, vY
 
-def ConvertBBoxFormat( vBox: np.ndarray, tuImgSize: Tuple[int, int], boxFormatIn: BBoxFormat, boxFormatOut: BBoxFormat ) -> np.ndarray:
+def ConvertBBoxFormat( vBox: NDArray, tuImgSize: Tuple[int, int], boxFormatIn: BBoxFormat, boxFormatOut: BBoxFormat ) -> NDArray:
     # tuImgSize = (numRows, numCols) <=> (imgHeight, imgWidth)
 
     vB = vBox.copy()
@@ -184,7 +185,7 @@ def ConvertBBoxFormat( vBox: np.ndarray, tuImgSize: Tuple[int, int], boxFormatIn
     
     return vB
 
-def GenLabeldEllipseImg( tuImgSize: Tuple[int, int], numObj: int, *, boxFormat: BBoxFormat = BBoxFormat.YOLO ) -> Tuple[np.ndarray, np.ndarray]:
+def GenLabeldEllipseImg( tuImgSize: Tuple[int, int], numObj: int, *, boxFormat: BBoxFormat = BBoxFormat.YOLO ) -> Tuple[NDArray, NDArray]:
     # Image Size in Rows x Cols
 
     mI  = np.zeros(shape = (*tuImgSize, 3)) #<! RGB Image
