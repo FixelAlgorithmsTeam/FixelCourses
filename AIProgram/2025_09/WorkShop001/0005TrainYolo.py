@@ -365,7 +365,7 @@ if sweepId is None:
     sweepId = wandb.sweep(dSweep, project = projName)
 print(f'Sweep ID: {sweepId}') #>! Print the Sweep ID to use it later
 
-dEnv[WANDB_ENTITY]       = entityName #<! The entity which established teh project
+dEnv[WANDB_ENTITY]       = entityName #<! The entity which established the project
 dEnv[WANDB_PROJECT_NAME] = projName
 dEnv[WANDB_SWEEP_ID]     = sweepId
 
