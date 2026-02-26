@@ -21,6 +21,7 @@ This file is a curated list of resources related to the course.
  - [Probability and Regression Review](https://mixtape.scunning.com/02-probability_and_regression).
  - [Mathematics Quizzes](https://www.mathopolis.com/questions/quizzes.php).
  - [Eberhard Karls University of Tubingen - Tutorial: Math for Deep Learning](https://uni-tuebingen.de/de/241678).
+ - [StatLect](https://statlect.com) - A digital textbook on probability and statistics.
 
 ### Development Environment
 
