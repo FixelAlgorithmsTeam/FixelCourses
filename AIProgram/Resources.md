@@ -22,6 +22,7 @@ This file is a curated list of resources related to the course.
  - [Mathematics Quizzes](https://www.mathopolis.com/questions/quizzes.php).
  - [Eberhard Karls University of Tubingen - Tutorial: Math for Deep Learning](https://uni-tuebingen.de/de/241678).
  - [StatLect](https://statlect.com) - A digital textbook on probability and statistics.
+ - [Understand Derivative | Symmetric Derivative and Generalized Pseudo Derivative](https://www.youtube.com/watch?v=oIhdrMh3UJw).
 
 ### Development Environment
 
@@ -79,10 +80,11 @@ This file is a curated list of resources related to the course.
  - [Kevin Patrick Murphy - Probabilistic Machine Learning: Advanced Topics](https://probml.github.io/pml-book/book2.html).
  - [Francis Bach - Learning Theory from First Principles](https://www.di.ens.fr/~fbach/ltfp_book.pdf) - Mathematical oriented book.
  - [Frank E Harrell Jr - Regression Modeling Strategies](https://hbiostat.org/rmsc).
+ - [Cross Beat - Machine Learning](https://github.com/xbeat/Machine-Learning) - Python and Machine Learning tutorials.
  - SciKit Learn Extensions
   - [SciKit Learn Contribute](https://github.com/scikit-learn-contrib) - SciKit Learn compatible packages to extend SciKit Learn capabilities.
   - [ML Extend](https://github.com/rasbt/mlxtend) - A library of extension and helper modules for Python's data analysis and machine learning libraries.
-  * [NJIT CS 301 - Introduction to Data Science](https://pantelis.github.io/cs301).
+  - [NJIT CS 301 - Introduction to Data Science](https://pantelis.github.io/cs301).
 
 
 ### Feature Engineering
@@ -139,6 +141,8 @@ This file is a curated list of resources related to the course.
  - [Kyunghyun Cho - Machine Learning - A Lecture Note](https://arxiv.org/abs/2505.03861).
  - [Deep Learning Papers Reading Roadmap](https://github.com/floodsung/Deep-Learning-Papers-Reading-Roadmap).
  - [CNN Explainer](https://poloclub.github.io/cnn-explainer/) - Learn Convolutional Neural Network (CNN) in your browser.
+ - [CS294-158-SP24 Deep Unsupervised Learning Spring 2024](https://sites.google.com/view/berkeley-cs294-158-sp24) / [CS294-158-SP24 Deep Unsupervised Learning Spring 2020](https://sites.google.com/view/berkeley-cs294-158-sp20).
+ - [Francois Chollet, Matthew Watson - Deep Learning with Python](https://deeplearningwithpython.io).
 
 
 ### Computer Vision
@@ -230,6 +234,12 @@ This file is a curated list of resources related to the course.
    - [Best Deep Learning Optimizers](https://github.com/lessw2020/Best-Deep-Learning-Optimizers).
  - [WhyTorch](https://github.com/Kukanani/whytorch) - [A visual explainer](https://whytorch.org) for PyTorch tensor operations.
 
+
+### ML Engineering / ML Ops
+
+ - [The Full Stack Deep Learning](https://fullstackdeeplearning.com) - Focus on deployment and applications.
+
+
 ## Data Sets
 
  - [Kaggle](https://www.kaggle.com) - AI & ML Community. Many datasets and competitions.
@@ -259,6 +269,7 @@ This file is a curated list of resources related to the course.
  - [NotMNIST](https://github.com/davidflanagan/notMNIST-to-MNIST) - An MNIST like data set based on letters.
  - [Fun Datasets](https://calmcode.io/datasets) - Simple fun datasets.
  - [ML Visuals](https://github.com/dair-ai/ml-visuals) - A collaborative effort to improve science communication by providing free visuals and figures.
+ - [ML Roadmap](https://github.com/loganthorneloe/ml-roadmap) - The simplest, most straightforward way to learn ML for free.
  - [Coda Bench](https://www.codabench.org) - Codabench is an open source platform allowing you to organize AI benchmarks.
  - Annotation Tools
 	- [VGG Image Annotator (VIA)](https://gitlab.com/vgg/via).
