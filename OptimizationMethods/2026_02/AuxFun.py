@@ -422,8 +422,8 @@ class ProxGradientDescent():
         Range: (0, ∞).
 
     hProxFun : Callable, optional
-        The proximal operator of the non-smooth function `g(x)`. It takes the argument `vY` and returns 
-        the proximal map of `g` with respect to `λ`. By default, the identity function is used (i.e., no prox applied).
+        The proximal operator of the function `g(x)`. It takes the arguments `vY`, `λ` and returns 
+        the proximal map of `g`. By default, the identity function is used.
         Structure: Function.
         Type: `Callable[[NDArray, float], NDArray]`.
         Default: `lambda vX, λ: vX` (No prox function).
