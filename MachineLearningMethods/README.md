@@ -12,7 +12,8 @@ This folder is dedicated to the course [Machine Learning Methods](https://fixela
  - [Class of 01/2023](./2023_01) - Defense Industry.
  - [Class of 06/2024](./2024_06) - Defense Industry.
  - [Class of 02/2025](./2024_06) - Samsung.
- - [Class of 10/2025](./2024_06) - Defense Industry.
+ - [Class of 10/2025](./2025_10) - Defense Industry.
+ - [Class of 05/2026](./2026_05) - Defense Industry.
 
 ## Miscellaneous
 
