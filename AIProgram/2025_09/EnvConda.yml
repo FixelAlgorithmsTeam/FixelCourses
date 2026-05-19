@@ -33,6 +33,7 @@ dependencies:
   - scikit-image
   - autograd
   - tensorboard
+  - setuptools==81 #<! See https://github.com/tensorflow/tensorboard/issues/7003
   - matplotlib
   - seaborn
   - plotly
