@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 from enum import auto, Enum, unique
 
 # Typing
-from typing import Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Callable, Dict, List, Literal, Optional, Set, Tuple, Union
 from numpy.typing import ArrayLike, NDArray
 
 # Course Packages
@@ -352,7 +352,7 @@ def PlotScatterData3D( mX: NDArray, vL: Optional[NDArray] = None, vC: Optional[N
 
     return hA
 
-def PlotDendrogram( dfX: Union[NDArray, pd.DataFrame], linkageMethod: str, valP: int, thrLvl: int, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF ) -> plt.Axes:
+def PlotDendrogram( dfX: Union[NDArray, pd.DataFrame], linkageMethod: Literal['single', 'complete', 'average', 'ward'], valP: int, thrLvl: int, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF ) -> plt.Axes:
 
     if hA is None:
         hF, hA = plt.subplots(1, 1, figsize = figSize)
@@ -362,6 +362,8 @@ def PlotDendrogram( dfX: Union[NDArray, pd.DataFrame], linkageMethod: str, valP:
     mLinkage = sp.cluster.hierarchy.linkage(dfX, method = linkageMethod)
     sp.cluster.hierarchy.dendrogram(mLinkage, p = valP, truncate_mode = 'lastp', color_threshold = thrLvl, no_labels = True, ax = hA)
     hA.axhline(y = thrLvl, c = 'k', lw = 2, linestyle = '--')
+    hA.set_xlabel('Clusters (Merging)')
+    hA.set_ylabel('Distance (Union Cost)')
 
     return hA
 
