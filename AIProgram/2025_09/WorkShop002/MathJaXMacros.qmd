@@ -1,0 +1,27 @@
+::: {.hidden}
+$$
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\prox}{prox}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\Diag}{Diag}
+\DeclareMathOperator{\diag}{diag}
+
+\newcommand{\MyParen}[1]{\left( #1 \right)}
+\newcommand{\MyBrack}[1]{\left\lbrack #1 \right\rbrack}
+\newcommand{\MyBrace}[1]{\left\lbrace #1 \right\rbrace}
+\newcommand{\MyMat}[1]{\begin{bmatrix} #1 \end{bmatrix}}
+\newcommand{\MyNorm}[2]{{\left\| #1 \right\|}_{#2}}
+\newcommand{\MyAbs}[1]{\left| #1 \right|}
+\newcommand{\MyNormTwo}[1]{\MyNorm{#1}{2}}
+\newcommand{\MyCeil}[1]{\lceil #1 \rceil}
+\newcommand{\MyInProd}[2]{\langle #1, #2 \rangle}
+\newcommand{\MyUndBrace}[2]{\underset{#2}{\underbrace{#1}}}
+\newcommand{\RR}[1]{\mathbb{R}^{#1}}
+\newcommand{\InR}[1]{\in \mathbb{R}^{#1}}
+\newcommand{\InC}[1]{\in \mathbb{C}^{#1}}
+\newcommand{\BS}[1]{\boldsymbol{#1}}
+\newcommand{\MyClr}[2]{{\color{#1}{#2}}}
+\newcommand{\MyQuad}[2]{ {#1}^{T} #2 #1 }
+$$
+:::
