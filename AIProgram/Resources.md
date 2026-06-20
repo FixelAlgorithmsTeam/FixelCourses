@@ -85,6 +85,7 @@ This file is a curated list of resources related to the course.
   - [SciKit Learn Contribute](https://github.com/scikit-learn-contrib) - SciKit Learn compatible packages to extend SciKit Learn capabilities.
   - [ML Extend](https://github.com/rasbt/mlxtend) - A library of extension and helper modules for Python's data analysis and machine learning libraries.
   - [NJIT CS 301 - Introduction to Data Science](https://pantelis.github.io/cs301).
+  - [Machine Learning Visualized](https://ml-visualized.com).
 
 
 ### Feature Engineering
@@ -106,6 +107,10 @@ This file is a curated list of resources related to the course.
  - [ML Forecast](https://github.com/Nixtla/mlforecast).
  - [TSFEL](https://github.com/fraunhoferportugal/tsfel) - An intuitive library to extract features from time series.
  - [Kaggle - Daily Electricity Demand Forecast Machine Learning](https://www.kaggle.com/code/manualrg/daily-electricity-demand-forecast-machine-learning).
+
+### Tabular Data
+
+ - [TablCL](https://github.com/soda-inria/tabicl) - A state of the art tabular foundation model.
 
 ## Deep Learning
 
@@ -143,6 +148,7 @@ This file is a curated list of resources related to the course.
  - [CNN Explainer](https://poloclub.github.io/cnn-explainer/) - Learn Convolutional Neural Network (CNN) in your browser.
  - [CS294-158-SP24 Deep Unsupervised Learning Spring 2024](https://sites.google.com/view/berkeley-cs294-158-sp24) / [CS294-158-SP24 Deep Unsupervised Learning Spring 2020](https://sites.google.com/view/berkeley-cs294-158-sp20).
  - [Francois Chollet, Matthew Watson - Deep Learning with Python](https://deeplearningwithpython.io).
+ - [Elon Litman - A Theory of Deep Learning](https://elonlit.com/scrivings/a-theory-of-deep-learning) - Describe the "Double Descend" phenomenon.
 
 
 ### Computer Vision
