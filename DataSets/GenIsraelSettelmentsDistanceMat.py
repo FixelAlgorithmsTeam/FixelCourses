@@ -71,6 +71,7 @@ lOverpassEndpoints = [
     "https://overpass.private.coffee/api/interpreter",
 ]
 
+# Query by bounding box (southwest lat/lon, northeast lat/lon)
 overpassQuery = """
 [out:json][timeout:120];
 (
@@ -80,9 +81,22 @@ overpassQuery = """
 out center;
 """
 
+# Query by country code (ISO 3166-1 alpha-2) and admin level
+overpassQuery = """
+[out:json][timeout:120];
+area["ISO3166-1"="IL"]["admin_level"="2"]->.searchArea;
+(
+    node["place"~"^(city|town|village)$"](area.searchArea);
+    way["place"~"^(city|town|village)$"](area.searchArea);
+    relation["place"~"^(city|town|village)$"](area.searchArea);
+);
+out center;
+"""
+
 dHeaders = {
-    "User-Agent": "FixelCourses-Overpass-Query/1.0 (educational use)",
+    "User-Agent": "OverpassQueryClient/1.0",
     "Accept": "application/json, text/plain;q=0.9, */*;q=0.8",
+    "Content-Type": "text/plain; charset=utf-8",
 }
 
 dData     = None
