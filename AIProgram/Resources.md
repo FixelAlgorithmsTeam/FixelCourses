@@ -149,6 +149,7 @@ This file is a curated list of resources related to the course.
  - [CS294-158-SP24 Deep Unsupervised Learning Spring 2024](https://sites.google.com/view/berkeley-cs294-158-sp24) / [CS294-158-SP24 Deep Unsupervised Learning Spring 2020](https://sites.google.com/view/berkeley-cs294-158-sp20).
  - [Francois Chollet, Matthew Watson - Deep Learning with Python](https://deeplearningwithpython.io).
  - [Elon Litman - A Theory of Deep Learning](https://elonlit.com/scrivings/a-theory-of-deep-learning) - Describe the "Double Descend" phenomenon.
+ - [Brigham Young University (BYU) - Deep Learning for Engineers - YouTube Playlist](https://www.youtube.com/playlist?list=PLj6pNSgoumyd4_UFlKpuDFv9xrw4DGaJQ).
 
 
 ### Computer Vision
