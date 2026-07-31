@@ -67,7 +67,10 @@ This guide is composed of the following high level steps:
  - Windows 10 / Windows 11.
  - [Windows Terminal](https://github.com/microsoft/terminal) installed.  
    It is recommended to install it using [Windows Store - Terminal](https://apps.microsoft.com/detail/9n0dx20hk701).  
-   It is recommended to set [_Windows Terminal_ as the default terminal](https://superuser.com/questions/1789185).  
+   It is recommended to set [_Windows Terminal_ as the default terminal](https://superuser.com/questions/1789185).
+ - Long Path Support  
+   The _Long Path Support_ os Windows is enabled on the machine. This feature is required by `micromamba`.  
+   Enabling it requires `Admin` rights on. See [Enable Long Path on Windows Computer](./EnableLongPath.md).    
  - The [VS Code](https://code.visualstudio.com) editor is installed and available on the system path variable.
  - Microsoft C and C++ (MSVC) Runtime Libraries  
    Install the latest [Microsoft C and C++ (MSVC) Runtime Libraries](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist).

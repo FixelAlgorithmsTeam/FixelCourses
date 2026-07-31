@@ -24,7 +24,7 @@ dependencies:
   - umap-learn
   - kneed 
   - pytorch
-  - cuda=12.9
+  - cuda
   - torchvision
   - torchcodec 
   - torchmetrics
