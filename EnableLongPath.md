@@ -37,7 +37,7 @@ There are 2 main options to enable the feature:
 
 Both will require `Administrator Rights` on the machine.
 
-#### Enable Long Path Support by Windows Settings
+### Enable Long Path Support by Windows Settings
 
 > [!NOTE]
 > This method is verified on Windows 11.
@@ -52,7 +52,7 @@ Both will require `Administrator Rights` on the machine.
 ![](https://i.imgur.com/x7pmhAE.png)
 <!-- ![](https://i.postimg.cc/2mxvMzn5/Enable-Long-Path-Windows-Settings.png) -->
 
-#### Enable Long Path Support by Windows PowerShell
+### Enable Long Path Support by Windows PowerShell
 
 1. Open PowerShell as Administrator  
    On Windows Terminal click a `Right Click` on the PowerShell Profile.  
