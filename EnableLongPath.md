@@ -32,7 +32,7 @@ In the case above, the feature is disabled.
 
 There are 2 main options to enable the feature:
 
- - Using PowerShell.
+ - Using PowerShell (Recommended).
  - Using Windows Settings.
 
 Both will require `Administrator Rights` on the machine.
@@ -59,7 +59,10 @@ Both will require `Administrator Rights` on the machine.
    Choose `Run As Adminstrator`.
 2. Enable Long Path Support  
    Run the command `New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force`.
+3. Close
+   Close all Windows Terminal sessions.
 3. Verify  
+   Open Windows Terminal in PowerShell profile.
    Run `(Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem").LongPathsEnabled`.  
    The return value should be `1`. 
 
