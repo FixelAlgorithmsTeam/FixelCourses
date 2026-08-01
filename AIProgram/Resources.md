@@ -134,6 +134,7 @@ This file is a curated list of resources related to the course.
     - [DrawIO Neural Network Templates](https://github.com/WangX0111/drawio-nn-templates).
     - [StackExchange Data Science - How to Draw Deep Learning Network Architecture Diagram](https://datascience.stackexchange.com/questions/14899).
     - [Kaggle - Awesome Drawing Tools for Neural Net Architecture](https://www.kaggle.com/discussions/getting-started/253300).
+    - [VisualTorch](https://github.com/willyfh/visualtorch) - `VisualTorch` aims to help visualize Torch based neural network architectures.
  - [TorchDrift: Drift Detection for PyTorch](https://torchdrift.org) - A data and concept drift library for PyTorch. It lets you monitor your PyTorch models to see if they operate within spec.
  - [What Does It Mean that Deep Learning is NoN Parametric](https://lernapparat.de/statistics-deep-learning-nonparametric) - The regularization point of view on a Neural Network.
  - [Machine (Deep) Learning Articles](https://github.com/christianversloot/machine-learning-articles) - A set of Markdown posts on applications and theory in Machine Learning. Focused on Deep Learning.

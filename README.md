@@ -19,8 +19,8 @@ A repository dedicated to [Fixel Courses](https://fixelalgorithms.gitlab.io/cour
 
 ## Resources
 
+ - [Install Conda Environment with MicroMamba Package Manager (Recommended)](./InstallMicroMamba.md).
  - [Install Conda Environment](./InstallCondaEnv.md).
- - [Install Conda Environment with MicroMamba Package Manager (Advanced)](./InstallMicroMamba.md).
  - [Enable Long Path Support on Windows](./EnableLongPath.md).
 
 ## Structure
