@@ -32,7 +32,6 @@ from typing import Callable, Dict, List, Literal, Optional, Set, Tuple, Union
 from numpy.typing import ArrayLike, NDArray
 
 # Course Packages
-from DataManipulation import BBoxFormat
 
 # See https://docs.python.org/3/library/enum.html
 @unique
