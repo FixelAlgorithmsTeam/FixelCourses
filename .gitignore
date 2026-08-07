@@ -25,6 +25,8 @@ Archive/*
 # Media Files
 *.avi
 *.bmp
+*.gif
+*.jpeg
 *.jpg
 *.mp4
 *.png

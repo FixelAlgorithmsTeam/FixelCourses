@@ -123,6 +123,7 @@ numAfterFlipFrames = 8
 numFramesPerStep = 10
 numMoveFrames    = 6
 fps              = 12
+outputWidth      = 1000
 
 
 # %% Loading / Generating Data
@@ -140,7 +141,10 @@ firstFilterPos = -(numFilter - 1)
 numIntroFrames = numFlipHoldFrames + numFlipFrames + numAfterFlipFrames
 numFrames = numIntroFrames + numOutput * numFramesPerStep
 
-fig = plt.figure(figsize=(12, 7), facecolor="none")
+figWidth = 12.0
+figHeight = 7.0
+outputDpi = outputWidth / figWidth
+fig = plt.figure(figsize=(figWidth, figHeight), facecolor="none")
 gs = fig.add_gridspec(3, 1, height_ratios=[1.70, 2.75, 1.70], hspace=0.22)
 axFlip = fig.add_subplot(gs[0])
 axSlide = fig.add_subplot(gs[1])
@@ -272,7 +276,7 @@ outputPath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Convoluti
 anim.save(
 	outputPath,
 	writer=PillowWriter(fps=fps),
-	dpi=110
+	dpi=outputDpi
 )
 print(f"Saved animation to: {outputPath}")
 if plt.get_backend().lower() != "agg":
