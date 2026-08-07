@@ -94,34 +94,91 @@ class ObjectDetectionDataset( Dataset ):
         if (tX.shape[0] != len(lB)):
             raise ValueError(f'The number of samples in `tX` and `lB` does not match!')
         
-        self.tX = tX
-        self.lY = lY
-        self.lB = lB
-        self.numSamples = tX.shape[0]
-        self.hDataTrans = hDataTrans
+        self._tX = tX
+        self._lY = lY
+        self._lB = lB
+        self._numSamples = tX.shape[0]
+        self._hDataTrans = hDataTrans
 
     def __len__( self: Self ) -> int:
         
-        return self.numSamples
+        return self._numSamples
 
-    def __getitem__( self: Self, idx: int ) -> Union[Tuple[NDArray, int, NDArray], Tuple[NDArray, NDArray]]:
+    def __getitem__( self: Self, idx: int ) -> Tuple[NDArray, NDArray, NDArray]:
         
-        tXi = self.tX[idx] #<! Image
-        vYi = self.lY[idx] #<! Labels
-        mBi = self.lB[idx] #<! Bounding Boxes
+        tXi = self._tX[idx] #<! Image
+        vYi = self._lY[idx] #<! Labels
+        mBi = self._lB[idx] #<! Bounding Boxes
 
         tXi = tXi.astype(np.float32)
-        vYi = vYi.astype(np.float32)
+        vYi = vYi.astype(np.int64)
         mBi = mBi.astype(np.float32)
 
-        mYi = np.c_[vYi, mBi]
-
-        if self.hDataTrans is not None:
-            tXi, mYi = self.hDataTrans(tXi, mYi)
+        if self._hDataTrans is not None:
+            tXi, vYi, mBi = self._hDataTrans(tXi, vYi, mBi)
         
-        return tXi, mYi
+        return tXi, (vYi, mBi)
+
+    def GetFeatures( self: Self ) -> NDArray:
+
+        return self._tX
+
+    def GetLabels( self: Self ) -> List[NDArray]:
+
+        return self._lY
+
+    def GetBoundingBoxes( self: Self ) -> List[NDArray]:
+
+        return self._lB
+
+    def GetClasses( self: Self ) -> Set[int]:
+
+        vY = np.concatenate(self._lY, axis = 0)
+
+        return set(vY.tolist())
+
+    def SetTransform( self: Self, hDataTrans: Callable ) -> None:
+
+        self._hDataTrans = hDataTrans
 
 # Functions
+
+def CollateObjectDetection( lBatch: List[Tuple[NDArray, Tuple[NDArray, NDArray]]] ) -> Tuple[Tensor, List[Dict[str, Tensor]]]:
+        """Collate function for object detection with variable number of boxes per image.
+
+        Expects each dataset item to be:
+            (tX, (y, b))
+        where:
+            x : Image like array / tensor (same shape across the batch)
+            y : Labels with shape (Di,) (variable Di)
+            b : Bounding boxes with shape (Di, 4) (variable Di)
+
+        Returns:
+            tX : Tensor of shape (N, ...) stacked over the batch
+            lT : List (len N) of dicts: {'Labels': Tensor[Di], 'Boxes': Tensor[Di, 4]}
+        """
+
+        lX: List[Tensor] = []
+        lT: List[Dict[str, Tensor]] = []
+
+        for x, (y, b) in lBatch:
+            tX = torch.tensor(x)
+            tY = torch.tensor(y)
+            tB = torch.tensor(b)
+
+            # Common dtypes for detection targets
+            tX = tX.to(torch.float32)
+            if tY.dtype not in (torch.int64, torch.int32, torch.int16, torch.int8):
+                tY = tY.to(torch.int64)
+            tB = tB.to(torch.float32)
+
+            lX.append(tX)
+            lT.append({'Labels': tY, 'Boxes': tB})
+
+        # Images must be stackable (same shape)
+        tXb = torch.stack(lX, dim = 0)
+
+        return tXb, lT
 
 def ConvertBBoxFormat( vBox: NDArray, tuImgSize: Tuple[int, int], boxFormatIn: BBoxFormat, boxFormatOut: BBoxFormat ) -> NDArray:
     # tuImgSize = (numRows, numCols) <=> (imgHeight, imgWidth)
