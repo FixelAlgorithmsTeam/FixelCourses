@@ -104,7 +104,7 @@ class ObjectDetectionDataset( Dataset ):
         
         return self._numSamples
 
-    def __getitem__( self: Self, idx: int ) -> Tuple[NDArray, NDArray, NDArray]:
+    def __getitem__( self: Self, idx: int ) -> Tuple[NDArray | Tensor, Tuple[NDArray | Tensor, NDArray | Tensor]]:
         
         tXi = self._tX[idx] #<! Image
         vYi = self._lY[idx] #<! Labels

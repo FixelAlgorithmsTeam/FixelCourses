@@ -5,8 +5,8 @@ import math
 
 # Data
 import numpy as np
+# import scipy as sp
 # import pandas as pd
-import scipy as sp
 
 # Machine Learning
 
@@ -32,7 +32,6 @@ import os
 # Auxiliary
 
 # Visualization
-import matplotlib.pyplot as plt
 
 # Miscellaneous
 import time
@@ -52,10 +51,8 @@ class TBLogger():
     def __init__( self, logDir: Optional[str] = None ) -> None:
 
         self.oTBWriter  = SummaryWriter(log_dir = logDir)
-        self.iiEpcoh    = 0
+        self.iiEpoch    = 0
         self.iiItr      = 0
-        
-        pass
 
     def close( self ) -> None:
 
@@ -365,9 +362,11 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
     Remarks:
       - The `oDataSet` object returns a Tuple of (mX, vY) per batch.
       - The `hL` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
-        It should return a Tuple of `valLoss` (Scalar of the loss) and `mDz` (Gradient by the loss).
+        It returns a scalar of the loss `valLoss = hL(mZ, vY)`.  
+        The loss value is assumed to be normalized per sample (e.g. Averaged over the batch).
       - The `hS` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
-        It should return a scalar `valScore` of the score.
+        It should return a scalar of the score `valScore = hS(mZ, vY)`.
+        The score value is assumed to be normalized per sample (e.g. Averaged over the batch).
       - The optimizer is required for training mode.
     """
     
@@ -404,6 +403,8 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
             # Backward
             oOpt.zero_grad()    #<! Set gradients to zeros
             valLoss.backward()  #<! Backward
+
+            # Optimize Weights
             oOpt.step()         #<! Update parameters
             oModel.eval()       #<! Inference mode for layers
         else: #<! Value of `opMode` was already validated
@@ -429,7 +430,7 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
     return epochLoss / numSamples, epochScore / numSamples
 
 # Training Epoch
-def RunEpochSch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable, oOpt: Optional[Optimizer] = None, oSch: Optional[LRScheduler] = None, opMode: NNMode = NNMode.TRAIN, oTBLogger: Optional[TBLogger] = None ) -> Tuple[float, float]:
+def RunEpochSch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable, oOpt: Optional[Optimizer] = None, oSch: Optional[LRScheduler] = None, opMode: NNMode = NNMode.TRAIN, oTBLogger: Optional[TBLogger] = None ) -> Tuple[float, float, float, List[float]]:
     """
     Runs a single Epoch (Train / Test) of a model.  
     Supports per iteration (Batch) scheduling. 
@@ -446,6 +447,7 @@ def RunEpochSch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callab
         valLoss     - Scalar of the loss.
         valScore    - Scalar of the score.
         learnRate   - Scalar of the average learning rate over the epoch.
+        lLearnRate  - List of learning rates per iteration.
     Remarks:
       - The `oDataSet` object returns a Tuple of (mX, vY) per batch.
       - The `hL` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
@@ -490,6 +492,7 @@ def RunEpochSch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callab
             valLoss.backward()  #<! Backward
             oOpt.step()         #<! Update parameters
 
+            # Optimize Weights
             learnRate = oSch.get_last_lr()[0]
             oSch.step()         #<! Update learning rate
             oModel.eval()       #<! Inference mode for layers
@@ -528,7 +531,7 @@ def RunEpochSch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callab
 
 # Training Model Loop Function
 
-def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt: Optimizer, numEpoch: int, hL: Callable, hS: Callable, *, oSch: Optional[LRScheduler] = None, oTBWriter: Optional[SummaryWriter] = None) -> Tuple[nn.Module, List, List, List, List]:
+def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt: Optimizer, numEpoch: int, hL: Callable, hS: Callable, *, oSch: Optional[LRScheduler] = None, oTBWriter: Optional[SummaryWriter] = None) -> Tuple[nn.Module, List[float], List[float], List[float], List[float], List[float]]:
     """
     Trains a model given test and validation data loaders.  
     Input:
@@ -542,11 +545,11 @@ def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt:
         oSch        - PyTorch `Scheduler` (`LRScheduler`) object.
         oTBWriter   - PyTorch `SummaryWriter` object (TensorBoard).
     Output:
-        lTrainLoss  - Scalar of the loss.
-        lTrainScore - Scalar of the score.
-        lValLoss    - Scalar of the score.
-        lValScore   - Scalar of the score.
-        lLearnRate  - Scalar of the score.
+        lTrainLoss  - List of training losses per epoch.
+        lTrainScore - List of training scores per epoch.
+        lValLoss    - List of validation losses per epoch.
+        lValScore   - List of validation scores per epoch.
+        lLearnRate  - List of learning rates per epoch.
     Remarks:
       - The `oDataSet` object returns a Tuple of (mX, vY) per batch.
       - The `hL` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
@@ -563,7 +566,8 @@ def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt:
     lLearnRate  = []
 
     # Support R2
-    bestScore = -1e9 #<! Assuming higher is better
+    bestScore  = -1e9 #<! Assuming higher is better
+    modelSaved = False #<! Indicates if the model was saved at least once
 
     learnRate = oOpt.param_groups[0]['lr']
 
@@ -605,19 +609,21 @@ def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt:
                 if oSch is not None:
                     dCheckPoint['Scheduler'] = oSch.state_dict()
                 torch.save(dCheckPoint, 'BestModel.pt')
+                modelSaved = True
                 print(' | <-- Checkpoint!', end = '')
             except:
                 print(' | <-- Failed!', end = '')
         print(' |')
     
     # Load best model ("Early Stopping")
-    # dCheckPoint = torch.load('BestModel.pt')
-    # oModel.load_state_dict(dCheckPoint['Model'])
+    # if modelSaved:
+    #     dCheckPoint = torch.load('BestModel.pt')
+    #     oModel.load_state_dict(dCheckPoint['Model'])
 
     return oModel, lTrainLoss, lTrainScore, lValLoss, lValScore, lLearnRate
 
 
-def TrainModelSch( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt: Optimizer, oSch: LRScheduler, numEpoch: int, hL: Callable, hS: Callable, oTBLogger: Optional[TBLogger] = None ) -> Tuple[nn.Module, List, List, List, List]:
+def TrainModelSch( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt: Optimizer, oSch: LRScheduler, numEpoch: int, hL: Callable, hS: Callable, oTBLogger: Optional[TBLogger] = None ) -> Tuple[nn.Module, List[float], List[float], List[float], List[float], List[float]]:
 
     lTrainLoss  = []
     lTrainScore = []
@@ -626,7 +632,8 @@ def TrainModelSch( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oO
     lLearnRate  = []
 
     # Support R2
-    bestScore = -1e9 #<! Assuming higher is better
+    bestScore  = -1e9 #<! Assuming higher is better
+    modelSaved = False #<! Indicates if the model was saved at least once
 
     for ii in range(numEpoch):
         startTime                               = time.time()
@@ -663,13 +670,15 @@ def TrainModelSch( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oO
             try:
                 dCheckpoint = {'Model' : oModel.state_dict(), 'Optimizer' : oOpt.state_dict(), 'Scheduler': oSch.state_dict()}
                 torch.save(dCheckpoint, 'BestModel.pt')
+                modelSaved = True
             except:
                 print(' | <-- Failed!', end = '')
         print(' |')
     
     # Load best model ("Early Stopping")
-    dCheckpoint = torch.load('BestModel.pt')
-    oModel.load_state_dict(dCheckpoint['Model'])
+    if modelSaved:
+        dCheckpoint = torch.load('BestModel.pt')
+        oModel.load_state_dict(dCheckpoint['Model'])
 
     return oModel, lTrainLoss, lTrainScore, lValLoss, lValScore, lLearnRate
 
@@ -842,4 +851,4 @@ class ToTensor( nn.Module ):
         Converts input to Tensor.  
         """
 		
-        return tuple(torch.tensor(itm) for itm in args)
+        return tuple(torch.tensor(itm) for itm in args) #<! May use `torch.as_tensor` for better performance (No copy if already a tensor)

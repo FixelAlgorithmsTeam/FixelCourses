@@ -41,7 +41,7 @@ from DeepLearningBlocks import NNMode
 
 
 # Typing
-from typing import Any, Callable, Dict, Generator, List, Literal, Optional, Self, Set, Tuple, Union
+from typing import Any, Callable, Dict, Generator, List, Literal, Mapping, Optional, Self, Sequence, Set, Tuple, Union
 from numpy.typing import NDArray
 from torch import Tensor
 
@@ -57,6 +57,39 @@ class TBLogger():
     def close( self ) -> None:
 
         self.oTBWriter.close()
+
+class SubSet( Dataset ):
+    def __init__( self, oDataset: Dataset, lIdx: List[int], *, hFeatTrns: Optional[Callable] = None, hTgtTrns: Optional[Callable] = None ) -> None:
+        # Works for datasets which the __getitem__ returns (tX, tY).
+        # Assumes the transformations for features and targets are separate / independent.
+
+        self._oDataset  = oDataset
+        self._lIdx      = lIdx
+        self._hFeatTrns = hFeatTrns
+        self._hTgtTrns  = hTgtTrns
+
+    def __len__( self: Self ) -> int:
+        
+        return len(self._lIdx)
+
+    def __getitem__( self: Self, idx: int ) -> Any:
+        
+        tX, tY = self._oDataset[self._lIdx[idx]]
+
+        if self._hFeatTrns is not None:
+            tX = self._hFeatTrns(tX)
+        if self._hTgtTrns is not None:
+            tY = self._hTgtTrns(tY)
+
+        return tX, tY
+    
+    def SetFeatTrans( self: Self, hFeatTrns: Callable ) -> None:
+        
+        self._hFeatTrns = hFeatTrns
+
+    def SetTgtTrans( self: Self, hTgtTrns: Callable ) -> None:
+        
+        self._hTgtTrns = hTgtTrns
 
 class TestDataSet( torchvision.datasets.VisionDataset ):
     def __init__(self, root: str = None, transforms: Callable[..., Any] | None = None, transform: Callable[..., Any] | None = None, target_transform: Callable[..., Any] | None = None) -> None:
@@ -157,6 +190,46 @@ def GenResNetModel( trainedModel: bool, numCls: int, resNetDepth: Literal[18, 34
 
     return oModel
 
+def _ToDevice( oObj: Any, runDevice: torch.device ) -> Any:
+    """
+    Recursively move all torch.Tensors inside `obj` to `device`,
+    preserving the container structure.
+    """
+    # Base case: Tensor
+    if torch.is_tensor(oObj):
+        return oObj.to(runDevice)
+
+    # Avoid treating strings / bytes as sequences
+    if isinstance(oObj, (str, bytes)):
+        return oObj
+
+    # Dict like: recurse on values
+    if isinstance(oObj, Mapping):
+        return type(oObj)({
+            k: _ToDevice(v, runDevice) for k, v in oObj.items()
+        })
+
+    # Sequence like (list, tuple, etc.)
+    if isinstance(oObj, Sequence):
+        lConverted = [ _ToDevice(x, runDevice) for x in oObj ]
+        # Preserve original type (list, tuple, etc.)
+        try:
+            return type(oObj)(lConverted)
+        except TypeError:
+            # Fallback for exotic sequence types
+            return lConverted
+
+    # Fallback: leave as is
+    return oObj
+
+
+def ToDevice( runDevice: torch.device, *args: Sequence[Any] ) -> Tuple:
+    """
+    Apply `.to(runDevice)` to every torch.Tensor found at any depth
+    inside `args`, and return the transformed arguments as a tuple.
+    """
+    return tuple(_ToDevice(arg, runDevice) for arg in args)
+
 def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable, oOpt: Optional[Optimizer] = None, opMode: NNMode = NNMode.TRAIN ) -> Tuple[float, float]:
     """
     Runs a single Epoch (Train / Test) of a model.  
@@ -199,8 +272,10 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
     
     for ii, (tX, tY) in enumerate(dlData):
         # Move Data to Model's device
-        tX = tX.to(runDevice) #<! Lazy
-        tY = tY.to(runDevice) #<! Lazy
+        # tX = ToDevice(runDevice, tX) #<! Lazy
+        # tY = ToDevice(runDevice, tY) #<! Lazy
+
+        tX, tY = ToDevice(runDevice, tX, tY) #<! Lazy
 
         batchSize = tX.shape[0]
         
@@ -227,8 +302,8 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
             oModel.eval() #<! Ensure Evaluation Mode (Dropout / Normalization layers)
             valScore = hS(mZ, tY)
             # Normalize so each sample has the same weight
-            epochLoss  += batchSize * valLoss.item()
-            epochScore += batchSize * valScore.item()
+            epochLoss  += float(batchSize * valLoss)
+            epochScore += float(batchSize * valScore)
             numSamples += batchSize
             oModel.train(trainMode) #<! Restore original mode
 
@@ -418,6 +493,7 @@ def TrainModel( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oOpt:
                 if oSch is not None:
                     dCheckPoint['Scheduler'] = oSch.state_dict()
                 torch.save(dCheckPoint, 'BestModel.pt')
+                modelSaved = True
                 print(' | <-- Checkpoint!', end = '')
             except:
                 print(' | <-- Failed!', end = '')
