@@ -95,6 +95,8 @@ def DownloadUrl( fileUrl: str, fileName: str ) -> str:
     if not os.path.exists(fileName):
         urllib.request.urlretrieve(fileUrl, fileName, DownloadProgress)
 
+    print(f'\nDownloaded file: {fileName}')
+
     return fileName
 
 def DownloadKaggleDataset( userName: str, datasetName: str, fileName: str ) -> None:
