@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 from enum import auto, Enum, unique
 
 # Typing
-from typing import Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Callable, Dict, List, Literal, Optional, Set, Tuple, Union
 from numpy.typing import ArrayLike, NDArray
 
 # Course Packages
@@ -162,8 +162,8 @@ def Plot2DLinearClassifier( mX: NDArray, vY: NDArray, vW: NDArray, mX1: NDArray,
     
     hA.set_xlim([-2, 2])
     hA.set_ylim([-2, 2])
-    hA.set_xlabel('$x_1$')
-    hA.set_ylabel('$x_2$')
+    hA.set_xlabel(r'$x_1$')
+    hA.set_ylabel(r'$x_2$')
 
     return
 
@@ -248,8 +248,9 @@ def PlotConfusionMatrix(vY: NDArray, vYPred: NDArray, /, *, normMethod: str = No
 
     return hA, mConfMat
 
-def PlotDecisionBoundaryClosure( numGridPts: int, gridXMin: float, gridXMax: float, gridYMin: float, gridYMax: float, /, *, clsColors: Tuple = CLASS_COLOR, numDigits: int = 1 ) -> Callable:
+def PlotDecisionBoundaryClosure( numGridPts: int, gridXMin: float, gridXMax: float, gridYMin: float, gridYMax: float, /, *, lClsLabels: List[Union[float, int]] = [-1, 1], clsColors: Tuple = CLASS_COLOR, numDigits: int = 1 ) -> Callable:
 
+    numCls    = len(lClsLabels)
     roundFctr = 10 ** numDigits
     
     # For equal axis
@@ -261,6 +262,10 @@ def PlotDecisionBoundaryClosure( numGridPts: int, gridXMin: float, gridXMax: flo
     mX1, mX2 = np.meshgrid(vX1, vX2)
     mX       = np.c_[mX1.ravel(), mX2.ravel()] #<! Features (2D)
 
+    lLevels =  [(lClsLabels[ii] + lClsLabels[ii + 1]) / 2.0 for ii in range(numCls - 1)]
+    lLevels.append(lClsLabels[-1] + 1)
+    lLevels.insert(0, lClsLabels[0] - 1)
+
     # A closure
     def PlotDecisionBoundary(hDecFun: Callable, hA: plt.Axes = None) -> plt.Axes:
         
@@ -271,7 +276,7 @@ def PlotDecisionBoundaryClosure( numGridPts: int, gridXMin: float, gridXMax: flo
         mZ = mZ.reshape(mX1.shape)
 
         # Assumes values {0, 1}
-        hA.contourf(mX1, mX2, mZ, colors = clsColors, alpha = 0.3, levels = [-0.5, 0.5, 1.5])
+        hA.contourf(mX1, mX2, mZ, colors = clsColors[:numCls], alpha = 0.3, levels = lLevels)
 
         return hA
 
@@ -384,7 +389,7 @@ def PlotScatterData3D( mX: NDArray, vL: Optional[NDArray] = None, vC: Optional[N
 
     return hA
 
-def PlotDendrogram( dfX: Union[NDArray, pd.DataFrame], linkageMethod: str, valP: int, thrLvl: int, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF ) -> plt.Axes:
+def PlotDendrogram( dfX: Union[NDArray, pd.DataFrame], linkageMethod: Literal['single', 'complete', 'average', 'ward'], valP: int, thrLvl: int, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF ) -> plt.Axes:
 
     if hA is None:
         hF, hA = plt.subplots(1, 1, figsize = figSize)
@@ -394,11 +399,13 @@ def PlotDendrogram( dfX: Union[NDArray, pd.DataFrame], linkageMethod: str, valP:
     mLinkage = sp.cluster.hierarchy.linkage(dfX, method = linkageMethod)
     sp.cluster.hierarchy.dendrogram(mLinkage, p = valP, truncate_mode = 'lastp', color_threshold = thrLvl, no_labels = True, ax = hA)
     hA.axhline(y = thrLvl, c = 'k', lw = 2, linestyle = '--')
+    hA.set_xlabel('Clusters (Merging)')
+    hA.set_ylabel('Distance (Union Cost)')
 
     return hA
 
 def PlotBox( mI: NDArray, vLabel: Union[int, NDArray], mBox: NDArray, *, hA: Optional[plt.Axes] = None, lLabelText: Optional[List] = None ) -> plt.Axes:
-    # Assumes data in YOLO Format: [x, y, w, h] (Cx, cY, Height, Width) Normalized
+    # Assumes data in YOLO Format: [x, y, w, h] (Center, Height, Width)
     
     if hA is None:
         dpi = 72
