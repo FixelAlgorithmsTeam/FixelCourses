@@ -138,13 +138,15 @@ def InitWeightsKaiNorm( oLayer: nn.Module, tuLyrClas: Tuple = (nn.Linear, nn.Con
         nn.init.kaiming_normal_(oLayer.weight.data)
 
 
-def GenDataLoaders( dsTrain: Dataset, dsVal: Dataset, batchSize: int, *, valBatchFctr: int = 2, numWorkers: int = 0, CollateFn: Callable = default_collate, dropLast: bool = True, persWork: bool = False ) -> Tuple[DataLoader, DataLoader]:
+def GenDataLoaders( dsTrain: Dataset, dsVal: Dataset, batchSize: int, *, valBatchFctr: int = 2, numWorkers: int = 0, CollateFn: Callable = default_collate, pinMemory: bool = False, dropLast: bool = True, persWork: bool = False ) -> Tuple[DataLoader, DataLoader]:
 
     if numWorkers == 0: 
         persWork = False
 
-    dlTrain = torch.utils.data.DataLoader(dsTrain, shuffle = True, batch_size = batchSize, num_workers = numWorkers, collate_fn = CollateFn, drop_last = dropLast, persistent_workers = persWork)
-    dlVal   = torch.utils.data.DataLoader(dsVal, shuffle = False, batch_size = valBatchFctr * batchSize, num_workers = numWorkers, persistent_workers = persWork)
+    batchSizeVal = valBatchFctr * batchSize
+
+    dlTrain = torch.utils.data.DataLoader(dsTrain, batch_size = batchSize, shuffle = True, num_workers = numWorkers, collate_fn = CollateFn, pin_memory = pinMemory, drop_last = dropLast, persistent_workers = persWork)
+    dlVal   = torch.utils.data.DataLoader(dsVal, batch_size = batchSizeVal, shuffle = False, num_workers = numWorkers, collate_fn = CollateFn, pin_memory = pinMemory, drop_last = False, persistent_workers = persWork)
 
     return dlTrain, dlVal
 
