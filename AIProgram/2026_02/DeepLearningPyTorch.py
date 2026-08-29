@@ -568,6 +568,87 @@ def TrainModelSch( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oO
 
     return oModel, lTrainLoss, lTrainScore, lValLoss, lValScore, lLearnRate
 
+def TrainModelDataset( oModel: nn.Module, dlData: DataLoader, oOpt: Optimizer, numEpoch: int, hL: Callable, hS: Callable, *, oSch: Optional[LRScheduler] = None, oTBWriter: Optional[SummaryWriter] = None) -> Tuple[nn.Module, List[float], List[float], List[float]]:
+    """
+    Trains a model given a single dataset (Dataloader).  
+    Input:
+        oModel      - PyTorch `nn.Module` object.
+        dlData      - PyTorch `Dataloader` object (Training and Validation).
+        oOpt        - PyTorch `Optimizer` object.
+        numEpoch    - Number of epochs to run.
+        hL          - Callable for the Loss function.
+        hS          - Callable for the Score function.
+        oSch        - PyTorch `Scheduler` (`LRScheduler`) object.
+        oTBWriter   - PyTorch `SummaryWriter` object (TensorBoard).
+    Output:
+        lTrainLoss  - List of training losses per epoch.
+        lTrainScore - List of training scores per epoch.
+        lLearnRate  - List of learning rates per epoch.
+    Remarks:
+      - The `oDataSet` object returns a Tuple of (mX, vY) per batch.
+      - The `hL` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
+        It should return a Tuple of `valLoss` (Scalar of the loss) and `mDz` (Gradient by the loss).
+      - The `hS` function should accept the `vY` (Reference target) and `mZ` (Output of the NN).  
+        It should return a scalar `valScore` of the score.
+      - The optimizer is required for training mode.
+    """
+
+    lTrainLoss  = []
+    lTrainScore = []
+    lLearnRate  = []
+
+    # Support R2
+    bestScore  = -1e9 #<! Assuming higher is better
+    modelSaved = False #<! Indicates if the model was saved at least once
+
+    learnRate = oOpt.param_groups[0]['lr']
+
+    for ii in range(numEpoch):
+        startTime           = time.time()
+        trainLoss, trainScr = RunEpoch(oModel, dlData, hL, hS, oOpt, opMode = NNMode.TRAIN) #<! Train
+        if oSch is not None:
+            # Adjusting the scheduler on Epoch level
+            learnRate = oSch.get_last_lr()[0]
+            oSch.step()
+        epochTime           = time.time() - startTime
+
+        # Aggregate Results
+        lTrainLoss.append(trainLoss)
+        lTrainScore.append(trainScr)
+        lLearnRate.append(learnRate)
+
+        if oTBWriter is not None:
+            oTBWriter.add_scalars('Loss (Epoch)', {'Train': trainLoss, 'Validation': valLoss}, ii)
+            oTBWriter.add_scalars('Score (Epoch)', {'Train': trainScr, 'Validation': valScr}, ii)
+            oTBWriter.add_scalar('Learning Rate', learnRate, ii)
+        
+        # Display (Babysitting)
+        print('Epoch '              f'{(ii + 1):4d} / ' f'{numEpoch}', end = '')
+        print(' | Train Loss: '     f'{trainLoss          :6.3f}', end = '')
+        print(' | Train Score: '    f'{trainScr           :6.3f}', end = '')
+        print(' | Epoch Time: '     f'{epochTime          :5.2f}', end = '')
+
+        # Save best model ("Early Stopping")
+        if trainScr > bestScore:
+            bestScore = trainScr
+            try:
+                dCheckPoint = {'Model': oModel.state_dict(), 'Optimizer': oOpt.state_dict()}
+                if oSch is not None:
+                    dCheckPoint['Scheduler'] = oSch.state_dict()
+                torch.save(dCheckPoint, 'BestModel.pt')
+                modelSaved = True
+                print(' | <-- Checkpoint!', end = '')
+            except:
+                print(' | <-- Failed!', end = '')
+        print(' |')
+    
+    # Load best model ("Early Stopping")
+    # if modelSaved:
+    #     dCheckPoint = torch.load('BestModel.pt')
+    #     oModel.load_state_dict(dCheckPoint['Model'])
+
+    return oModel, lTrainLoss, lTrainScore, lLearnRate
+
 # Auxiliary Blocks
 
 # Residual Class

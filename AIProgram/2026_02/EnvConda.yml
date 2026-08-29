@@ -29,6 +29,7 @@ dependencies:
   - torchinfo
 # The package `torchvista` visualizes of PyTorch models 
   - torchvista
+  - webdataset #<! Support for WebDataset format in PyTorch
   - shap
   - scikit-image
   - autograd
