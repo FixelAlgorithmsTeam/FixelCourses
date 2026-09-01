@@ -676,7 +676,7 @@ class ResidualBlock( nn.Module ):
         
         tY = self.oReLU1(self.oBatchNorm1(self.oConv2D1(tX)))
         tY = self.oBatchNorm2(self.oConv2D2(tY))
-        tY += tX
+        tY += tX                                              #<! Addition of the residual
         tY = self.oReLU2(tY)
 		
         return tY
