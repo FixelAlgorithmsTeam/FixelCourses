@@ -83,11 +83,11 @@ class SubSet( Dataset ):
 
         return tX, tY
     
-    def SetFeatTrans( self: Self, hFeatTrns: Callable ) -> None:
+    def SetFeatTrans( self: Self, hFeatTrns: Optional[Callable] ) -> None:
         
         self._hFeatTrns = hFeatTrns
 
-    def SetTgtTrans( self: Self, hTgtTrns: Callable ) -> None:
+    def SetTgtTrans( self: Self, hTgtTrns: Optional[Callable] ) -> None:
         
         self._hTgtTrns = hTgtTrns
 
@@ -256,9 +256,9 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
       - The optimizer is required for training mode.
     """
     
-    epochLoss   = 0.0
-    epochScore  = 0.0
-    numSamples  = 0
+    epochLoss  = 0.0
+    epochScore = 0.0
+    numSamples = 0
     numBatches = len(dlData)
 
     runDevice = next(oModel.parameters()).device #<! CPU \ GPU
