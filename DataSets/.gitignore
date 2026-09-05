@@ -2,6 +2,7 @@
 AudioMNIST/*
 BallRefereeDetection/*
 cifar-10-batches-py/*
+CMPFacadeDatabase/*
 Flickr8K/*
 IntelImgCls/*
 MNIST/*
