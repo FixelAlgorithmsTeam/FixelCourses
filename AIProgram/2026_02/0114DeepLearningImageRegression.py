@@ -300,16 +300,18 @@ class µUNet(nn.Module):
         return tY
 
 class Pix2PixLoss(nn.Module):
-    def __init__( self, lossType: Literal['L1', 'L2', 'MSE'] = 'MSE' ) -> None:
+    def __init__( self, lossType: Literal['L1', 'SmoothL1', 'L2', 'MSE'] = 'MSE' ) -> None:
         super().__init__()
 
         match lossType:
             case 'L1':
                 self.oLoss = nn.L1Loss()
+            case 'SmoothL1':
+                self.oLoss = nn.SmoothL1Loss()
             case 'L2' | 'MSE':
                 self.oLoss = nn.MSELoss()
             case _:
-                raise ValueError('The parameter `lossType` must be either `L1`, `L2` or `MSE`')
+                raise ValueError('The parameter `lossType` must be either `L1`, `SmoothL1`, `L2` or `MSE`')
 
     def forward( self, tYHat: Tensor, tY: Tensor ) -> Tensor:
 
@@ -333,7 +335,7 @@ class Pix2PixScore(nn.Module):
 
 # %% Main Function
 
-def Main( dataSet: str, dataSetUrl: str, imgSize: int, trainSampleRatio: float, valSampleRatio: float, numFiltersBase: int, lossType: Literal['L1', 'L2', 'MSE'], scoreType: Literal['SSIM', 'R2'], batchSize: int, numWorkers: int, numEpochs: int, ηOpt: float, tuβ: Tuple[float, float], weightDecay: float, ηSch: float ) -> None:
+def Main( dataSet: str, dataSetUrl: str, imgSize: int, trainSampleRatio: float, valSampleRatio: float, numFiltersBase: int, lossType: Literal['L1', 'SmoothL1', 'L2', 'MSE'], scoreType: Literal['SSIM', 'R2'], batchSize: int, numWorkers: int, numEpochs: int, ηOpt: float, tuβ: Tuple[float, float], weightDecay: float, ηSch: float ) -> None:
 
     datasetFolderPath = os.path.join(DATA_FOLDER_PATH, dataSet)
     if not os.path.isdir(datasetFolderPath):
