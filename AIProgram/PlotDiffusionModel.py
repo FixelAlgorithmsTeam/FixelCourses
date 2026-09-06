@@ -98,8 +98,7 @@ for t in range(numGridPtsT):
     plt.title(f'Noise Evolution - Step {t+1}')
     plt.axis('off')
     plt.show()
-
-
+    iio.imwrite(f'NoiseEvolution_Step{t+1}.png', np.round(tI * 255).astype(np.uint8))
 
 
 # %% Analyze Data
