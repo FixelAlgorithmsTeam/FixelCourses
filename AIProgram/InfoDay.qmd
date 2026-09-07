@@ -49,7 +49,7 @@ The AI Program was initiative by the industry, asking for a program to counter t
    Consulting, Outsourcing and Training for Algorithms.
  - Algorithm group leader for many years in the defense industry.
  - Specializations: Signal and Image Processing, Computer Vision, Optimization, Estimation, Machine Learning, Deep Learning, ...
- - CTO on 3 Start Up's.
+ - CTO of 3 Start Up's.
  - Teaching: Technion, Rafael, IAI, Samsung, etc...
  - Contact: `royia@technion.ac.il`.
 
@@ -80,8 +80,25 @@ The AI Program was initiative by the industry, asking for a program to counter t
  * Deep Learning - Neural Networks
    * Motivation & Concept.
    * Deep Learning Framework.
+   * Backpropagation.
    * Feed Forward Networks.
    * Training & Regularization.
+   * Auto Encoders.
+:::
+
+## Syllabus {.unlisted auto-animate=true}
+
+:::{style="font-size: 45%;"}
+ * Deep Learning - Neural Networks
+   * Motivation & Concept.
+   * Deep Learning Framework.
+   * Backpropagation.
+   * Feed Forward Networks.
+   * Training & Regularization.
+   * Auto Encoders.
+:::
+
+:::{.incremental style="font-size: 70%;"}
  * Deep Learning for Computer Vision
    * Convolutional Neural Networks (CNN).
    * Signal Classification.
@@ -90,6 +107,46 @@ The AI Program was initiative by the industry, asking for a program to counter t
    * Transfer Learning & Active Learning.
    * Image Classification.
    * Object Detection.
+   * Image Segmentation and Image to Image Translation.
+:::
+
+## Syllabus {.unlisted auto-animate=true}
+
+:::{style="font-size: 45%;"}
+ * Deep Learning - Neural Networks
+   * Motivation & Concept.
+   * Deep Learning Framework.
+   * Backpropagation.
+   * Feed Forward Networks.
+   * Training & Regularization.
+   * Auto Encoders.
+:::
+
+:::{.incremental style="font-size: 70%;"}
+ * Deep Learning for Sequential Data
+   * CNN Models.
+   * The Transformer Architecture.
+   * Sequence Classification.
+:::
+
+## Syllabus {.unlisted auto-animate=true}
+
+:::{style="font-size: 45%;"}
+ * Deep Learning - Neural Networks
+   * Motivation & Concept.
+   * Deep Learning Framework.
+   * Backpropagation.
+   * Feed Forward Networks.
+   * Training & Regularization.
+   * Auto Encoders.
+:::
+
+:::{.incremental style="font-size: 70%;"}
+ * Generative Deep Learning
+   * The Variational Auto Encoder.
+   * Diffusion Models.
+   * Auto Regressive Models.
+   * Multi Modal Models.
 :::
 
 ## Workshops
@@ -101,6 +158,7 @@ The AI Program was initiative by the industry, asking for a program to counter t
  * Processing Text / Image Data.
  * Object Tracking with Large Vision Models (Optional).
  * Contrastive Learning for Object Recognition (Optional).
+ * Sequence to Sequence Models (Optional).
 :::
 
 ## Projects
