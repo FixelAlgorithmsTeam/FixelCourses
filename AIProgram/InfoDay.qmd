@@ -57,22 +57,33 @@ The AI Program was initiative by the industry, asking for a program to counter t
 
 ## Syllabus {auto-animate=true}
 
-:::{.incremental style="font-size: 70%;"}
+:::: {.columns}
+::: {.column width="50%"}
+::: {.incremental}
  * Essentials
-   * Linear Algebra & Optimization.
+   * Linear Algebra
+   * Optimization.
    * Probability & Estimation.
    * _Scientific_ Python.
    * Development Environment.
+:::
+:::
+
+::: {.column width="50%"}
+::: {.incremental}
  * Classic Machine Learning
    * Overview and Concepts.
    * Supervised
      * Classification.
      * Regression.
+     * Ensemble Methods.
    * Unsupervised
      * Clustering.
      * Dimensionality Reduction.
      * Anomaly Detection.
 :::
+:::
+::::
 
 ## Syllabus {.unlisted auto-animate=true}
 
@@ -101,7 +112,6 @@ The AI Program was initiative by the industry, asking for a program to counter t
 :::{.incremental style="font-size: 70%;"}
  * Deep Learning for Computer Vision
    * Convolutional Neural Networks (CNN).
-   * Signal Classification.
    * Architectures.
    * Training Phase & Augmentation.
    * Transfer Learning & Active Learning.
@@ -126,7 +136,8 @@ The AI Program was initiative by the industry, asking for a program to counter t
  * Deep Learning for Sequential Data
    * CNN Models.
    * The Transformer Architecture.
-   * Sequence Classification.
+   * Signal classification.
+   * Sequence (Text) Classification.
 :::
 
 ## Syllabus {.unlisted auto-animate=true}
@@ -146,7 +157,6 @@ The AI Program was initiative by the industry, asking for a program to counter t
    * The Variational Auto Encoder.
    * Diffusion Models.
    * Auto Regressive Models.
-   * Multi Modal Models.
 :::
 
 ## Workshops
@@ -156,6 +166,7 @@ The AI Program was initiative by the industry, asking for a program to counter t
  * Object Detection with YOLO Models.
  * Image Segmentation with U-Net Models.
  * Processing Text / Image Data.
+ * Multi Modal Models.
  * Object Tracking with Large Vision Models (Optional).
  * Contrastive Learning for Object Recognition (Optional).
  * Sequence to Sequence Models (Optional).
