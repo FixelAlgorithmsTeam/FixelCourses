@@ -30,7 +30,7 @@ filters:
 :::{.incremental}
  * {{< iconify pajamas issue-type-objective >}} Setting the _objective_ - Capable _real world_ AI developers / practitioners.
  * {{< iconify fluent people-audience-20-filled >}} Defining the target _audience_.  
- * {{< iconify game-icons team-idea >}} Building the tutoring _team_.
+ * {{< iconify game-icons team-idea >}} Building the course _team_.
  * {{< iconify clarity list-solid >}} Building the _syllabus_.
 :::
 
@@ -49,7 +49,7 @@ The AI Program was initiative by the industry, asking for a program to counter t
    Consulting, Outsourcing and Training for Algorithms.
  - Algorithm group leader for many years in the defense industry.
  - Specializations: Signal and Image Processing, Computer Vision, Optimization, Estimation, Machine Learning, Deep Learning, ...
- - CTO of 3 Start Up's.
+ - Experience in development as a CTO of 3 Start Up's.
  - Teaching: Technion, Rafael, IAI, Samsung, etc...
  - Contact: `royia@technion.ac.il`.
 
@@ -61,10 +61,10 @@ The AI Program was initiative by the industry, asking for a program to counter t
 ::: {.column width="50%"}
 ::: {.incremental}
  * Essentials
-   * Linear Algebra
+   * Linear Algebra.
    * Optimization.
    * Probability & Estimation.
-   * _Scientific_ Python.
+   * _Scientific_ Python: `NumPy`, `SciPy`, `Numba`.
    * Development Environment.
 :::
 :::
@@ -114,10 +114,11 @@ The AI Program was initiative by the industry, asking for a program to counter t
    * Convolutional Neural Networks (CNN).
    * Architectures.
    * Training Phase & Augmentation.
-   * Transfer Learning & Active Learning.
+   * Transfer Learning.
    * Image Classification.
    * Object Detection.
-   * Image Segmentation and Image to Image Translation.
+   * Image Segmentation.
+   * Image to Image Translation.
 :::
 
 ## Syllabus {.unlisted auto-animate=true}
@@ -134,10 +135,11 @@ The AI Program was initiative by the industry, asking for a program to counter t
 
 :::{.incremental style="font-size: 70%;"}
  * Deep Learning for Sequential Data
-   * CNN Models.
+   * CNN Models for 1D Signals.
    * The Transformer Architecture.
-   * Signal classification.
+   * Signal Classification.
    * Sequence (Text) Classification.
+   * Forecasting (Optional).
 :::
 
 ## Syllabus {.unlisted auto-animate=true}
@@ -154,6 +156,8 @@ The AI Program was initiative by the industry, asking for a program to counter t
 
 :::{.incremental style="font-size: 70%;"}
  * Generative Deep Learning
+   * Motivation.
+   * Discriminative vs Generative Models.
    * The Variational Auto Encoder.
    * Diffusion Models.
    * Auto Regressive Models.
@@ -163,10 +167,10 @@ The AI Program was initiative by the industry, asking for a program to counter t
 
 :::{.incremental}
  * Working with Cloud based Virtual Machine.
- * Object Detection with YOLO Models.
+ * Object Detection with YOLO / DETR Models.
  * Image Segmentation with U-Net Models.
  * Processing Text / Image Data.
- * Multi Modal Models.
+ * Multi Modal Models (Optional).
  * Object Tracking with Large Vision Models (Optional).
  * Contrastive Learning for Object Recognition (Optional).
  * Sequence to Sequence Models (Optional).
