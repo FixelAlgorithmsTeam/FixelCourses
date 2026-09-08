@@ -20,6 +20,7 @@ Archive/*
 
 # Archives
 *.7z
+*.8bf
 *.zip
 
 # Media Files
