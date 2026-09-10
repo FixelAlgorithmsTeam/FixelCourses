@@ -351,6 +351,23 @@ def SampleMaps( oModel: nn.Module, oDiff: DiffusionSchedule, tSource: Tensor, ru
 
 # %% Training
 
+def WarmupHoldCosine( numEpochs: int, warmupFrac: float, holdFrac: float, minRatio: float ) -> Callable[[int], float]:
+    # LR multiplier per epoch: linear warmup -> hold at the peak -> cosine decay to `minRatio` of the peak (never reaches zero)
+
+    numWarmup = max(1, round(warmupFrac * numEpochs))
+    numHold   = round(holdFrac * numEpochs)
+    numDecay  = max(1, numEpochs - numWarmup - numHold)
+
+    def hLrRatio( epochIdx: int ) -> float:
+        if epochIdx < numWarmup:
+            return (epochIdx + 1) / numWarmup
+        if epochIdx < numWarmup + numHold:
+            return 1.0
+        decayFrac = min(1.0, (epochIdx - numWarmup - numHold) / numDecay)
+        return minRatio + (1.0 - minRatio) * 0.5 * (1.0 + np.cos(np.pi * decayFrac))
+
+    return hLrRatio
+
 def RunDiffusionEpoch( oModel: nn.Module, oDiff: DiffusionSchedule, dlData, hL: Callable, oOpt, *, oScaler = None, dropProb: float = 0.1 ) -> Tuple[float, Dict[str, float]]:
 
     epochLoss = 0.0
@@ -569,7 +586,7 @@ guidanceScale = 2.0
 # Training
 batchSize = 8
 numWorkers = 4
-numEpochs = 200
+numEpochs = 250
 scoreType = 'R2'
 valEvery = 10
 
@@ -578,10 +595,12 @@ logFolder = 'TrainLog'
 numGridImg = 8
 
 # Optimizer
-ηOpt = 1e-4
+ηOpt = 2e-4 #<! Peak learning rate
 tuβ = (0.9, 0.99)
 weightDecay = 5e-5
-ηSch = 2e-4
+ηMin = 1e-5 #<! Floor of the cosine decay
+warmupFrac = 0.05 #<! Linear warmup, fraction of the epochs
+holdFrac = 0.45 #<! Hold at the peak, fraction of the epochs (the rest is cosine decay)
 
 # %% Main Function
 
@@ -608,7 +627,9 @@ def Main(
     ηOpt: float,
     tuβ: Tuple[float, float],
     weightDecay: float,
-    ηSch: float,
+    ηMin: float,
+    warmupFrac: float,
+    holdFrac: float,
 ) -> None:
 
     datasetFolderPath = os.path.join(DATA_FOLDER_PATH, dataSet)
@@ -627,10 +648,10 @@ def Main(
             TorchVisionTrns.GaussianBlur(7, sigma = (0.1, 1.0)),
             TorchVisionTrns.RandomEqualize(p = 1.0),
             TorchVisionTrns.RandomAutocontrast(p = 1.0),
-            TorchVisionTrns.GaussianNoise(sigma = 0.05),
-            TorchVisionTrns.RandomErasing(p = 1.0, scale = (0.05, 0.15), ratio = (0.5, 2.0), value = 0, inplace = True),
+            # TorchVisionTrns.GaussianNoise(sigma = 0.05),
+            # TorchVisionTrns.RandomErasing(p = 1.0, scale = (0.05, 0.15), ratio = (0.5, 2.0), value = 0, inplace = True),
             TorchVisionTrns.RGB(),
-        ], p = [0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.58]),
+        ], p = [0.05, 0.05, 0.05, 0.05, 0.8]),
     ])
     oTrnsVal = TorchVisionTrns.ToDtype(torch.float32, scale = True)
 
@@ -661,7 +682,7 @@ def Main(
     hL = nn.MSELoss().to(runDevice)
     hS = Pix2PixScore(scoreType = scoreType).to(runDevice)
     oOpt = torch.optim.AdamW(oModel.parameters(), lr = ηOpt, betas = tuβ, weight_decay = weightDecay)
-    oSch = torch.optim.lr_scheduler.OneCycleLR(oOpt, max_lr = ηSch, total_steps = numEpochs, pct_start = 0.1, div_factor = 10, final_div_factor = 20)
+    oSch = torch.optim.lr_scheduler.LambdaLR(oOpt, WarmupHoldCosine(numEpochs, warmupFrac, holdFrac, ηMin / ηOpt))
     oScaler = torch.amp.GradScaler('cuda', enabled = runDevice.type == 'cuda')
 
     TrainDiffusionModel(oModel, oDiff, dlTrain, dlVal, oOpt, numEpochs, hL, hS, oSch = oSch, oScaler = oScaler, dropProb = conditionDropProb, guidanceScale = guidanceScale, valEvery = valEvery, sampleSeed = seedNum, logFolderPath = logFolder, numGridImg = numGridImg)
@@ -672,4 +693,4 @@ if __name__ == '__main__':
     Main(dataSet, dataSetUrl, imgSize, trainNumSamples, valNumSamples,
          baseCh, numBlocks, useSeparable, numDiffSteps, predictType, conditionDropProb, guidanceScale,
          batchSize, numWorkers, numEpochs, scoreType, valEvery, logFolder, numGridImg,
-         ηOpt, tuβ, weightDecay, ηSch)
+         ηOpt, tuβ, weightDecay, ηMin, warmupFrac, holdFrac)

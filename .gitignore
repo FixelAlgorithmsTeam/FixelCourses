@@ -13,6 +13,7 @@ Archive/*
 **/DetectShips/*
 **/HW*/*
 **/wandb/*
+**/TrainLog/*
 
 # Data
 *.csv
