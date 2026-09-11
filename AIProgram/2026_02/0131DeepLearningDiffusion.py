@@ -25,7 +25,7 @@ import torch.nn            as nn
 import torch.nn.functional as F
 from torch import Tensor
 from torch.utils.data import Dataset
-from torchmetrics.functional.image import structural_similarity_index_measure
+from torchmetrics.functional.image import multiscale_structural_similarity_index_measure, structural_similarity_index_measure
 from torchmetrics.functional.regression import r2_score
 from torchvision.io import decode_image
 from torchvision.transforms import v2 as TorchVisionTrns
@@ -150,7 +150,7 @@ class DiffusionSchedule:
         self.vCoefClean = (vBeta * vAlphaPrev.sqrt() / (1 - vAlphaBar)).float().to(runDevice)
         self.vCoefNoisy = (vAlpha.sqrt() * (1 - vAlphaPrev) / (1 - vAlphaBar)).float().to(runDevice)
         self.tMean = torch.tensor(vMean).view(1, -1, 1, 1).to(runDevice)
-        self.dataStd = dataStd
+        self.dataStd = float(dataStd) #<! Plain float so the checkpoint stays loadable with `weights_only = True`
         self.tClampMin = self.Normalize(torch.zeros_like(self.tMean)) #<! Image value 0 in diffusion space
         self.tClampMax = self.Normalize(torch.ones_like(self.tMean)) #<! Image value 1 in diffusion space
 
@@ -249,7 +249,7 @@ class AttentionBlock(nn.Module):
 
 class ConditionalUNet(nn.Module):
     def __init__( self, baseCh: int = 32, timeDim: int = 128, numBlocks: int = 2, *, lChMult: Tuple[int, int, int, int] = (1, 2, 4, 8), useSeparable: bool = False ) -> None:
-        # lChMult: channel multiplier per level (full resolution -> 1/8); every baseCh * mult must be a multiple of 8 (GroupNorm) and the last of 4 (attention heads)
+        # lChMult: channel multiplier per level (full resolution -> 1/8); every baseCh * mult must be a multiple of 8 (GroupNorm) and the last two of 4 (attention heads)
         super().__init__()
 
         ch1, ch2, ch3, ch4 = (baseCh * chMult for chMult in lChMult)
@@ -258,12 +258,14 @@ class ConditionalUNet(nn.Module):
         self.oEnc1 = TimeStage(7, ch1, timeDim, numBlocks, useSeparable = useSeparable)
         self.oEnc2 = TimeStage(ch1, ch2, timeDim, numBlocks, useSeparable = useSeparable)
         self.oEnc3 = TimeStage(ch2, ch3, timeDim, numBlocks, useSeparable = useSeparable)
+        self.oAttnEnc3 = AttentionBlock(ch3) #<! 1/8 resolution (32 x 32 for a 256 input): region consistency, ~16x the bottleneck attention cost
         self.oEnc4 = TimeStage(ch3, ch4, timeDim, numBlocks, useSeparable = useSeparable)
         self.oMid = TimeBlock(ch4, ch4, timeDim, useSeparable = useSeparable)
         self.oAttn = AttentionBlock(ch4)
         self.oUpsample = nn.Upsample(scale_factor = 2, mode = 'bilinear', align_corners = False)
         self.oDec4 = TimeStage(2 * ch4, ch4, timeDim, numBlocks, useSeparable = useSeparable)
         self.oDec3 = TimeStage(ch4 + ch3, ch3, timeDim, numBlocks, useSeparable = useSeparable)
+        self.oAttnDec3 = AttentionBlock(ch3)
         self.oDec2 = TimeStage(ch3 + ch2, ch2, timeDim, numBlocks, useSeparable = useSeparable)
         self.oDec1 = TimeStage(ch2 + ch1, ch1, timeDim, numBlocks, useSeparable = useSeparable)
         self.oOut = nn.Conv2d(ch1, 3, 1)
@@ -278,36 +280,94 @@ class ConditionalUNet(nn.Module):
         tInput = torch.cat((tNoisy, tSource * tPresent, tMask), dim = 1)
         tEnc1 = self.oEnc1(tInput, mTime)
         tEnc2 = self.oEnc2(F.avg_pool2d(tEnc1, 2), mTime)
-        tEnc3 = self.oEnc3(F.avg_pool2d(tEnc2, 2), mTime)
+        tEnc3 = self.oAttnEnc3(self.oEnc3(F.avg_pool2d(tEnc2, 2), mTime))
         tEnc4 = self.oEnc4(F.avg_pool2d(tEnc3, 2), mTime)
         tZ = self.oAttn(self.oMid(F.avg_pool2d(tEnc4, 2), mTime))
-        for tSkip, oBlock in [(tEnc4, self.oDec4), (tEnc3, self.oDec3), (tEnc2, self.oDec2), (tEnc1, self.oDec1)]:
-            tZ = self.oUpsample(tZ)
-            tZ = oBlock(torch.cat((tZ, tSkip), dim = 1), mTime)
+        tZ = self.oDec4(torch.cat((self.oUpsample(tZ), tEnc4), dim = 1), mTime)
+        tZ = self.oAttnDec3(self.oDec3(torch.cat((self.oUpsample(tZ), tEnc3), dim = 1), mTime))
+        tZ = self.oDec2(torch.cat((self.oUpsample(tZ), tEnc2), dim = 1), mTime)
+        tZ = self.oDec1(torch.cat((self.oUpsample(tZ), tEnc1), dim = 1), mTime)
 
         return self.oOut(tZ)
 
 # %% Loss and Score
 
+class Pix2PixLoss(nn.Module):
+    def __init__( self, lossType: Literal['L1', 'SmoothL1', 'L2', 'MSE'] = 'MSE' ) -> None:
+        # Applied to the network output and its target (noise or clean map, per `predictType`)
+        super().__init__()
+
+        match lossType:
+            case 'L1':
+                self.oLoss = nn.L1Loss()
+            case 'SmoothL1':
+                self.oLoss = nn.SmoothL1Loss()
+            case 'L2' | 'MSE':
+                self.oLoss = nn.MSELoss()
+            case _:
+                raise ValueError('The parameter `lossType` must be either `L1`, `SmoothL1`, `L2` or `MSE`')
+
+    def forward( self, tYHat: Tensor, tY: Tensor ) -> Tensor:
+
+        return self.oLoss(tYHat, tY)
+
 def SSIMScore( tYHat: Tensor, tY: Tensor ) -> Tensor:
 
     return structural_similarity_index_measure(tYHat, tY, data_range = 1.0)
+
+def MSSSIMScore( tYHat: Tensor, tY: Tensor ) -> Tensor:
+    # 5 scales with weights (0.045, 0.286, 0.300, 0.236, 0.133): sees region level color / content and tolerates ~1 px shifts, but nearly ignores fine blur / speckle
+
+    return multiscale_structural_similarity_index_measure(tYHat, tY, data_range = 1.0)
 
 def ImageR2Score( tYHat: Tensor, tY: Tensor ) -> Tensor:
 
     return r2_score(tYHat.flatten(), tY.flatten(), multioutput = 'uniform_average')
 
+def TotalVariation( tImg: Tensor ) -> Tensor:
+    # Mean anisotropic TV per image (B x C x H x W -> B): low for piecewise constant images, high for blur free noise / speckle
+
+    tDiffRow = (tImg[:, :, 1:, :] - tImg[:, :, :-1, :]).abs().mean(dim = (1, 2, 3))
+    tDiffCol = (tImg[:, :, :, 1:] - tImg[:, :, :, :-1]).abs().mean(dim = (1, 2, 3))
+
+    return tDiffRow + tDiffCol
+
+def TVAgreementScore( tYHat: Tensor, tY: Tensor ) -> Tensor:
+    # min(r, 1 / r) with r = TV(yHat) / TV(y), in [0, 1]: symmetric in log scale, so "twice the edges" (speckle) and "half the edges" (blur) score the same 0.5
+    # A flat image (r = 0) scores 0, matching the reference's amount of edges scores 1
+
+    vTVHat, vTV = TotalVariation(tYHat), TotalVariation(tY)
+    vRatio      = vTVHat / vTV.clamp(min = 1e-6)
+
+    return torch.minimum(vRatio, 1 / vRatio.clamp(min = 1e-6)).mean()
+
+def MapTVScore( tYHat: Tensor, tY: Tensor ) -> Tensor:
+    # Content (R2), structure (SSIM) and piecewise constant agreement (TV); R2 anchors the score to the right map, TV penalizes blur / speckle
+
+    return (ImageR2Score(tYHat, tY).clamp(0, 1) + SSIMScore(tYHat, tY) + TVAgreementScore(tYHat, tY)) / 3
+
+def MapTVMSScore( tYHat: Tensor, tY: Tensor ) -> Tensor:
+    # As `MapTVScore` with MS-SSIM: the multi scale term covers content / color / small shifts, the TV term covers the sharpness MS-SSIM ignores
+
+    return (ImageR2Score(tYHat, tY).clamp(0, 1) + MSSSIMScore(tYHat, tY) + TVAgreementScore(tYHat, tY)) / 3
+
 class Pix2PixScore(nn.Module):
-    def __init__( self, scoreType: Literal['SSIM', 'R2'] = 'SSIM' ) -> None:
+    def __init__( self, scoreType: Literal['SSIM', 'MSSSIM', 'R2', 'MapTV', 'MapTVMS'] = 'SSIM' ) -> None:
         super().__init__()
 
         match scoreType:
             case 'SSIM':
                 self.hScore = SSIMScore
+            case 'MSSSIM':
+                self.hScore = MSSSIMScore
             case 'R2':
                 self.hScore = ImageR2Score
+            case 'MapTV':
+                self.hScore = MapTVScore
+            case 'MapTVMS':
+                self.hScore = MapTVMSScore
             case _:
-                raise ValueError('The parameter `scoreType` must be either `SSIM` or `R2`')
+                raise ValueError('The parameter `scoreType` must be either `SSIM`, `MSSSIM`, `R2`, `MapTV` or `MapTVMS`')
 
     def forward( self, tYHat: Tensor, tY: Tensor ) -> Tensor:
 
@@ -499,11 +559,18 @@ def EvaluateDiffusionModel( oModel: nn.Module, oDiff: DiffusionSchedule, dlData,
     tSource, tGenerated, tTarget = torch.cat(lSource), torch.cat(lGenerated), torch.cat(lTarget)
     numImg = tTarget.shape[0]
     vImgScore = r2_score(tGenerated.view(numImg, -1).T, tTarget.view(numImg, -1).T, multioutput = 'raw_values') #<! Each image as an output
+    vTVRatio = TotalVariation(tGenerated) / TotalVariation(tTarget).clamp(min = 1e-6) #<! < 1 blur / missing structure, > 1 speckle / blotches
     dDiag = {
         'ImageScores'     : vImgScore.tolist(),
         'ImageScoreMin'   : vImgScore.min().item(),
         'ImageScoreMedian': vImgScore.median().item(),
         'ImageScoreMax'   : vImgScore.max().item(),
+        'R2'              : ImageR2Score(tGenerated, tTarget).item(),
+        'SSIM'            : SSIMScore(tGenerated, tTarget).item(),
+        'MSSSIM'          : MSSSIMScore(tGenerated, tTarget).item(),
+        'TVAgreement'     : TVAgreementScore(tGenerated, tTarget).item(),
+        'TVRatioMedian'   : vTVRatio.median().item(),
+        'TVRatios'        : vTVRatio.tolist(),
         'SaturationFrac'  : ((tGenerated <= 0) | (tGenerated >= 1)).float().mean().item(),
         'GeneratedMean'   : tGenerated.mean(dim = (0, 2, 3)).tolist(),
         'GeneratedStd'    : tGenerated.std(dim = (0, 2, 3)).tolist(),
@@ -530,7 +597,7 @@ def TrainDiffusionModel( oModel: nn.Module, oDiff: DiffusionSchedule, dlTrain, d
     dLog = {
         'Config'         : {'NumEpochs': numEpoch, 'ValEvery': valEvery, 'GuidanceScale': guidanceScale, 'DropProb': dropProb, 'SampleSeed': sampleSeed, 'NumDiffSteps': oDiff.numSteps, 'PredictType': oDiff.predictType, 'TimeBinEdges': np.linspace(0, oDiff.numSteps, numBins + 1, dtype = int).tolist(), 'MapMean': oDiff.tMean.flatten().tolist(), 'MapStd': oDiff.dataStd, 'EmaDecay': oEma.decay if oEma is not None else None},
         'Epoch'          : {'TrainLoss': lTrainLoss, 'ValLoss': lValLoss, 'ValLossShuffled': [], 'LearnRate': lLearnRate, 'EpochTime': [], 'GradNormMean': [], 'GradNormMax': [], 'ClipFraction': [], 'ValLossBins': [], 'ValCleanMseBins': []},
-        'Score'          : {'Epoch': lValEpoch, 'Score': lValScore, 'ImageScoreMin': [], 'ImageScoreMedian': [], 'ImageScoreMax': [], 'SaturationFrac': [], 'GeneratedMean': [], 'GeneratedStd': [], 'TargetMean': [], 'TargetStd': [], 'ImageScores': []},
+        'Score'          : {'Epoch': lValEpoch, 'Score': lValScore, 'ImageScoreMin': [], 'ImageScoreMedian': [], 'ImageScoreMax': [], 'R2': [], 'SSIM': [], 'MSSSIM': [], 'TVAgreement': [], 'TVRatioMedian': [], 'TVRatios': [], 'SaturationFrac': [], 'GeneratedMean': [], 'GeneratedStd': [], 'TargetMean': [], 'TargetStd': [], 'ImageScores': []},
         'TotalTime'      : None,
     }
 
@@ -563,7 +630,7 @@ def TrainDiffusionModel( oModel: nn.Module, oDiff: DiffusionSchedule, dlTrain, d
         print(f' | Train Loss: {trainLoss:7.5f}', end = '')
         print(f' | Val Loss: {valLoss:7.5f} (Wrong Aerial: {valLossShuffled:7.5f})', end = '')
         if scoreEpoch:
-            print(f' | Val Score: {valScr:6.3f} [Min: {dDiag["ImageScoreMin"]:6.3f}, Med: {dDiag["ImageScoreMedian"]:6.3f}, Sat: {dDiag["SaturationFrac"]:.3f}]', end = '')
+            print(f' | Val Score: {valScr:6.3f} [R2: {dDiag["R2"]:6.3f}, SSIM: {dDiag["SSIM"]:.3f}, MS-SSIM: {dDiag["MSSSIM"]:.3f}, TV Ratio: {dDiag["TVRatioMedian"]:.2f}, Sat: {dDiag["SaturationFrac"]:.3f}]', end = '')
         print(f' | Epoch Time: {epochTime:5.2f}', end = '')
 
         if scoreEpoch:
@@ -616,7 +683,8 @@ guidanceScale = 2.0
 batchSize = 8
 numWorkers = 4
 numEpochs = 250
-scoreType = 'R2'
+lossType = 'SmoothL1' #<! 'L1', 'SmoothL1', 'L2' / 'MSE'
+scoreType = 'MapTVMS' #<! 'SSIM', 'MSSSIM', 'R2', 'MapTV' (R2 + SSIM + TV agreement), 'MapTVMS' (R2 + MS-SSIM + TV agreement)
 valEvery = 10
 
 # Logging
@@ -651,7 +719,8 @@ def Main(
     batchSize: int,
     numWorkers: int,
     numEpochs: int,
-    scoreType: Literal['SSIM', 'R2'],
+    lossType: Literal['L1', 'SmoothL1', 'L2', 'MSE'],
+    scoreType: Literal['SSIM', 'MSSSIM', 'R2', 'MapTV', 'MapTVMS'],
     valEvery: int,
     logFolder: str,
     numGridImg: int,
@@ -712,7 +781,7 @@ def Main(
     oModel = ConditionalUNet(baseCh, numBlocks = numBlocks, lChMult = lChMult, useSeparable = useSeparable).to(runDevice)
     print(f'Model parameters: {sum(p.numel() for p in oModel.parameters()) / 1e6:.2f} [M]')
     oDiff = DiffusionSchedule(numDiffSteps, runDevice, vMean = vMapMean, dataStd = mapStd, predictType = predictType)
-    hL = nn.MSELoss().to(runDevice)
+    hL = Pix2PixLoss(lossType = lossType).to(runDevice)
     hS = Pix2PixScore(scoreType = scoreType).to(runDevice)
     oOpt = torch.optim.AdamW(oModel.parameters(), lr = ηOpt, betas = tuβ, weight_decay = weightDecay)
     oSch = torch.optim.lr_scheduler.LambdaLR(oOpt, WarmupHoldCosine(numEpochs, warmupFrac, holdFrac, ηMin / ηOpt))
@@ -726,5 +795,5 @@ def Main(
 if __name__ == '__main__':
     Main(dataSet, dataSetUrl, imgSize, trainNumSamples, valNumSamples,
          baseCh, lChMult, numBlocks, useSeparable, numDiffSteps, predictType, conditionDropProb, guidanceScale,
-         batchSize, numWorkers, numEpochs, scoreType, valEvery, logFolder, numGridImg,
+         batchSize, numWorkers, numEpochs, lossType, scoreType, valEvery, logFolder, numGridImg,
          ηOpt, tuβ, weightDecay, ηMin, warmupFrac, holdFrac, emaDecay)
