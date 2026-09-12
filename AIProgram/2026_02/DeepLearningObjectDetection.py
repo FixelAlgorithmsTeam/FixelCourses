@@ -61,7 +61,7 @@ class ObjectLocalizationDataset( Dataset ):
         if (tX.shape[0] != mB.shape[0]):
             raise ValueError(f'The number of samples in `tX` and `mB` does not match!')
         
-        self.tX         = tX #<! (numSamples, H, W, C)
+        self.tX         = tX #<! (numSamples, C, H, W)
         self.vY         = vY #<! (numSamples, )
         self.mB         = mB #<! (numSamples, 4)
         self.singleY    = singleY #<! Return label and box, or a single vector
