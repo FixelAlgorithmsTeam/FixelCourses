@@ -12,6 +12,7 @@
 import os
 import copy
 import json
+import math
 import random
 import time
 from typing import Callable, Dict, List, Literal, Optional, Tuple
@@ -124,7 +125,7 @@ def ComputeMapStats( dlData ) -> Tuple[Tuple[float, float, float], float]:
         numPix += tY.shape[0] * tY.shape[2] * tY.shape[3]
 
     vMean = vSum / numPix
-    mapStd = np.sqrt(sumSq / (3 * numPix) - vMean.mean().item() ** 2)
+    mapStd = math.sqrt(sumSq / (3 * numPix) - vMean.mean().item() ** 2)
 
     return tuple(vMean.tolist()), float(mapStd)
 
@@ -139,7 +140,7 @@ class DiffusionSchedule:
         self.numSteps = numSteps
         self.predictType = predictType
         vGrid = torch.linspace(0, 1, numSteps + 1, dtype = torch.float64)
-        vCurve = torch.cos((vGrid + 0.008) / 1.008 * np.pi / 2).square()
+        vCurve = torch.cos((vGrid + 0.008) / 1.008 * math.pi / 2).square()
         vBeta = (1 - vCurve[1:] / vCurve[:-1]).clamp(1e-5, 0.999)
         vAlpha = 1 - vBeta
         vAlphaBar = torch.cumprod(vAlpha, dim = 0)
@@ -253,7 +254,7 @@ class ConditionalUNet(nn.Module):
         super().__init__()
 
         ch1, ch2, ch3, ch4 = (baseCh * chMult for chMult in lChMult)
-        self.vFreq = torch.exp(-np.log(10000.0) * torch.arange(timeDim // 2) / (timeDim // 2 - 1))
+        self.vFreq = torch.exp(-math.log(10000.0) * torch.arange(timeDim // 2) / (timeDim // 2 - 1))
         self.oTime = nn.Sequential(nn.Linear(timeDim, timeDim), nn.SiLU(), nn.Linear(timeDim, timeDim))
         self.oEnc1 = TimeStage(7, ch1, timeDim, numBlocks, useSeparable = useSeparable)
         self.oEnc2 = TimeStage(ch1, ch2, timeDim, numBlocks, useSeparable = useSeparable)
@@ -427,7 +428,7 @@ def WarmupHoldCosine( numEpochs: int, warmupFrac: float, holdFrac: float, minRat
         if epochIdx < numWarmup + numHold:
             return 1.0
         decayFrac = min(1.0, (epochIdx - numWarmup - numHold) / numDecay)
-        return minRatio + (1.0 - minRatio) * 0.5 * (1.0 + np.cos(np.pi * decayFrac))
+        return minRatio + (1.0 - minRatio) * 0.5 * (1.0 + math.cos(math.pi * decayFrac))
 
     return hLrRatio
 
@@ -774,13 +775,13 @@ def Main(
     print(f'The training data set contains  : {len(dsTrain):4d} samples.')
     print(f'The validation data set contains: {len(dsVal):4d} samples.')
     print('Computing target map statistics over the training set...', end = '\r')
-    vMapMean, mapStd = ComputeMapStats(dlTrain)
-    print(f'Target map mean (RGB): {vMapMean[0]:.3f}, {vMapMean[1]:.3f}, {vMapMean[2]:.3f}, std: {mapStd:.3f}          ')
+    tuMapMean, mapStd = ComputeMapStats(dlTrain)
+    print(f'Target map mean (RGB): {tuMapMean[0]:.3f}, {tuMapMean[1]:.3f}, {tuMapMean[2]:.3f}, std: {mapStd:.3f}          ')
     print(f'Running on device: {runDevice}')
 
     oModel = ConditionalUNet(baseCh, numBlocks = numBlocks, lChMult = lChMult, useSeparable = useSeparable).to(runDevice)
     print(f'Model parameters: {sum(p.numel() for p in oModel.parameters()) / 1e6:.2f} [M]')
-    oDiff = DiffusionSchedule(numDiffSteps, runDevice, vMean = vMapMean, dataStd = mapStd, predictType = predictType)
+    oDiff = DiffusionSchedule(numDiffSteps, runDevice, vMean = tuMapMean, dataStd = mapStd, predictType = predictType)
     hL = Pix2PixLoss(lossType = lossType).to(runDevice)
     hS = Pix2PixScore(scoreType = scoreType).to(runDevice)
     oOpt = torch.optim.AdamW(oModel.parameters(), lr = ηOpt, betas = tuβ, weight_decay = weightDecay)
