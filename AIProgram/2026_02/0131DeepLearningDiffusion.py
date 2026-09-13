@@ -10,7 +10,6 @@
 # %% Packages
 
 import os
-import copy
 import json
 import math
 import random
@@ -25,6 +24,7 @@ import torch
 import torch.nn            as nn
 import torch.nn.functional as F
 from torch import Tensor
+from torch.optim.swa_utils import AveragedModel, get_ema_multi_avg_fn
 from torch.utils.data import Dataset
 from torchmetrics.functional.image import multiscale_structural_similarity_index_measure, structural_similarity_index_measure
 from torchmetrics.functional.regression import r2_score
@@ -132,11 +132,11 @@ def ComputeMapStats( dlData ) -> Tuple[Tuple[float, float, float], float]:
 # %% Diffusion Schedule
 
 class DiffusionSchedule:
-    def __init__( self, numSteps: int, runDevice: torch.device = torch.device('cpu'), *, vMean: Tuple[float, float, float] = (0.5, 0.5, 0.5), dataStd: float = 0.5, predictType: Literal['Noise', 'Clean'] = 'Noise' ) -> None:
+    def __init__( self, numSteps: int, runDevice: torch.device = torch.device('cpu'), *, tuMean: Tuple[float, float, float] = (0.5, 0.5, 0.5), valStd: float = 0.5, predictType: Literal['Noise', 'Clean'] = 'Noise' ) -> None:
         # Diffusion runs on the normalized target (y - vMean) / dataStd so the data is zero mean like the noise prior; defaults reproduce 2y - 1
         # predictType: what the network outputs, the added noise ('Noise') or the clean map ('Clean'); both give the clean estimate used by `Step`
         if predictType not in ('Noise', 'Clean'):
-            raise ValueError("predictType must be 'Noise' or 'Clean'")
+                    raise ValueError("`predictType` must be 'Noise' or 'Clean'")
         self.numSteps = numSteps
         self.predictType = predictType
         vGrid = torch.linspace(0, 1, numSteps + 1, dtype = torch.float64)
@@ -150,8 +150,8 @@ class DiffusionSchedule:
         self.vVariance = (vBeta * (1 - vAlphaPrev) / (1 - vAlphaBar)).float().to(runDevice)
         self.vCoefClean = (vBeta * vAlphaPrev.sqrt() / (1 - vAlphaBar)).float().to(runDevice)
         self.vCoefNoisy = (vAlpha.sqrt() * (1 - vAlphaPrev) / (1 - vAlphaBar)).float().to(runDevice)
-        self.tMean = torch.tensor(vMean).view(1, -1, 1, 1).to(runDevice)
-        self.dataStd = float(dataStd) #<! Plain float so the checkpoint stays loadable with `weights_only = True`
+        self.tMean = torch.tensor(tuMean).view(1, -1, 1, 1).to(runDevice)
+        self.dataStd = float(valStd) #<! Plain float so the checkpoint stays loadable with `weights_only = True`
         self.tClampMin = self.Normalize(torch.zeros_like(self.tMean)) #<! Image value 0 in diffusion space
         self.tClampMax = self.Normalize(torch.ones_like(self.tMean)) #<! Image value 1 in diffusion space
 
@@ -195,19 +195,12 @@ class DiffusionSchedule:
 # %% Conditional Denoiser
 
 class TimeBlock(nn.Module):
-    def __init__( self, inCh: int, outCh: int, timeDim: int, *, useSeparable: bool = True ) -> None:
+    def __init__( self, inCh: int, outCh: int, timeDim: int ) -> None:
         super().__init__()
 
-        oConv = nn.Conv2d(inCh, outCh, 3, padding = 1)
-        if useSeparable and min(inCh, outCh) >= 64:
-            oConv = nn.Sequential(nn.Conv2d(inCh, inCh, 3, padding = 1, groups = inCh, bias = False), nn.Conv2d(inCh, outCh, 1))
-        oOut = nn.Conv2d(outCh, outCh, 3, padding = 1)
-        if useSeparable and outCh >= 64:
-            oOut = nn.Sequential(nn.Conv2d(outCh, outCh, 3, padding = 1, groups = outCh, bias = False), nn.Conv2d(outCh, outCh, 1))
-
-        self.oConv = nn.Sequential(oConv, nn.GroupNorm(8, outCh), nn.SiLU())
+        self.oConv = nn.Sequential(nn.Conv2d(inCh, outCh, 3, padding = 1), nn.GroupNorm(8, outCh), nn.SiLU())
         self.oTime = nn.Linear(timeDim, outCh)
-        self.oOut = nn.Sequential(nn.GroupNorm(8, outCh), nn.SiLU(), oOut)
+        self.oOut = nn.Sequential(nn.GroupNorm(8, outCh), nn.SiLU(), nn.Conv2d(outCh, outCh, 3, padding = 1))
         self.oSkip = nn.Conv2d(inCh, outCh, 1) if inCh != outCh else nn.Identity()
 
     def forward( self, tX: Tensor, mTime: Tensor ) -> Tensor:
@@ -217,10 +210,10 @@ class TimeBlock(nn.Module):
         return self.oOut(tZ) + self.oSkip(tX)
 
 class TimeStage(nn.Module):
-    def __init__( self, inCh: int, outCh: int, timeDim: int, numBlocks: int, *, useSeparable: bool = True ) -> None:
+    def __init__( self, inCh: int, outCh: int, timeDim: int, numBlocks: int ) -> None:
         super().__init__()
 
-        self.lBlocks = nn.ModuleList([TimeBlock(inCh if ii == 0 else outCh, outCh, timeDim, useSeparable = useSeparable) for ii in range(numBlocks)])
+        self.lBlocks = nn.ModuleList([TimeBlock(inCh if ii == 0 else outCh, outCh, timeDim) for ii in range(numBlocks)])
 
     def forward( self, tX: Tensor, mTime: Tensor ) -> Tensor:
 
@@ -249,26 +242,27 @@ class AttentionBlock(nn.Module):
         return tX + self.oOut(tZ.transpose(-1, -2).reshape(numB, numCh, numRows, numCols))
 
 class ConditionalUNet(nn.Module):
-    def __init__( self, baseCh: int = 32, timeDim: int = 128, numBlocks: int = 2, *, lChMult: Tuple[int, int, int, int] = (1, 2, 4, 8), useSeparable: bool = False ) -> None:
+    def __init__( self, baseCh: int = 32, timeDim: int = 128, numBlocks: int = 2, *, lChMult: Tuple[int, int, int, int] = (1, 2, 4, 8) ) -> None:
         # lChMult: channel multiplier per level (full resolution -> 1/8); every baseCh * mult must be a multiple of 8 (GroupNorm) and the last two of 4 (attention heads)
         super().__init__()
 
+        self.dConfig = {'baseCh': baseCh, 'timeDim': timeDim, 'numBlocks': numBlocks, 'lChMult': tuple(lChMult)}
         ch1, ch2, ch3, ch4 = (baseCh * chMult for chMult in lChMult)
         self.vFreq = torch.exp(-math.log(10000.0) * torch.arange(timeDim // 2) / (timeDim // 2 - 1))
         self.oTime = nn.Sequential(nn.Linear(timeDim, timeDim), nn.SiLU(), nn.Linear(timeDim, timeDim))
-        self.oEnc1 = TimeStage(7, ch1, timeDim, numBlocks, useSeparable = useSeparable)
-        self.oEnc2 = TimeStage(ch1, ch2, timeDim, numBlocks, useSeparable = useSeparable)
-        self.oEnc3 = TimeStage(ch2, ch3, timeDim, numBlocks, useSeparable = useSeparable)
+        self.oEnc1 = TimeStage(7, ch1, timeDim, numBlocks)
+        self.oEnc2 = TimeStage(ch1, ch2, timeDim, numBlocks)
+        self.oEnc3 = TimeStage(ch2, ch3, timeDim, numBlocks)
         self.oAttnEnc3 = AttentionBlock(ch3) #<! 1/8 resolution (32 x 32 for a 256 input): region consistency, ~16x the bottleneck attention cost
-        self.oEnc4 = TimeStage(ch3, ch4, timeDim, numBlocks, useSeparable = useSeparable)
-        self.oMid = TimeBlock(ch4, ch4, timeDim, useSeparable = useSeparable)
+        self.oEnc4 = TimeStage(ch3, ch4, timeDim, numBlocks)
+        self.oMid = TimeBlock(ch4, ch4, timeDim)
         self.oAttn = AttentionBlock(ch4)
         self.oUpsample = nn.Upsample(scale_factor = 2, mode = 'bilinear', align_corners = False)
-        self.oDec4 = TimeStage(2 * ch4, ch4, timeDim, numBlocks, useSeparable = useSeparable)
-        self.oDec3 = TimeStage(ch4 + ch3, ch3, timeDim, numBlocks, useSeparable = useSeparable)
+        self.oDec4 = TimeStage(2 * ch4, ch4, timeDim, numBlocks)
+        self.oDec3 = TimeStage(ch4 + ch3, ch3, timeDim, numBlocks)
         self.oAttnDec3 = AttentionBlock(ch3)
-        self.oDec2 = TimeStage(ch3 + ch2, ch2, timeDim, numBlocks, useSeparable = useSeparable)
-        self.oDec1 = TimeStage(ch2 + ch1, ch1, timeDim, numBlocks, useSeparable = useSeparable)
+        self.oDec2 = TimeStage(ch3 + ch2, ch2, timeDim, numBlocks)
+        self.oDec1 = TimeStage(ch2 + ch1, ch1, timeDim, numBlocks)
         self.oOut = nn.Conv2d(ch1, 3, 1)
 
     def forward( self, tNoisy: Tensor, vTime: Tensor, tSource: Tensor, vCondition: Tensor ) -> Tensor:
@@ -403,8 +397,7 @@ def SampleMaps( oModel: nn.Module, oDiff: DiffusionSchedule, tSource: Tensor, ru
     vSaveSteps = np.linspace(oDiff.numSteps, 0, numFrames, dtype = int)
     for stepIdx in reversed(range(oDiff.numSteps)):
         vTime = torch.full((len(tSource),), stepIdx, device = runDevice, dtype = torch.long)
-        with torch.autocast(device_type = runDevice.type, enabled = runDevice.type == 'cuda'):
-            tPred = PredictGuided(oModel, tNoisy, vTime, tSource, guidanceScale)
+        tPred = PredictGuided(oModel, tNoisy, vTime, tSource, guidanceScale)
         tNoise = torch.randn(tNoisy.shape, device = runDevice, generator = oGen) if stepIdx > 0 else torch.zeros_like(tNoisy)
         tNoisy = oDiff.Step(tNoisy, tPred, stepIdx, tNoise)
         if stepIdx in vSaveSteps:
@@ -415,43 +408,7 @@ def SampleMaps( oModel: nn.Module, oDiff: DiffusionSchedule, tSource: Tensor, ru
 
 # %% Training
 
-def WarmupHoldCosine( numEpochs: int, warmupFrac: float, holdFrac: float, minRatio: float ) -> Callable[[int], float]:
-    # LR multiplier per epoch: linear warmup -> hold at the peak -> cosine decay to `minRatio` of the peak (never reaches zero)
-
-    numWarmup = max(1, round(warmupFrac * numEpochs))
-    numHold   = round(holdFrac * numEpochs)
-    numDecay  = max(1, numEpochs - numWarmup - numHold)
-
-    def hLrRatio( epochIdx: int ) -> float:
-        if epochIdx < numWarmup:
-            return (epochIdx + 1) / numWarmup
-        if epochIdx < numWarmup + numHold:
-            return 1.0
-        decayFrac = min(1.0, (epochIdx - numWarmup - numHold) / numDecay)
-        return minRatio + (1.0 - minRatio) * 0.5 * (1.0 + math.cos(math.pi * decayFrac))
-
-    return hLrRatio
-
-class ModelEma:
-    def __init__( self, oModel: nn.Module, decay: float = 0.9995 ) -> None:
-        # Exponential moving average of the weights; the decay ramps up from 0.1 so the first updates do not anchor the average to the random init
-
-        self.oModel = copy.deepcopy(oModel).eval()
-        for tParam in self.oModel.parameters():
-            tParam.requires_grad_(False)
-        self.decay = decay
-        self.numUpdates = 0
-
-    @torch.no_grad()
-    def Update( self, oModel: nn.Module ) -> None:
-
-        self.numUpdates += 1
-        decay = min(self.decay, (1 + self.numUpdates) / (10 + self.numUpdates))
-        lEma = list(self.oModel.parameters())
-        lParam = [tParam.detach() for tParam in oModel.parameters()]
-        torch._foreach_lerp_(lEma, lParam, 1 - decay) #<! ema = decay * ema + (1 - decay) * param
-
-def RunDiffusionEpoch( oModel: nn.Module, oDiff: DiffusionSchedule, dlData, hL: Callable, oOpt, *, oScaler = None, oEma: Optional[ModelEma] = None, dropProb: float = 0.1 ) -> Tuple[float, Dict[str, float]]:
+def RunDiffusionEpoch( oModel: nn.Module, oDiff: DiffusionSchedule, dlData, hL: Callable, oOpt, *, oEma: Optional[AveragedModel] = None, dropProb: float = 0.1 ) -> Tuple[float, Dict[str, float]]:
 
     epochLoss = 0.0
     numSamples = 0
@@ -469,22 +426,14 @@ def RunDiffusionEpoch( oModel: nn.Module, oDiff: DiffusionSchedule, dlData, hL: 
         tNoisy = oDiff.AddNoise(tY, vTime, tNoise)
         vCondition = (torch.rand(batchSize, device = runDevice) >= dropProb).float()
 
-        with torch.autocast(device_type = runDevice.type, enabled = runDevice.type == 'cuda'):
-            tPred = oModel(tNoisy, vTime, tX, vCondition)
+        tPred = oModel(tNoisy, vTime, tX, vCondition)
         valLoss = hL(tPred.float(), oDiff.Target(tY, tNoise))
         oOpt.zero_grad()
-        if oScaler is not None:
-            oScaler.scale(valLoss).backward()
-            oScaler.unscale_(oOpt)
-            gradNorm = nn.utils.clip_grad_norm_(oModel.parameters(), 1.0).item() #<! Norm before clipping
-            oScaler.step(oOpt)
-            oScaler.update()
-        else:
-            valLoss.backward()
-            gradNorm = nn.utils.clip_grad_norm_(oModel.parameters(), 1.0).item()
-            oOpt.step()
+        valLoss.backward()
+        gradNorm = nn.utils.clip_grad_norm_(oModel.parameters(), 1.0).item()
+        oOpt.step()
         if oEma is not None:
-            oEma.Update(oModel)
+            oEma.update_parameters(oModel)
 
         gradNormSum += gradNorm
         gradNormMax = max(gradNormMax, gradNorm)
@@ -524,9 +473,8 @@ def EvaluateLoss( oModel: nn.Module, oDiff: DiffusionSchedule, dlData, hL: Calla
         vCondition = (torch.rand(batchSize, device = runDevice, generator = oGen) >= dropProb).float()
         tTarget = oDiff.Target(tY, tNoise)
 
-        with torch.autocast(device_type = runDevice.type, enabled = runDevice.type == 'cuda'):
-            tPred = oModel(tNoisy, vTime, tX, vCondition)
-            tPredShuffled = oModel(tNoisy, vTime, tX.roll(1, dims = 0), vCondition) #<! Each map paired with another image's aerial
+        tPred = oModel(tNoisy, vTime, tX, vCondition)
+        tPredShuffled = oModel(tNoisy, vTime, tX.roll(1, dims = 0), vCondition) #<! Each map paired with another image's aerial
         epochLoss += batchSize * hL(tPred.float(), tTarget).item()
         epochLossShuffled += batchSize * hL(tPredShuffled.float(), tTarget).item()
         numSamples += batchSize
@@ -583,20 +531,20 @@ def EvaluateDiffusionModel( oModel: nn.Module, oDiff: DiffusionSchedule, dlData,
 
     return hS(tGenerated, tTarget).item(), dDiag, tGrid
 
-def TrainDiffusionModel( oModel: nn.Module, oDiff: DiffusionSchedule, dlTrain, dlVal, oOpt, numEpoch: int, hL: Callable, hS: Callable, *, oSch = None, oScaler = None, oEma: Optional[ModelEma] = None, dropProb: float = 0.1, guidanceScale: float = 2.0, valEvery: int = 5, sampleSeed: int = 512, logFolderPath: str = 'TrainLog', numGridImg: int = 8 ) -> Tuple[nn.Module, List[float], List[float], List[int], List[float], List[float]]:
+def TrainDiffusionModel( oModel: nn.Module, oDiff: DiffusionSchedule, dlTrain, dlVal, oOpt, numEpoch: int, hL: Callable, hS: Callable, *, oSch = None, oEma: Optional[AveragedModel] = None, emaDecay: Optional[float] = None, imgSize: int = 256, dropProb: float = 0.1, guidanceScale: float = 2.0, valEvery: int = 5, sampleSeed: int = 512, logFolderPath: str = 'TrainLog', numGridImg: int = 8 ) -> Tuple[nn.Module, List[float], List[float], List[int], List[float], List[float]]:
     # With `oEma`, validation, scoring and the checkpoint use the averaged weights; the live weights keep training
 
     if valEvery < 1:
         raise ValueError('valEvery must be positive')
     os.makedirs(logFolderPath, exist_ok = True)
-    oModelEval = oEma.oModel if oEma is not None else oModel
+    oModelEval = oEma.module if oEma is not None else oModel
     lTrainLoss, lValLoss, lLearnRate = [], [], []
     lValEpoch, lValScore = [], []
     bestScore = -float('inf')
     totalStartTime = time.time()
     numBins = 4
     dLog = {
-        'Config'         : {'NumEpochs': numEpoch, 'ValEvery': valEvery, 'GuidanceScale': guidanceScale, 'DropProb': dropProb, 'SampleSeed': sampleSeed, 'NumDiffSteps': oDiff.numSteps, 'PredictType': oDiff.predictType, 'TimeBinEdges': np.linspace(0, oDiff.numSteps, numBins + 1, dtype = int).tolist(), 'MapMean': oDiff.tMean.flatten().tolist(), 'MapStd': oDiff.dataStd, 'EmaDecay': oEma.decay if oEma is not None else None},
+        'Config'         : {'NumEpochs': numEpoch, 'ValEvery': valEvery, 'GuidanceScale': guidanceScale, 'DropProb': dropProb, 'SampleSeed': sampleSeed, 'NumDiffSteps': oDiff.numSteps, 'PredictType': oDiff.predictType, 'TimeBinEdges': np.linspace(0, oDiff.numSteps, numBins + 1, dtype = int).tolist(), 'MapMean': oDiff.tMean.flatten().tolist(), 'MapStd': oDiff.dataStd, 'EmaDecay': emaDecay if oEma is not None else None},
         'Epoch'          : {'TrainLoss': lTrainLoss, 'ValLoss': lValLoss, 'ValLossShuffled': [], 'LearnRate': lLearnRate, 'EpochTime': [], 'GradNormMean': [], 'GradNormMax': [], 'ClipFraction': [], 'ValLossBins': [], 'ValCleanMseBins': []},
         'Score'          : {'Epoch': lValEpoch, 'Score': lValScore, 'ImageScoreMin': [], 'ImageScoreMedian': [], 'ImageScoreMax': [], 'R2': [], 'SSIM': [], 'MSSSIM': [], 'TVAgreement': [], 'TVRatioMedian': [], 'TVRatios': [], 'SaturationFrac': [], 'GeneratedMean': [], 'GeneratedStd': [], 'TargetMean': [], 'TargetStd': [], 'ImageScores': []},
         'TotalTime'      : None,
@@ -605,7 +553,7 @@ def TrainDiffusionModel( oModel: nn.Module, oDiff: DiffusionSchedule, dlTrain, d
     for epochIdx in range(numEpoch):
         startTime = time.time()
         learnRate = oOpt.param_groups[0]['lr']
-        trainLoss, dGrad = RunDiffusionEpoch(oModel, oDiff, dlTrain, hL, oOpt, oScaler = oScaler, oEma = oEma, dropProb = dropProb)
+        trainLoss, dGrad = RunDiffusionEpoch(oModel, oDiff, dlTrain, hL, oOpt, oEma = oEma, dropProb = dropProb)
         valLoss, valLossShuffled, dBins = EvaluateLoss(oModelEval, oDiff, dlVal, hL, dropProb = dropProb, sampleSeed = sampleSeed, numBins = numBins)
         scoreEpoch = (epochIdx + 1) % valEvery == 0
         if scoreEpoch:
@@ -642,9 +590,9 @@ def TrainDiffusionModel( oModel: nn.Module, oDiff: DiffusionSchedule, dlTrain, d
         if scoreEpoch and valScr > bestScore:
             bestScore = valScr
             try:
-                dCheckPoint = {'Model': oModelEval.state_dict(), 'Optimizer': oOpt.state_dict(), 'MapMean': oDiff.tMean.flatten().tolist(), 'MapStd': oDiff.dataStd, 'PredictType': oDiff.predictType}
-                if oEma is not None:
-                    dCheckPoint['ModelRaw'] = oModel.state_dict() #<! Live weights, needed to resume training
+                dCheckPoint = {'Model': oModelEval.state_dict(), 'Optimizer': oOpt.state_dict(), 'TuMapMean': tuple(oDiff.tMean.flatten().tolist()), 'MapStd': oDiff.dataStd, 'PredictType': oDiff.predictType}
+                dCheckPoint['ModelConfig'] = oModelEval.dConfig.copy()
+                dCheckPoint['InferenceConfig'] = {'numDiffSteps': oDiff.numSteps, 'imgSize': imgSize, 'guidanceScale': guidanceScale}
                 if oSch is not None:
                     dCheckPoint['Scheduler'] = oSch.state_dict()
                 torch.save(dCheckPoint, 'BestModel.pt')
@@ -674,7 +622,6 @@ valNumSamples = 32
 baseCh = 32
 lChMult = (2, 3, 6, 8) #<! Channels per level: 64 / 96 / 192 / 256; the 64 x 64 level is widened, the 16 x 16 bottleneck is unchanged
 numBlocks = 2
-useSeparable = False
 numDiffSteps = 200
 predictType = 'Clean'
 conditionDropProb = 0.1
@@ -712,7 +659,6 @@ def Main(
     baseCh: int,
     lChMult: Tuple[int, int, int, int],
     numBlocks: int,
-    useSeparable: bool,
     numDiffSteps: int,
     predictType: Literal['Noise', 'Clean'],
     conditionDropProb: float,
@@ -779,22 +725,34 @@ def Main(
     print(f'Target map mean (RGB): {tuMapMean[0]:.3f}, {tuMapMean[1]:.3f}, {tuMapMean[2]:.3f}, std: {mapStd:.3f}          ')
     print(f'Running on device: {runDevice}')
 
-    oModel = ConditionalUNet(baseCh, numBlocks = numBlocks, lChMult = lChMult, useSeparable = useSeparable).to(runDevice)
+    oModel = ConditionalUNet(baseCh, numBlocks = numBlocks, lChMult = lChMult).to(runDevice)
     print(f'Model parameters: {sum(p.numel() for p in oModel.parameters()) / 1e6:.2f} [M]')
-    oDiff = DiffusionSchedule(numDiffSteps, runDevice, vMean = tuMapMean, dataStd = mapStd, predictType = predictType)
+    oDiff = DiffusionSchedule(numDiffSteps, runDevice, tuMean = tuMapMean, valStd = mapStd, predictType = predictType)
     hL = Pix2PixLoss(lossType = lossType).to(runDevice)
     hS = Pix2PixScore(scoreType = scoreType).to(runDevice)
     oOpt = torch.optim.AdamW(oModel.parameters(), lr = ηOpt, betas = tuβ, weight_decay = weightDecay)
-    oSch = torch.optim.lr_scheduler.LambdaLR(oOpt, WarmupHoldCosine(numEpochs, warmupFrac, holdFrac, ηMin / ηOpt))
-    oScaler = torch.amp.GradScaler('cuda', enabled = runDevice.type == 'cuda')
-    oEma = ModelEma(oModel, emaDecay) if emaDecay > 0 else None
+    numWarmup = max(1, round(warmupFrac * numEpochs))
+    numHold   = round(holdFrac * numEpochs)
+    numDecay  = max(1, numEpochs - numWarmup - numHold)
+    oSch = torch.optim.lr_scheduler.SequentialLR(
+        oOpt,
+        schedulers = [
+            torch.optim.lr_scheduler.LinearLR(oOpt, start_factor = 1 / numWarmup, end_factor = 1.0, total_iters = max(1, numWarmup - 1)),
+            torch.optim.lr_scheduler.ConstantLR(oOpt, factor = 1.0, total_iters = numHold),
+            torch.optim.lr_scheduler.CosineAnnealingLR(oOpt, T_max = numDecay, eta_min = ηMin),
+        ],
+        milestones = [numWarmup, numWarmup + numHold],
+    )
+    oEma = AveragedModel(oModel, multi_avg_fn = get_ema_multi_avg_fn(emaDecay)).eval() if emaDecay > 0 else None
+    if oEma is not None:
+        oEma.requires_grad_(False)
 
-    TrainDiffusionModel(oModel, oDiff, dlTrain, dlVal, oOpt, numEpochs, hL, hS, oSch = oSch, oScaler = oScaler, oEma = oEma, dropProb = conditionDropProb, guidanceScale = guidanceScale, valEvery = valEvery, sampleSeed = seedNum, logFolderPath = logFolder, numGridImg = numGridImg)
+    TrainDiffusionModel(oModel, oDiff, dlTrain, dlVal, oOpt, numEpochs, hL, hS, oSch = oSch, oEma = oEma, emaDecay = emaDecay, imgSize = imgSize, dropProb = conditionDropProb, guidanceScale = guidanceScale, valEvery = valEvery, sampleSeed = seedNum, logFolderPath = logFolder, numGridImg = numGridImg)
 
 # %% Main
 
 if __name__ == '__main__':
     Main(dataSet, dataSetUrl, imgSize, trainNumSamples, valNumSamples,
-         baseCh, lChMult, numBlocks, useSeparable, numDiffSteps, predictType, conditionDropProb, guidanceScale,
+         baseCh, lChMult, numBlocks, numDiffSteps, predictType, conditionDropProb, guidanceScale,
          batchSize, numWorkers, numEpochs, lossType, scoreType, valEvery, logFolder, numGridImg,
          ηOpt, tuβ, weightDecay, ηMin, warmupFrac, holdFrac, emaDecay)
