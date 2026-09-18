@@ -309,9 +309,9 @@ def RunEpoch( oModel: nn.Module, dlData: DataLoader, hL: Callable, hS: Callable,
             numSamples += batchSize
             oModel.train(trainMode) #<! Restore original mode
 
-        print(f'\r{"Train" if trainMode else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}, Loss: {valLoss:.6f}', end = '')
+        print(f'\r{"Train" if trainMode else "Val"} - Iteration: {(ii + 1):3d} / {numBatches}, Loss: {valLoss:.6f}', end = '', flush = True)
     
-    print('', end = '\r')
+    print('\r' + ' ' * 80, end = '\r', flush = True)
             
     return epochLoss / numSamples, epochScore / numSamples
 
