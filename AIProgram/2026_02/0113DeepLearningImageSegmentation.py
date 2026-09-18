@@ -131,7 +131,7 @@ dCls       = {0: 'None', 1: 'Scratch', 2: 'Stain', 3: 'Oil'}
 tuImgSize  = (320, 576)
 
 # Model
-numFiltersBase = 4
+numFiltersBase = 8
 weightSeg      = 3.0
 weightCls      = 1.0
 segThr         = 0.5
@@ -139,14 +139,14 @@ segThr         = 0.5
 # Training
 trainSampleRatio = 0.9
 batchSize        = 8
-numWorkers       = 4
-numEpochs        = 35
+numWorkers       = 8
+numEpochs        = 50
 
 # Optimizer
 ηOpt        = 1e-4
 tuβ         = (0.9, 0.99)
 weightDecay = 5e-5
-ηSch        = 7.5e-5
+ηSch        = 7.5e-4
 
 # %% Model
 
