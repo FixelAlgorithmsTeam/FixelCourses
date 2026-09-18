@@ -305,8 +305,30 @@ def Main( numSamplesTrain: int, numSamplesVal: int, tuImgSize: Tuple[int, int, i
 
     _, lTrainLoss, lTrainScore, lValLoss, lValScore, lLearnRate = TrainModel(oModel, dlTrain, dlVal, oOpt, numEpochs, hL, hS, oSch = oSch)
 
+    # Update the saved data with hyper parameters and training history
     dCheckPoint = torch.load('BestModel.pt', map_location = 'cpu', weights_only = True)
     dCheckPoint.update({
+        'ModelParams': {'numClasses': numCls, 'gridSize': gridSize},
+        'TrainParams': {
+            'numSamplesTrain': numSamplesTrain,
+            'numSamplesVal': numSamplesVal,
+            'tuImgSize': tuImgSize,
+            'maxObj': maxObj,
+            'weightObj': weightObj,
+            'weightReg': weightReg,
+            'weightCls': weightCls,
+            'probThr': probThr,
+            'iouThr': iouThr,
+            'labelSmoothing': labelSmoothing,
+            'batchSize': batchSize,
+            'numWorkers': numWorkers,
+            'numEpochs': numEpochs,
+            'learnRate': learnRate,
+            'tuBetas': tuBetas,
+            'weightDecay': weightDecay,
+            'maxLearnRate': maxLearnRate,
+            'seedNum': seedNum,
+        },
         'lTrainLoss': lTrainLoss,
         'lTrainScore': lTrainScore,
         'lValLoss': lValLoss,
