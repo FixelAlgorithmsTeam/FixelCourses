@@ -49,11 +49,11 @@ Why _Velocity_? Writing $a_t = \cos \phi_t$ and $b_t = \sin \phi_t$ gives $\bold
 
 Each prediction can be converted into a clean-map estimate for the same reverse update:
 
-| Variant | Training Target | Clean-Map Estimate | MSE Weight $w_t$ |
-|---------|-----------------|--------------------|------------------|
-| Noise | $\boldsymbol{\epsilon}$ | $\left( \boldsymbol{y}_t - b_t \hat{\boldsymbol{\epsilon}} \right) / a_t$ | $\mathrm{SNR}_t$ |
-| Clean | $\boldsymbol{y}_0$ | $\hat{\boldsymbol{y}}_0$ | $1$ |
-| Velocity | $\boldsymbol{v}_t$ | $a_t \boldsymbol{y}_t - b_t \hat{\boldsymbol{v}}_t$ | $1 + \mathrm{SNR}_t$ |
+| Variant  | Training Target         | Clean-Map Estimate                                                        | MSE Weight $w_t$     |
+| -------- | ----------------------- | ------------------------------------------------------------------------- | -------------------- |
+| Noise    | $\boldsymbol{\epsilon}$ | $\left( \boldsymbol{y}_t - b_t \hat{\boldsymbol{\epsilon}} \right) / a_t$ | $\mathrm{SNR}_t$     |
+| Clean    | $\boldsymbol{y}_0$      | $\hat{\boldsymbol{y}}_0$                                                  | $1$                  |
+| Velocity | $\boldsymbol{v}_t$      | $a_t \boldsymbol{y}_t - b_t \hat{\boldsymbol{v}}_t$                       | $1 + \mathrm{SNR}_t$ |
 
 Here $\mathrm{SNR}_t = a_t^2 / b_t^2$ is the signal-to-noise ratio. For $0 < \bar\alpha_t < 1$, MSE on each target equals $w_t {\left\| \hat{\boldsymbol{y}}_0 - \boldsymbol{y}_0 \right\|}_2^2$ for its corresponding clean-map estimate.
 
@@ -112,13 +112,13 @@ The guided estimate is used in the next reverse step. These are predictions for 
 
 ```mermaid
 flowchart LR
-    State[Noisy map and time step] --> Cond[U-Net with aerial image]
-    State --> Uncond[Same U-Net without aerial image]
-    Cond --> CFG[Combine predictions]
+    State[Noisy map and time step] --> Cond[U-Net with Aerial Image]
+    State --> Uncond[U-Net without Aerial Image]
+    Cond --> CFG[Combine Predictions]
     Uncond --> CFG
-    CFG --> Step[DDPM reverse step]
+    CFG --> Step[DDPM Reverse Step]
     State --> Step
-    Step --> Next[Next map state]
+    Step --> Next[Next Map State]
 ```
 
 * <font color='brown'>(**#**)</font> `guidanceScale` changes sampling, not the trained weights. Stronger guidance can introduce artifacts and need not improve accuracy.
