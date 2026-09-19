@@ -50,7 +50,7 @@ Why _Velocity_? Writing $a_t = \cos \phi_t$ and $b_t = \sin \phi_t$ gives $\bold
 Each prediction can be converted into a clean-map estimate for the same reverse update:
 
 | Variant  | Training Target         | Clean-Map Estimate                                                        | MSE Weight $w_t$     |
-| -------- | ----------------------- | ------------------------------------------------------------------------- | -------------------- |
+|----------|-------------------------|---------------------------------------------------------------------------|----------------------|
 | Noise    | $\boldsymbol{\epsilon}$ | $\left( \boldsymbol{y}_t - b_t \hat{\boldsymbol{\epsilon}} \right) / a_t$ | $\mathrm{SNR}_t$     |
 | Clean    | $\boldsymbol{y}_0$      | $\hat{\boldsymbol{y}}_0$                                                  | $1$                  |
 | Velocity | $\boldsymbol{v}_t$      | $a_t \boldsymbol{y}_t - b_t \hat{\boldsymbol{v}}_t$                       | $1 + \mathrm{SNR}_t$ |
