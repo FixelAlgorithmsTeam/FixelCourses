@@ -105,14 +105,14 @@ probThr        = 0.5
 iouThr         = 0.5
 labelSmoothing = 0.1
 
-batchSize  = 256
+batchSize  = 128
 numWorkers = 6
 numEpochs  = 35
 
 learnRate    = 1e-5
 tuBetas      = (0.9, 0.99)
 weightDecay  = 1e-5
-maxLearnRate = 7.5e-4
+maxLearnRate = 2.5e-3
 
 # %% Model
 
