@@ -96,7 +96,7 @@ seedNum = 512
 numSamplesTrain = 30_000
 numSamplesVal   = 10_000
 maxObj          = 3
-gridSize        = 5
+gridSize        = 8
 
 weightObj      = 1.0
 weightReg      = 1.0
@@ -106,8 +106,8 @@ iouThr         = 0.5
 labelSmoothing = 0.1
 
 batchSize  = 128
-numWorkers = 6
-numEpochs  = 35
+numWorkers = 8
+numEpochs  = 75
 
 learnRate    = 1e-5
 tuBetas      = (0.9, 0.99)
