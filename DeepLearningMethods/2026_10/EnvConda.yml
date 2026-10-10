@@ -1,0 +1,45 @@
+name: DeepLearningMethods
+channels:
+  - conda-forge
+dependencies:
+  - python=3.14
+  - numpy
+  - scipy
+  - pandas
+# The package `pyarrow` required for `parquet` files support in Pandas 
+  - pyarrow
+# The package `tabulate` required for `dfA.to_markdown()` in Pandas 
+  - tabulate
+  - numba
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - cvxpy
+  - scikit-learn
+  - xgboost
+  - lightgbm
+  - nltk
+  - umap-learn
+  - kneed 
+  - pytorch
+  - torchvision
+  - torchcodec 
+  - torchmetrics
+  - faster-coco-eval
+  - torchinfo
+# The package `torchvista` visualizes of PyTorch models 
+  - torchvista
+  - shap
+  - scikit-image
+  - autograd
+  - tensorboard
+  - matplotlib
+  - seaborn
+  - plotly
+# The package `anywidget` required for Plotly's widgets 
+  - anywidget
+  - graphviz
+  - pydot
+  - distinctipy
+  - gdown
+  - onedrivedownloader
