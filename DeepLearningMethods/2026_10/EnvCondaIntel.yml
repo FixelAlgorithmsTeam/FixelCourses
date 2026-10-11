@@ -23,7 +23,7 @@ dependencies:
   - nltk
   - umap-learn
   - kneed 
-  - pytorch==2.14.x
+  - pytorch
   - torchvision
   - torchcodec 
   - torchmetrics
@@ -31,7 +31,6 @@ dependencies:
   - torchinfo
 # The package `torchvista` visualizes of PyTorch models 
   - torchvista
-  - shap
   - scikit-image
   - autograd
   - tensorboard

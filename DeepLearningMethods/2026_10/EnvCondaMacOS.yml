@@ -2,13 +2,16 @@ name: DeepLearningMethods
 channels:
   - conda-forge
 dependencies:
-  - python=3.13
+  - python=3.14
   - blas=*=accelerate
   - libblas=*=*accelerate
   - numpy
   - scipy
   - pandas
+# The package `pyarrow` required for `parquet` files support in Pandas 
   - pyarrow
+# The package `tabulate` required for `dfA.to_markdown()` in Pandas 
+  - tabulate
   - numba
   - jupyter
   - ipykernel
@@ -22,13 +25,13 @@ dependencies:
   - kneed 
   - pytorch
   - torchvision
+  - torchcodec 
   - torchmetrics
+  - faster-coco-eval
   - torchinfo
 # The package `torchvista` visualizes of PyTorch models 
   - torchvista
-  - shap
   - scikit-image
-  - opencv
   - autograd
   - tensorboard
   - matplotlib
@@ -36,8 +39,6 @@ dependencies:
   - plotly
 # The package `anywidget` required for Plotly's widgets 
   - anywidget
-# The package `tabulate` required for `dfA.to_markdown()` in Pandas 
-  - tabulate
   - graphviz
   - pydot
   - distinctipy

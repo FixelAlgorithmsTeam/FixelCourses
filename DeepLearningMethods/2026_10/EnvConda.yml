@@ -29,7 +29,6 @@ dependencies:
   - torchinfo
 # The package `torchvista` visualizes of PyTorch models 
   - torchvista
-  - shap
   - scikit-image
   - autograd
   - tensorboard
