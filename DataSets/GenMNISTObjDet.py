@@ -35,6 +35,8 @@ from sklearn.datasets import fetch_openml
 # Optimization
 
 # Miscellaneous
+from datetime import datetime
+import json
 import os
 from platform import python_version
 import random
@@ -140,6 +142,28 @@ def GenMNISTObjDetDataset( dirPath: str, numSamples: int, imgSize: int, maxSizeD
             ski.io.imsave(os.path.join(dirPath, sampleName + '.png'), mImg, check_contrast = False)
             with open(os.path.join(dirPath, sampleName + '.txt'), 'w', encoding = 'ascii') as hFile:
                 hFile.writelines(lLabels)
+
+        dMetadata = {
+            'date': datetime.now().strftime('%Y_%m_%d %H:%M'),
+            'parameters': {
+                'dirPath': os.fspath(dirPath),
+                'numSamples': numSamples,
+                'imgSize': imgSize,
+                'maxSizeDigit': maxSizeDigit,
+                'minSizeDigit': minSizeDigit,
+                'maxNumDigits': maxNumDigits,
+                'seedNum': seedNum,
+            },
+            'source': {'name': 'mnist_784', 'version': 1},
+            'versions': {
+                'python': python_version(),
+                'numpy': np.__version__,
+                'scikit-image': ski.__version__,
+            },
+        }
+        with open(os.path.join(dirPath, 'GenerationParameters.json'), 'w', encoding = 'utf-8') as hFile:
+            json.dump(dMetadata, hFile, indent = 4)
+            hFile.write('\n')
     except Exception as oErr:
         print(f'MNIST object detection generation failed: {oErr}')
         return False

@@ -2,6 +2,8 @@
 # Python STD
 from enum import auto, Enum, unique
 import math
+import os
+import time
 
 # Data
 import numpy as np
@@ -21,8 +23,10 @@ from torch.utils.data import default_collate
 from torch.utils.tensorboard import SummaryWriter
 import torchvision
 from torchvision.datasets.folder import IMG_EXTENSIONS, pil_loader
+from torchvision.transforms.v2 import functional as TorchVisionTrnsF
 
 # Image Processing / Computer Vision
+import imageio.v3 as iio
 import skimage as ski
 
 # Optimization
@@ -32,7 +36,6 @@ import skimage as ski
 # Visualization
 
 # Miscellaneous
-import time
 
 # Course Packages
 from DeepLearningBlocks import NNMode
@@ -141,17 +144,104 @@ class ObjectDetectionDataset( Dataset ):
 
         self._hDataTrans = hDataTrans
 
+class YoloDataset( Dataset ):
+    """Load YOLO labels as pixel XYXY boxes for torchvision v2 transforms.
+
+    Cache all labels and normalized YOLO boxes in memory, assuming no more than
+    100,000 objects in total across the dataset. Images are decoded on demand
+    with torchvision.
+    Use the `imgMode` parameter to specify the desired image read mode when decoding images with `torchvision.io.decode_image`.
+    Use `torchvision.io.ImageReadMode.RGB` to read images in RGB mode and `torchvision.io.ImageReadMode.GRAY` to read images in grayscale mode.
+    """
+
+    def __init__( self, dirPath: str, /, *, hDataTrans: Optional[Callable] = None, lImgExt: List[str] = ['.jpg', '.png'], imgMode: torchvision.io.ImageReadMode = torchvision.io.ImageReadMode.RGB ) -> None:
+
+        lImgName    = sorted(
+            imgName for imgName in os.listdir(dirPath)
+            if os.path.splitext(imgName)[1].lower() in lImgExt
+            and os.path.isfile(os.path.join(dirPath, imgName))
+        )
+
+        lY: List[Tensor] = []
+        lB: List[Tensor] = []
+        dL: Set[int]     = set() #<! Set of class labels
+        for imgName in lImgName:
+            labelPath = os.path.join(dirPath, os.path.splitext(imgName)[0] + '.txt')
+            with open(labelPath, 'r', encoding = 'utf-8') as hFile:
+                lLines = [line for line in hFile if line.strip()]
+            mAnn = np.loadtxt(lLines, dtype = np.float32, ndmin = 2) if lLines else np.empty((0, 5), dtype = np.float32)
+            if mAnn.shape[1] != 5:
+                raise ValueError(f'Expected 5 columns in YOLO label file: {labelPath}')
+
+            lY.append(torch.from_numpy(mAnn[:, 0]).to(torch.int64))
+            lB.append(torch.from_numpy(mAnn[:, 1:]).clone())
+            dL.update(lY[-1].tolist())
+        
+        self._dirPath     = dirPath
+        self._hDataTrans  = hDataTrans
+        self._lImgExt     = lImgExt
+        self._imgMode     = imgMode
+        self._lImgName    = lImgName
+        self._lY          = lY #<! List of `torch.Tensor` vectors (Class labels)
+        self._lB          = lB #<! List of `torch.Tensor` matrices (Bounding boxes)
+        self._numSamples  = len(self._lImgName)
+        self._dL          = dL #<! Sorted unique class labels of the dataset
+        self._numClasses  = len(dL)
+
+    def __len__( self: Self ) -> int:
+        
+        return self._numSamples
+
+    def __getitem__( self: Self, idx: int ) -> Tuple[Tensor, Tuple[Tensor, Tensor]]:
+        # The output bounding box is in `XYXY` pixel format to optimize calculation of IoU and other geometric operations.
+
+        imgName   = self._lImgName[idx]
+        imgPath   = os.path.join(self._dirPath, imgName)
+
+        tXi = torchvision.io.decode_image(imgPath, mode = self._imgMode)
+        tXi = torchvision.tv_tensors.Image(tXi)
+        tXi = TorchVisionTrnsF.to_dtype(tXi, torch.float32, scale = True)
+        numRows, numCols = tXi.shape[-2:]
+
+        vYi = self._lY[idx].clone()
+        mBi = self._lB[idx].clone()
+        mBi *= mBi.new_tensor([numCols, numRows, numCols, numRows])
+        mBi = torchvision.ops.box_convert(mBi, in_fmt = 'cxcywh', out_fmt = 'xyxy')
+        mBi = torchvision.tv_tensors.BoundingBoxes(mBi, format = 'XYXY', canvas_size = (numRows, numCols))
+
+        if self._hDataTrans is not None:
+            tXi, dTarget = self._hDataTrans(tXi, {'labels': vYi, 'boxes': mBi}) #<! Using a dictionary for compatibility with `torchvision.v2.SanitizeBoundingBoxes`
+            vYi, mBi = dTarget['labels'], dTarget['boxes']
+        
+        return tXi, (vYi, mBi)
+
+    def SetTransform( self: Self, hDataTrans: Callable ) -> None:
+        
+        self._hDataTrans = hDataTrans
+    
+    def GetTargets( self: Self ) -> Tuple[List[Tensor], List[Tensor]]:
+            
+        return self._lY, self._lB
+
+    def GetLabelsSet( self: Self ) -> Set[int]:
+                
+        return self._dL.copy()
+
+    def GetNumClasses( self: Self ) -> int:
+        
+        return self._numClasses
+
 # Functions
 
 def CollateObjectDetection( lBatch: List[Tuple[NDArray, Tuple[NDArray, NDArray]]] ) -> Tuple[Tensor, List[Dict[str, Tensor]]]:
         """Collate function for object detection with variable number of boxes per image.
 
         Expects each dataset item to be:
-            (tX, (y, b))
+            (tXi, (vYi, mBi))
         where:
-            x : Image like array / tensor (same shape across the batch)
-            y : Labels with shape (Di,) (variable Di)
-            b : Bounding boxes with shape (Di, 4) (variable Di)
+            tXi : Image like array / tensor (same shape across the batch)
+            vYi : Labels with shape (Di,) (variable Di)
+            mBi : Bounding boxes with shape (Di, 4) (variable Di)
 
         Returns:
             tX : Tensor of shape (N, ...) stacked over the batch
@@ -162,18 +252,18 @@ def CollateObjectDetection( lBatch: List[Tuple[NDArray, Tuple[NDArray, NDArray]]
         lT: List[Dict[str, Tensor]] = []
 
         for x, (y, b) in lBatch:
-            tX = torch.tensor(x)
-            tY = torch.tensor(y)
-            tB = torch.tensor(b)
+            tXi = torch.tensor(x)
+            vYi = torch.tensor(y)
+            mBi = torch.tensor(b)
 
             # Common dtypes for detection targets
-            tX = tX.to(torch.float32)
-            if tY.dtype not in (torch.int64, torch.int32, torch.int16, torch.int8):
-                tY = tY.to(torch.int64)
-            tB = tB.to(torch.float32)
+            tXi = tXi.to(torch.float32)
+            if vYi.dtype not in (torch.int64, torch.int32, torch.int16, torch.int8):
+                vYi = vYi.to(torch.int64)
+            mBi = mBi.to(torch.float32)
 
-            lX.append(tX)
-            lT.append({'Labels': tY, 'Boxes': tB})
+            lX.append(tXi)
+            lT.append({'Labels': vYi, 'Boxes': mBi})
 
         # Images must be stackable (same shape)
         tXb = torch.stack(lX, dim = 0)
