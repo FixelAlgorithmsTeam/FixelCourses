@@ -22,7 +22,7 @@ In this notebook:
 An unconditional model learns to generate maps from $p \left( \boldsymbol{y}_0 \right)$.  
 A conditional model learns to generate maps from $p \left( \boldsymbol{y}_0 \mid \boldsymbol{x} \right)$.
 
-Intuitively, the condition narrows the possible outputs. It guideline the model to generate a plausible map of the place given by $\boldsymbol{x}$, not just a plausible map.
+Intuitively, the condition narrows the possible outputs. It guideline the model to generate a _plausible map_ of the place given by $\boldsymbol{x}$, _not just_ a plausible map.
 
 * <font color='brown'>(**#**)</font> The condition can be a class label, text, an image, or other information available during both training and generation.
 * <font color='brown'>(**#**)</font> This is paired image translation. The target is an RGB image, not a set of segmentation labels.
