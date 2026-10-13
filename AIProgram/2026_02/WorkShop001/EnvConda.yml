@@ -1,0 +1,38 @@
+name: TimeExtraction
+channels:
+  - conda-forge
+dependencies:
+  - python=3.14
+  - numpy
+  - scipy
+  - pandas
+# The package `pyarrow` required for `parquet` files support in Pandas 
+  - pyarrow
+# The package `tabulate` required for `dfA.to_markdown()` in Pandas 
+  - tabulate
+  - numba
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - scikit-learn
+  - pytorch
+  - torchvision
+  - torchcodec
+  - torchmetrics
+  - torchinfo
+  - torchvista
+  - scikit-image
+  - tensorboard
+  - wandb
+  - matplotlib
+  - seaborn
+  - plotly
+# The package `anywidget` required for Plotly's widgets 
+  - anywidget
+  - graphviz
+  - pydot
+  - distinctipy
+  - openai
+  - google-genai
+  - gdown
+  - onedrivedownloader
