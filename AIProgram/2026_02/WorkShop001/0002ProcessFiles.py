@@ -75,7 +75,7 @@ PROJECT_BASE_FOLDER = os.getcwd()[:(len(os.getcwd()) - (os.getcwd()[::-1].lower(
 
 # %% Local Packages
 
-from TimeExtractor import ModelSupplier, TimeExtractor, TimeExtractorGemini, TimeExtractionResult
+from LLMSession import ModelSupplier, TimeExtractor, TimeExtractorGemini, TimeExtractionResult
 
 
 # %% Auxiliary Functions

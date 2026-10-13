@@ -11,7 +11,7 @@ MNISTStroke/*
 NewsAggregator/*
 NotMNIST/*
 ShipsAerialImages/*
-TimeExtractFootballFrames/*
+MetaDataExtractFootballFrames/*
 
 # Files
 cifar-10-python.tar.gz
