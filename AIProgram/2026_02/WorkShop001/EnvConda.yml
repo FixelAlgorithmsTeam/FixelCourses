@@ -1,4 +1,4 @@
-name: TimeExtraction
+name: MetaDataExtractionScoreboardFootballGame
 channels:
   - conda-forge
 dependencies:
