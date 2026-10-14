@@ -1,0 +1,37 @@
+name: ImageTextEmbedding
+channels:
+  - conda-forge
+dependencies:
+  - python=3.14
+  - numpy
+  - scipy
+  - pandas
+# The package `pyarrow` required for `parquet` files support in Pandas 
+  - pyarrow
+# The package `tabulate` required for `dfA.to_markdown()` in Pandas 
+  - tabulate
+  - numba
+  - jupyter
+  - ipykernel
+  - ipywidgets
+  - scikit-learn
+  - pytorch
+  - torchvision
+  - torchcodec
+  - torchmetrics
+  - torchinfo
+  - torchvista
+  - transformers #<! Hugging Face Transformers
+  - sentence-transformers #<! High Level API to GemmaEmbedding
+  - scikit-image
+  - tensorboard
+  - matplotlib
+  - seaborn
+  - plotly
+# The package `anywidget` required for Plotly's widgets 
+  - anywidget
+  - graphviz
+  - pydot
+  - distinctipy
+  - gdown
+  - onedrivedownloader

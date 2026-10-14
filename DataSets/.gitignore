@@ -4,6 +4,7 @@ BallRefereeDetection/*
 cifar-10-batches-py/*
 CMPFacadeDatabase/*
 Flickr8K/*
+ImgZeroShotCls/*
 IntelImgCls/*
 MNIST/*
 MNISTObjDet/*
