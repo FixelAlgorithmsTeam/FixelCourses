@@ -15,6 +15,7 @@ dependencies:
   - ipykernel
   - ipywidgets
   - scikit-learn
+  - umap-learn
   - pytorch
   - torchvision
   - torchcodec
