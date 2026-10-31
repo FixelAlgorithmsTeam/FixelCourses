@@ -1,49 +1,69 @@
 # ************
+# Version 1.1.000	31/10/2026	Royi Avital
+# - Validate the local micromamba executable and shell hook before reporting success.
+# - Use portable user folders with consistent home environment variables.
+# - Build paths with JoinPaths and return to the parent folder.
 # Version 1.0.000	26/01/2024	Royi Avital
 # - First release version.
 # ************
 
-# Aux Variable
-$UserFolder = $PSScriptRoot + "\User"
+if ([string]::IsNullOrWhiteSpace($env:WT_SESSION)) {
+    Write-Warning 'This script is intended to be launched from a Windows Terminal PowerShell profile.'
+}
+
+# Joins path components, similar to Python's `os.path.join()`.
+function JoinPaths {
+    param (
+        [Parameter(Mandatory = $true, ValueFromRemainingArguments = $true)]
+        [string[]] $PathItems
+    )
+    [System.IO.Path]::Combine($PathItems)
+}
+
+$MicromambaPath = JoinPaths $PSScriptRoot 'micromamba.exe'
+if (-not (Test-Path -LiteralPath $MicromambaPath -PathType Leaf -ErrorAction Stop)) {
+    throw "Could not find micromamba.exe beside PythonMamba.ps1: $MicromambaPath. Put the executable in the same folder as this script."
+}
 
 # Creating Folders
-if (!(Test-Path -Path $UserFolder)) { mkdir $UserFolder }
-if (!(Test-Path -Path "$UserFolder\AppData\Local")) { mkdir "$UserFolder\AppData\Local" }
-# if (!(Test-Path -Path "$UserFolder\AppData\Local\Temp")) { mkdir "$UserFolder\AppData\Local\Temp" }
-if (!(Test-Path -Path "$UserFolder\AppData\Roaming")) { mkdir "$UserFolder\AppData\Roaming" }
-if (!(Test-Path -Path "$UserFolder\Documents")) { mkdir "$UserFolder\Documents" }
-if (!(Test-Path -Path "$UserFolder\ProgramData")) { mkdir "$UserFolder\ProgramData" }
-if (!(Test-Path -Path "$UserFolder\Public")) { mkdir "$UserFolder\Public" }
+$UserFolder          = JoinPaths $PSScriptRoot 'User'
+$UserLocalAppData    = JoinPaths $UserFolder 'AppData' 'Local'
+$UserRoamingAppData  = JoinPaths $UserFolder 'AppData' 'Roaming'
+$UserDocuments       = JoinPaths $UserFolder 'Documents'
+$UserProgramData     = JoinPaths $UserFolder 'ProgramData'
+$UserPublic          = JoinPaths $UserFolder 'Public'
+$UserFolders = @(
+    $UserFolder
+    $UserLocalAppData
+    $UserRoamingAppData
+    $UserDocuments
+    $UserProgramData
+    $UserPublic
+)
+New-Item -ItemType Directory -Path $UserFolders -Force -ErrorAction Stop | Out-Null
 
 # Setting Env Variables
-$env:ALLUSERSPROFILE = "$UserFolder\ProgramData"
-$env:APPDATA = "$UserFolder\AppData\Roaming"
-$env:HOMEPATH = $UserFolder
-$env:LOCALAPPDATA = "$UserFolder\AppData\Local"
-$env:ProgramData = "$UserFolder\ProgramData"
-$env:Public = "$UserFolder\Public"
-# $env:TEMP = "$UserFolder\AppData\Local\Temp"
-# $env:TMP = "$UserFolder\AppData\Local\Temp"
+$env:ALLUSERSPROFILE = $UserProgramData
+$env:APPDATA = $UserRoamingAppData
+$env:HOMEDRIVE = [System.IO.Path]::GetPathRoot($UserFolder).TrimEnd([System.IO.Path]::DirectorySeparatorChar)
+$env:HOMEPATH = $UserFolder.Substring($env:HOMEDRIVE.Length)
+$env:LOCALAPPDATA = $UserLocalAppData
+$env:ProgramData = $UserProgramData
+$env:Public = $UserPublic
 $env:USERPROFILE = $UserFolder
-
-# Mamba Settings
-$env:MAMBA_ROOT_PREFIX = "$PSScriptRoot"
-
-# Go to the `$env:MAMBA_ROOT_PREFIX` folder
-Set-Location -Path "$env:MAMBA_ROOT_PREFIX"
-
-# Assuming `micromamba.exe` is in `$env:MAMBA_ROOT_PREFIX`
-if (!(Test-Path -Path "micromamba.exe")) {
-	Write-Host "Could not find micromamba.exe, failed setting the environment!"
-	exit
- }
+$env:MAMBA_ROOT_PREFIX = $PSScriptRoot
 
 # Invoke the hook
-.\micromamba.exe shell hook -s powershell | Out-String | Invoke-Expression
+$Hook = & $MicromambaPath shell hook -s powershell | Out-String
+if ($LASTEXITCODE -ne 0) {
+    throw "micromamba shell hook failed with exit code $LASTEXITCODE."
+}
+if ([string]::IsNullOrWhiteSpace($Hook)) {
+    throw 'micromamba returned an empty PowerShell hook.'
+}
+Invoke-Expression -Command $Hook -ErrorAction Stop
 # The PowerShell environment does not need the `activate` command
 
-Write-Host "Finished setting Conda (MicroMamba) environment!"
+Set-Location -LiteralPath (Split-Path -LiteralPath $PSScriptRoot -Parent) -ErrorAction Stop
 
-Set-Location -Path "$PSScriptRoot\.."
-
-exit
+Write-Host 'Finished setting Conda (MicroMamba) environment!'

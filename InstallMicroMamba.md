@@ -100,12 +100,12 @@ This guide is composed of the following high level steps:
     - Click on `Add new profile`.  
       Choose `New empty profile`.
     - Set the `Name` property to `PythonMamba`.
-    - Set the `Command line` property to `%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -NoExit -File "<PathPythonMamba>\PythonMamba.ps1"`.  
+    - Set the `Command line` property to `%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -NoExit -File "<PathPythonMamba>\PythonMamba.ps1"`.  
       Change the `<PathPythonMamba>` to the folder path.
     - Set the `Icon` property to `"<PathPythonMamba>\PythonMamba.png"`.  
       You may choose `Browse` and navigate manually.
     - Click `Save`.
-6. Open `MambaPython`  
+6. Open `PythonMamba`  
    Run the `PythonMamba` profile from _Windows Terminal_.
 7. Validate the Installation  
    Run `micromamba --version` to verify installation.  
@@ -113,6 +113,7 @@ This guide is composed of the following high level steps:
 
 The end game of the process is a single folder with 3 files: `micromamba.exe`, `PythonMamba.ps1` and `PythonMamba.png`.  
 Then create a Windows Terminal profile which executes the `PythonMamba.ps1` script.
+The script creates a `User` folders beside itself and configure the session to use them.
 
 ## Create a Conda Environment
 
@@ -160,7 +161,7 @@ One way to define a specification is using a [Conda Format YAML file](https://do
 The _Windows Terminal_ profile runs the following command:
 
 ```cmd
-%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -NoExit -File "<PathPythonMamba>\PythonMamba.ps1" 
+%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -NoExit -File "<PathPythonMamba>\PythonMamba.ps1"
 ```
 
 The `-ExecutionPolicy Bypass` parameter should allow the file to run.  
