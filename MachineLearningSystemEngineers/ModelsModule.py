@@ -15,7 +15,10 @@ from skimage.io import imread
 
 # Miscellaneous
 import os
+
+# Typing
 from typing import Any, Callable, Dict, List, Optional, Union, Tuple
+from numpy.typing import NDArray
 
 from AuxFun import *
 
@@ -60,7 +63,7 @@ class DataFrameImgLoader(Dataset):
         return tImg, imgClass
 
 class NumPyArrayImgLoader(Dataset):
-    def __init__(self, mX: np.ndarray, vY: np.ndarray, tuImgSize: Tuple[int, int, int], imgTransform: Callable = None):
+    def __init__(self, mX: NDArray, vY: NDArray, tuImgSize: Tuple[int, int, int], imgTransform: Callable = None):
         
         self.mX = mX
         self.vY = vY
@@ -84,7 +87,7 @@ class NumPyArrayImgLoader(Dataset):
 
         return self.__transform__(tImg), imgClass
     
-    def __transform__(self, tI: np.ndarray) -> np.ndarray:
+    def __transform__(self, tI: NDArray) -> NDArray:
         
         if self.imgTransform is not None:
             return self.imgTransform(tI)
@@ -92,7 +95,7 @@ class NumPyArrayImgLoader(Dataset):
             return transforms.ToTensor(tI) #<! Assuming data is UInt8 or properly scaled
 
 class ShipsImgLoader(Dataset):
-    def __init__(self, mX: np.ndarray, vY: np.ndarray):
+    def __init__(self, mX: NDArray, vY: NDArray):
         
         self.mX = mX
         self.vY = vY
@@ -116,7 +119,7 @@ class ShipsImgLoader(Dataset):
 
         return self.__transform__(tImg), imgClass
     
-    def __transform__(self, tI: np.ndarray) -> np.ndarray:
+    def __transform__(self, tI: NDArray) -> NDArray:
         
         if self.imgTransform is not None:
             return self.imgTransform(tI)
@@ -161,7 +164,7 @@ class PascalVocLoader(Dataset):
 
         return self.__transform__(mI, lBox)
     
-    def __transform__(self, mI: np.ndarray, lBox: List) -> Tuple[torch.Tensor, List]:
+    def __transform__(self, mI: NDArray, lBox: List) -> Tuple[torch.Tensor, List]:
         
         if self.dataTransform is not None:
             return self.dataTransform(mI, lBox)

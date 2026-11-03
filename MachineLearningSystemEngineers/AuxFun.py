@@ -22,6 +22,7 @@ import xml.etree.ElementTree as ET
 
 # Typing
 from typing import Dict, List, Tuple
+from numpy.typing import NDArray
 
 # See https://docs.python.org/3/library/enum.html
 # @unique
@@ -34,7 +35,7 @@ from typing import Dict, List, Tuple
 
 # Visualization
 
-def PlotImages(mX: np.ndarray, vY: np.ndarray = None, numRows: int = 1, numCols: int = 1, tImgSize: Tuple[int, int] = (80, 80), numChannels: int = 1, randomChoice = True, hF = None) -> plt.Figure:
+def PlotImages(mX: NDArray, vY: NDArray = None, numRows: int = 1, numCols: int = 1, tImgSize: Tuple[int, int] = (80, 80), numChannels: int = 1, randomChoice = True, hF = None) -> plt.Figure:
 
     numSamples  = mX.shape[0]
 
@@ -127,7 +128,7 @@ def PlotImagesBBox(lX: List, lBBox: List, numRows: int = 1, numCols: int = 1, ra
     
     return hF
 
-def PlotLabelsHistogram(vY: np.ndarray, hA = None, lClass = None, xLabelRot: int = None) -> plt.Axes:
+def PlotLabelsHistogram(vY: NDArray, hA = None, lClass = None, xLabelRot: int = None) -> plt.Axes:
 
     if hA is None:
         hF, hA = plt.subplots(figsize = (8, 6))
@@ -148,7 +149,7 @@ def PlotLabelsHistogram(vY: np.ndarray, hA = None, lClass = None, xLabelRot: int
 
     return hA
 
-def PlotConfusionMatrix(vY: np.ndarray, vYPred: np.ndarray, normMethod: str = None, hA: plt.Axes = None, lLabels: list = None, dScore: dict = None, titleStr: str = 'Confusion Matrix', xLabelRot: int = None, valFormat: str = None) -> Tuple[plt.Axes, np.ndarray]:
+def PlotConfusionMatrix(vY: NDArray, vYPred: NDArray, normMethod: str = None, hA: plt.Axes = None, lLabels: list = None, dScore: dict = None, titleStr: str = 'Confusion Matrix', xLabelRot: int = None, valFormat: str = None) -> Tuple[plt.Axes, NDArray]:
 
     # Calculation of Confusion Matrix
     mConfMat = confusion_matrix(vY, vYPred, normalize = normMethod)

@@ -1,6 +1,8 @@
 
 
+# Typing
 from typing import Dict
+from numpy.typing import NDArray
 
 import numpy as np
 
@@ -154,7 +156,7 @@ class LitModel(pl.LightningModule):
 
 # Auxiliary Functions
 
-def PlotNetPred(inputImg: np.ndarray, labelsImg: np.ndarray, outImg: np.ndarray, binClassThr = 0.0, hF: plt.Figure = None) -> plt.Figure:
+def PlotNetPred(inputImg: NDArray, labelsImg: NDArray, outImg: NDArray, binClassThr = 0.0, hF: plt.Figure = None) -> plt.Figure:
 
     if (len(outImg.shape) > 2) and (outImg.shape[0] > 1): #<! Data is hot encoded
         # Multi class 
@@ -187,7 +189,7 @@ def PlotNetPred(inputImg: np.ndarray, labelsImg: np.ndarray, outImg: np.ndarray,
 
     return hF
 
-def ExportNetPred(inputImg: np.ndarray, labelsImg: np.ndarray, outImg: np.ndarray, binClassThr = 0.0) -> np.ndarray:
+def ExportNetPred(inputImg: NDArray, labelsImg: NDArray, outImg: NDArray, binClassThr = 0.0) -> NDArray:
 
     if (len(outImg.shape) > 2) and (outImg.shape[0] > 1): #<! Data is hot encoded
         # Multi class 
