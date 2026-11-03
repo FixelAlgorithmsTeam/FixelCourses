@@ -24,6 +24,7 @@ import matplotlib.pyplot as plt
 from enum import auto, Enum, unique
 # Typing
 from typing import Dict, List, Tuple
+from numpy.typing import NDArray
 
 # See https://docs.python.org/3/library/enum.html
 @unique
@@ -33,7 +34,7 @@ class DataType(Enum):
     TRAIN_DATA      = auto()
     VALIDATION_DATA = auto()
 
-def MatBlockView(mI: np.ndarray, tuBlockShape: Tuple[int, int]) -> np.ndarray:
+def MatBlockView(mI: NDArray, tuBlockShape: Tuple[int, int]) -> NDArray:
     """
     Generates a view of block of shape `blockShape` of the input 2D NumPy array.
     Input:
@@ -53,7 +54,7 @@ def MatBlockView(mI: np.ndarray, tuBlockShape: Tuple[int, int]) -> np.ndarray:
     
     return np.lib.stride_tricks.as_strided(mI, shape = tuShape, strides = tuStrides)
 
-def ImageGradient(mI: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+def ImageGradient(mI: NDArray) -> Tuple[NDArray, NDArray]:
     """
     Calculates the image gradient vector.
     Input:
@@ -81,7 +82,7 @@ def ImageGradient(mI: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     return mIx, mIy
 
 # @njit
-def _BuilBinaryMrfGraphWeights( mL0: np.ndarray, mL1: np.ndarray, tC: np.ndarray ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def _BuilBinaryMrfGraphWeights( mL0: NDArray, mL1: NDArray, tC: NDArray ) -> Tuple[NDArray, NDArray, NDArray]:
     """
     Build the a sparse graph weights matrix in COO format for the binary MRF energy function.  
     The function returns the COO format vectors only.
@@ -191,7 +192,7 @@ def _BuilBinaryMrfGraphWeights( mL0: np.ndarray, mL1: np.ndarray, tC: np.ndarray
     
     return vI[:numNnz], vJ[:numNnz], vV[:numNnz]
 
-def BuilBinaryMrfGraphWeights( mL0: np.ndarray, mL1: np.ndarray, tC: np.ndarray ) -> sp.sparse.csr_matrix:
+def BuilBinaryMrfGraphWeights( mL0: NDArray, mL1: NDArray, tC: NDArray ) -> sp.sparse.csr_matrix:
     """
     Build the sparse graph weights matrix for the binary MRF energy function using (vI, vJ, vV) format.
     
