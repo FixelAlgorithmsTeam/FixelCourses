@@ -25,6 +25,7 @@ from numba import njit
 
 # Typing
 from typing import Callable, Dict, List, Optional, Set, Tuple, Union
+from numpy.typing import NDArray
 
 # See https://docs.python.org/3/library/enum.html
 @unique
@@ -36,7 +37,7 @@ class DiffMode(Enum):
     COMPLEX     = auto()
 
 
-def CalcFunGrad( vX: np.ndarray, hF: Callable, /, *, diffMode: DiffMode = DiffMode.CENTRAL, ε: float = 1e-6 ):
+def CalcFunGrad( vX: NDArray, hF: Callable, /, *, diffMode: DiffMode = DiffMode.CENTRAL, ε: float = 1e-6 ):
     """
     Calculates the gradient of `hF` using finite differences method (Numerical Differentiation).
     Input:

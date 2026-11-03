@@ -27,6 +27,7 @@ from enum import auto, Enum, unique
 
 # Typing
 from typing import Callable, Dict, List, Optional, Set, Tuple, Union
+from numpy.typing import NDArray
 
 # Course Packages
 
@@ -40,7 +41,7 @@ MARKER_SIZE_DEF = 10
 LINE_WIDTH_DEF  = 2
 
 
-def Plot2DFun( vX: np.ndarray, vY: np.ndarray, mZ: np.ndarray, /, *, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF ) -> plt.Axes:
+def Plot2DFun( vX: NDArray, vY: NDArray, mZ: NDArray, /, *, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF ) -> plt.Axes:
 
     if hA is None:
         hF, hA = plt.subplots(figsize = figSize, subplot_kw = {'projection': '3d'})
@@ -61,7 +62,7 @@ def Plot2DFun( vX: np.ndarray, vY: np.ndarray, mZ: np.ndarray, /, *, hA: Optiona
 
     return hA
 
-def PlotBinaryClassData( mX: np.ndarray, vY: np.ndarray, /, *, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF, 
+def PlotBinaryClassData( mX: NDArray, vY: NDArray, /, *, hA: Optional[plt.Axes] = None, figSize: Tuple[int, int] = FIG_SIZE_DEF,
                         elmSize: int = ELM_SIZE_DEF, classColor: Tuple[str, str] = CLASS_COLOR, axisTitle: Optional[str] = None ) -> plt.Axes:
     """
     Plots binary 2D data as a scatter plot.
@@ -98,7 +99,7 @@ def PlotBinaryClassData( mX: np.ndarray, vY: np.ndarray, /, *, hA: Optional[plt.
     return hA
 
 
-def Plot2DLinearClassifier( mX: np.ndarray, vY: np.ndarray, vW: np.ndarray, mX1: np.ndarray, mX2: np.ndarray, hA: plt.Axes ) -> None:
+def Plot2DLinearClassifier( mX: NDArray, vY: NDArray, vW: NDArray, mX1: NDArray, mX2: NDArray, hA: plt.Axes ) -> None:
     """
     Plots a binary 2D classifier.
     Input:

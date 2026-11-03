@@ -26,6 +26,7 @@ from enum import auto, Enum, unique
 
 # Typing
 from typing import Any, Callable, Dict, List, Literal, Optional, Self, Set, Tuple, Union
+from numpy.typing import NDArray
 
 # Course Packages
 
@@ -145,7 +146,7 @@ class GradientDescent():
     2. Boyd, S., & Vandenberghe, L. (2004). Convex Optimization. Cambridge University Press.
     """
 
-    def __init__( self, vX: np.ndarray, hGradFun: Callable[[np.ndarray], np.ndarray], μ: float, /, *, stepSizeMode: StepSizeMode = StepSizeMode.CONSTANT, hObjFun: Optional[Callable[[np.ndarray], float]] = None, α: float = 0.5 ) -> None:
+    def __init__( self, vX: NDArray, hGradFun: Callable[[NDArray], NDArray], μ: float, /, *, stepSizeMode: StepSizeMode = StepSizeMode.CONSTANT, hObjFun: Optional[Callable[[NDArray], float]] = None, α: float = 0.5 ) -> None:
         
         dataDim = len(vX)
 
@@ -168,7 +169,7 @@ class GradientDescent():
         pass
 
     # @njit
-    def _ApplyIterationAdaptive( self ) -> np.ndarray:
+    def _ApplyIterationAdaptive( self ) -> NDArray:
 
         self.vG     = self._hGradFun(self.vX)
         currObjVal  = self._hObjFun(self.vX)
@@ -192,7 +193,7 @@ class GradientDescent():
         return self.vX
     
     # @njit
-    def ApplyIteration( self ) -> np.ndarray:
+    def ApplyIteration( self ) -> NDArray:
 
         if self._stepSizeMode == StepSizeMode.ADAPTIVE:
             return self._ApplyIterationAdaptive()
@@ -204,7 +205,7 @@ class GradientDescent():
 
         return self.vX
     
-    def ApplyIterations( self, numIterations: int, *, logArg: bool = True ) -> Optional[List[np.ndarray]]:
+    def ApplyIterations( self, numIterations: int, *, logArg: bool = True ) -> Optional[List[NDArray]]:
 
         if logArg:
             lX = [None] * numIterations
@@ -312,7 +313,7 @@ class CoordinateDescent():
        Mathematical Programming, 117(1), 387-423.
     """
 
-    def __init__( self, vX: np.ndarray, hGradFun: Callable[[np.ndarray], np.ndarray], μ: float, /, *, stepSizeMode: StepSizeMode = StepSizeMode.CONSTANT, hObjFun: Optional[Callable[[np.ndarray], float]] = None, α: float = 0.5 ) -> None:
+    def __init__( self, vX: NDArray, hGradFun: Callable[[NDArray], NDArray], μ: float, /, *, stepSizeMode: StepSizeMode = StepSizeMode.CONSTANT, hObjFun: Optional[Callable[[NDArray], float]] = None, α: float = 0.5 ) -> None:
         
         dataDim = len(vX)
 
@@ -334,7 +335,7 @@ class CoordinateDescent():
         pass
 
     # @njit
-    def _ApplyIterationAdaptive( self ) -> np.ndarray:
+    def _ApplyIterationAdaptive( self ) -> NDArray:
 
         self.vZ[:] = self.vX
         for jj in range(self._dataDim):
@@ -358,7 +359,7 @@ class CoordinateDescent():
         return self.vX
     
     # @njit
-    def ApplyIteration( self ) -> np.ndarray:
+    def ApplyIteration( self ) -> NDArray:
 
         if (self._stepSizeMode == StepSizeMode.ADAPTIVE):
             return self._ApplyIterationAdaptive()
@@ -371,7 +372,7 @@ class CoordinateDescent():
 
         return self.vX
     
-    def ApplyIterations( self, numIterations: int, *, logArg: bool = True ) -> Optional[List[np.ndarray]]:
+    def ApplyIterations( self, numIterations: int, *, logArg: bool = True ) -> Optional[List[NDArray]]:
 
         if logArg:
             lX = [None] * numIterations
@@ -472,7 +473,7 @@ class ProxGradientDescent():
     2. Parikh, N., & Boyd, S. (2014). Proximal Algorithms. Foundations and Trends® in Optimization, 1(3), 127-239.
     """
 
-    def __init__( self, vX: np.ndarray, hGradFun: Callable[[np.ndarray], np.ndarray], μ: float, λ: float, /, *, hProxFun: Callable[[np.ndarray, float], np.ndarray] = lambda vX, λ: vX, useAccel: bool = False ) -> None:
+    def __init__( self, vX: NDArray, hGradFun: Callable[[NDArray], NDArray], μ: float, λ: float, /, *, hProxFun: Callable[[NDArray, float], NDArray] = lambda vX, λ: vX, useAccel: bool = False ) -> None:
         
         dataDim = len(vX)
         
@@ -492,7 +493,7 @@ class ProxGradientDescent():
         pass
 
     # @njit
-    def _ApplyIterationFista( self ) -> np.ndarray:
+    def _ApplyIterationFista( self ) -> NDArray:
 
         self.vV = self.vX + ((self.ii - 1) / (self.ii + 2)) * (self.vX - self._vX_1)
         self.vG = self._hGradFun(self.vV)
@@ -507,7 +508,7 @@ class ProxGradientDescent():
         return self.vX
     
     # @njit
-    def ApplyIteration( self ) -> np.ndarray:
+    def ApplyIteration( self ) -> NDArray:
 
         if self.useAccel:
             return self._ApplyIterationFista()
@@ -520,7 +521,7 @@ class ProxGradientDescent():
 
         return self.vX
     
-    def ApplyIterations( self, numIterations: int, *, logArg: bool = True ) -> Optional[List[np.ndarray]]:
+    def ApplyIterations( self, numIterations: int, *, logArg: bool = True ) -> Optional[List[NDArray]]:
 
         if logArg:
             lX = [None] * numIterations
@@ -635,7 +636,7 @@ class ADMM():
     2. Gabay, D., & Mercier, B. (1976). A dual algorithm for the solution of nonlinear variational problems via finite element approximation. Computers & Mathematics with Applications, 2(1), 17-40.
     """
 
-    def __init__( self, vX: np.ndarray, hMinFun: Callable[[np.ndarray, np.ndarray, float], np.ndarray], hProxFun: Callable[[np.ndarray, float], np.ndarray], mP: np.ndarray, /, *, ρ: float = 1.0, λ: float = 1.0 ) -> None:
+    def __init__( self, vX: NDArray, hMinFun: Callable[[NDArray, NDArray, float], NDArray], hProxFun: Callable[[NDArray, float], NDArray], mP: NDArray, /, *, ρ: float = 1.0, λ: float = 1.0 ) -> None:
         """
         Solves the model: F(x) = f(x) + λ g(P * x) -> f(x) + λ g(z), subject to Px - z = 0
         Where:
@@ -660,7 +661,7 @@ class ADMM():
         pass
     
     # @njit
-    def ApplyIteration( self ) -> np.ndarray:
+    def ApplyIteration( self ) -> NDArray:
         
         self.vX  = self._hMinFun(self.vZ, self.vW, self.ρ) #<! Minimizing for x
         self.vZ  = self._hProxFun(self._mP @ self.vX + self.vW, self.λ / self.ρ) #<! Minimizing for z
@@ -670,7 +671,7 @@ class ADMM():
 
         return self.vX
     
-    def ApplyIterations( self, numIterations: int, *, logArg: bool = False ) -> Optional[List[np.ndarray]]:
+    def ApplyIterations( self, numIterations: int, *, logArg: bool = False ) -> Optional[List[NDArray]]:
 
         if logArg:
             lX = [None] * numIterations
@@ -750,7 +751,7 @@ class SequentialLeastSquares():
     ----------
     - [Sequential Form of the Least Squares Estimator for Linear Least Squares Model](https://dsp.stackexchange.com/a/56670).
     """
-    def __init__( self: Self, mA: np.ndarray, vB: np.ndarray, /, *, λ: float = 1.0, α: float = 0.0 ) -> None:
+    def __init__( self: Self, mA: NDArray, vB: NDArray, /, *, λ: float = 1.0, α: float = 0.0 ) -> None:
         # Initializing the model with the initial batch
         
         self.mR = np.linalg.pinv(mA.T @ mA + α * np.eye(mA.shape[1])) 
@@ -758,7 +759,7 @@ class SequentialLeastSquares():
         self.α  = α
         self.vX = self.mR @ (mA.T @ vB)     #<! The LS Solution
     
-    def ApplyIteration( self: Self, valB: float, vA: np.ndarray, λ: Optional[float] = None ) -> np.ndarray:
+    def ApplyIteration( self: Self, valB: float, vA: NDArray, λ: Optional[float] = None ) -> NDArray:
 
         if λ is None:
             λ = self.λ
@@ -771,11 +772,11 @@ class SequentialLeastSquares():
 
         return self.vX
     
-    def __call__( self: Self, valB: float, vA: np.ndarray ) -> np.ndarray:
+    def __call__( self: Self, valB: float, vA: NDArray ) -> NDArray:
         
         return self.ApplyIteration(valB, vA)
 
-def ProjectSimplexBall( vY: np.ndarray, /, *, ballRadius: float = 1.0, ε: float = 0.0 ) -> np.ndarray:
+def ProjectSimplexBall( vY: NDArray, /, *, ballRadius: float = 1.0, ε: float = 0.0 ) -> NDArray:
     """
     Solving the Orthogonal Projection Problem of the input vector onto the 
     Simplex Ball using Dual Function and exact solution by solving linear 
@@ -846,7 +847,7 @@ def ProjectSimplexBall( vY: np.ndarray, /, *, ballRadius: float = 1.0, ε: float
 
     return vX
 
-def ProjectL1Ball( vY: np.ndarray, /, *, ballRadius: float = 1.0, ε: float = 0.0 ) -> np.ndarray:
+def ProjectL1Ball( vY: NDArray, /, *, ballRadius: float = 1.0, ε: float = 0.0 ) -> NDArray:
     """
     Solving the Orthogonal Projection Problem of the input vector onto the L1 
     Ball using Dual Function and exact solution by solving linear equation.
@@ -920,7 +921,7 @@ def ProjectL1Ball( vY: np.ndarray, /, *, ballRadius: float = 1.0, ε: float = 0.
 
 # Type hints for SP Sparse: https://stackoverflow.com/questions/71501140
 # @njit 
-def GenConvMtx1D( vK: np.ndarray, numElements: int, /, *, convMode: ConvMode = ConvMode.FULL ) -> sp.sparse.csr.csr_matrix:
+def GenConvMtx1D( vK: NDArray, numElements: int, /, *, convMode: ConvMode = ConvMode.FULL ) -> sp.sparse.csr.csr_matrix:
     """
     Generates a Convolution Matrix for 1D Kernel (The Vector vK) with support
     for different convolution shapes (Full / Same / Valid). The matrix is
@@ -1050,7 +1051,7 @@ def MakeSignal( signalType: Literal['Blocks', 'Bumps', 'Chirps', 'Cusp', 'Cusp2'
                                     'HypChirps', 'Leopold', 'LinChirp', 'LinChirps', 'LoSine', 
                                     'MishMash', 'Piece-Polynomial', 'Piece-Regular', 'QuadChirp', 
                                     'Ramp', 'Riemann', 'SineOneOverX', 'Sing', 'SmoothCusp', 'TwoChirp', 
-                                    'WernerSorrows'], numSamples: int ) -> np.ndarray:
+                                    'WernerSorrows'], numSamples: int ) -> NDArray:
     """
     MakeSignal -- Make artificial signal
     Usage: `sig = MakeSignal(signalType, numSamples)`
@@ -1123,7 +1124,7 @@ def MakeSignal( signalType: Literal['Blocks', 'Bumps', 'Chirps', 'Cusp', 'Cusp2'
 
 # Visualization
 
-def DisplayRunSummary( solverName: str, hObjFun: Callable[[np.ndarray], float], vX: np.ndarray, runTime: float, cvxpyStatus: Optional[bool] = None ) -> None:
+def DisplayRunSummary( solverName: str, hObjFun: Callable[[NDArray], float], vX: NDArray, runTime: float, cvxpyStatus: Optional[bool] = None ) -> None:
 
     print('')
     print(f'{solverName} Solution Summary:' )
@@ -1137,7 +1138,7 @@ def DisplayRunSummary( solverName: str, hObjFun: Callable[[np.ndarray], float], 
 
     return
 
-def DisplayCompaisonSummary( dSolverData: Dict[str, Dict], hObjFun: Callable[[np.ndarray], float], /, *, figSize: Tuple[int, int] = (12, 9), refSolverName: str = 'CVXPY', ε: float = 1e-8 ) -> plt.Figure:
+def DisplayCompaisonSummary( dSolverData: Dict[str, Dict], hObjFun: Callable[[NDArray], float], /, *, figSize: Tuple[int, int] = (12, 9), refSolverName: str = 'CVXPY', ε: float = 1e-8 ) -> plt.Figure:
 
     refSolver  = False
     numSolvers = len(dSolverData)
