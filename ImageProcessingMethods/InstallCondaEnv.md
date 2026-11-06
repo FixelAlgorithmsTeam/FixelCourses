@@ -1,5 +1,8 @@
 # Install the Conda Environment
 
+[![Visitors](https://img.shields.io/badge/Fixel-Algorithms-blue)](https://fixelalgorithms.gitlab.io)
+[![Visitors](https://api.visitorbadge.io/api/combined?path=https%3A%2F%2Fgithub.com%2FRoyiAvital%2FStackExchangeCodes&labelColor=%23f47373&countColor=%23555555&style=plastic)](https://github.com/FixelAlgorithmsTeam/FixelCourses) <!-- https://www.visitorbadge.io -->
+
 This is a basic instruction how to install the course environment using [Mini Conda Forge](https://github.com/conda-forge/miniforge) (Or any `conda` managed distribution).  
 It is assumed that the Windows OS is used.
 
