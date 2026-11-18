@@ -91,6 +91,34 @@ class SubSet( Dataset ):
         
         self._hTgtTrns = hTgtTrns
 
+class TransformDataset( Dataset ):
+    """
+    Wraps a dataset and applies a transform on the features of each sample.  
+    Motivation:
+      - Classes such as `TensorDataset` and `Subset` have no `transform` attribute.  
+        Setting `dsData.transform = oTrns` creates a new attribute which is silently ignored.
+      - Wrapping the same base data allows different transforms per split (Train / Validation).
+    Remarks:
+      - Works for datasets which the `__getitem__()` returns `(tX, valY)`.
+      - The `transform` attribute can be updated at any time.
+    """
+    def __init__( self, dsData: Dataset, transform: Optional[Callable] = None ) -> None:
+
+        self.dsData    = dsData
+        self.transform = transform
+
+    def __len__( self: Self ) -> int:
+
+        return len(self.dsData)
+
+    def __getitem__( self: Self, idx: int ) -> Tuple[Any, Any]:
+
+        tX, valY = self.dsData[idx]
+        if self.transform is not None:
+            tX = self.transform(tX)
+
+        return tX, valY
+
 class TestDataSet( torchvision.datasets.VisionDataset ):
     def __init__(self, root: str = None, transforms: Callable[..., Any] | None = None, transform: Callable[..., Any] | None = None, target_transform: Callable[..., Any] | None = None) -> None:
         super().__init__(root, transforms, transform, target_transform)
@@ -115,15 +143,22 @@ class TestDataSet( torchvision.datasets.VisionDataset ):
 
 # Auxiliary Functions
 
-def ResetModelWeights( oModel: nn.Module ) -> None:
-    # https://discuss.pytorch.org/t/19180
+# def ResetModelWeights( oModel: nn.Module ) -> None:
+#     # https://discuss.pytorch.org/t/19180
 
-    for layer in oModel.children():
-        if hasattr(layer, 'reset_parameters'):
-            layer.reset_parameters()
-        elif hasattr(layer, 'children'):
-            for child in layer.children():
-                ResetModelWeights(child)
+#     for layer in oModel.children():
+#         if hasattr(layer, 'reset_parameters'):
+#             layer.reset_parameters()
+#         elif hasattr(layer, 'children'):
+#             for child in layer.children():
+#                 ResetModelWeights(child)
+
+def ResetModelWeights( oModel: nn.Module ) -> None:
+
+    for oLayer in oModel.modules():
+        hReset = getattr(oLayer, 'reset_parameters', None)
+        if callable(hReset):
+            hReset()
 
 # Initialization Function
 
@@ -535,7 +570,7 @@ def TrainModelSch( oModel: nn.Module, dlTrain: DataLoader, dlVal: DataLoader, oO
         lLearnRate.extend(lLRate)
 
         if oTBLogger is not None:
-            oTBLogger.iiEpcoh += 1
+            oTBLogger.iiEpoch += 1
             oTBLogger.oTBWriter.add_scalars('Loss (Epoch)', {'Train': trainLoss, 'Validation': valLoss}, ii)
             oTBLogger.oTBWriter.add_scalars('Score (Epoch)', {'Train': trainScr, 'Validation': valScr}, ii)
             oTBLogger.oTBWriter.add_scalar('Learning Rate (Epoch)', trainLr, ii)
@@ -618,8 +653,8 @@ def TrainModelDataset( oModel: nn.Module, dlData: DataLoader, oOpt: Optimizer, n
         lLearnRate.append(learnRate)
 
         if oTBWriter is not None:
-            oTBWriter.add_scalars('Loss (Epoch)', {'Train': trainLoss, 'Validation': valLoss}, ii)
-            oTBWriter.add_scalars('Score (Epoch)', {'Train': trainScr, 'Validation': valScr}, ii)
+            oTBWriter.add_scalars('Loss (Epoch)', {'Train': trainLoss}, ii)
+            oTBWriter.add_scalars('Score (Epoch)', {'Train': trainScr}, ii)
             oTBWriter.add_scalar('Learning Rate', learnRate, ii)
         
         # Display (Babysitting)

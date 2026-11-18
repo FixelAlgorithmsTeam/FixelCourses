@@ -13,6 +13,7 @@
 #
 # | Version | Date       | User        |Content / Changes                                                   |
 # |---------|------------|-------------|--------------------------------------------------------------------|
+# | 1.1.001 | 18/11/2026 | Royi Avital | Changed the object detection score                                 |
 # | 1.1.000 | 19/09/2026 | Royi Avital | Changed the model to a smaller model                               |
 # | 1.0.001 | 15/09/2026 | Royi Avital | Added visualization of the model                                   |
 # | 1.0.000 | 16/06/2024 | Royi Avital | First version                                                      |
@@ -227,19 +228,21 @@ class ObjDetScore(nn.Module):
 
         batchSize = tYHat.shape[0]
         gridSize  = tYHat.shape[2]
-        numObjDet = 0
-        numMatch  = 0
+        numObj        = 0
+        numObjFound   = 0
+        numFalseAlarm = 0
 
         for sampleIdx in range(batchSize):
             mB = lY[sampleIdx]['Boxes']
             vC = lY[sampleIdx]['Labels']
             mPredMask = torch.sigmoid(tYHat[sampleIdx, 0, :, :]).gt(self.probThr)
 
-            numObj  = int(mB.shape[0])
-            numPred = int(mPredMask.sum().item())
-            numObjDet += numObj + numPred
+            numObjBatch = int(mB.shape[0])
+            numPred     = int(mPredMask.sum().item())
+            numObj     += numObjBatch
 
-            if (numObj == 0) or (numPred == 0):
+            if (numObjBatch == 0) or (numPred == 0):
+                numFalseAlarm += numPred
                 continue
 
             mIdx = torch.nonzero(mPredMask, as_tuple = False)
@@ -255,11 +258,14 @@ class ObjDetScore(nn.Module):
             vC = vC.to(torch.long)
             mMatchMat = (mIoU > self.iouThr) & (vClsP[:, None] == vC[None, :])
 
-            numMatchBatchPredGt = int(mMatchMat.any(dim = 1).sum().item())
-            numMatchBatchGtPred = int(mMatchMat.any(dim = 0).sum().item())
-            numMatch += numMatchBatchPredGt + numMatchBatchGtPred
+            vPredMatched = mMatchMat.any(dim = 1)
+            vObjFound    = mMatchMat.any(dim = 0)
+            numObjFound  += int(vObjFound.sum().item())
+            numFalseAlarm += int((~vPredMatched).sum().item())
 
-        return float(numMatch / numObjDet) if numObjDet > 0 else 0.0
+        numObjOrFalseAlarm = numObj + numFalseAlarm
+
+        return float(numObjFound / numObjOrFalseAlarm) if numObjOrFalseAlarm > 0 else 0.0
 
 # %% Main Function
 

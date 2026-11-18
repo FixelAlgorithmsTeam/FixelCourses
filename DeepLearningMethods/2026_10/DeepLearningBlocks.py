@@ -1,4 +1,11 @@
 
+# Deep LEarning Neural Network Blocks
+#
+# Revision History
+# | Version | Date       | User        |Content / Changes                                                   |
+# |---------|------------|-------------|--------------------------------------------------------------------|
+# | 1.0.000 | 27/01/2026 | Royi Avital | First release version                                              |
+
 # Python STD
 from enum import auto, Enum, unique
 import math
@@ -217,6 +224,9 @@ def CrossEntropyLoss( vY: NDArray, mZ: NDArray ) -> Tuple[np.float64, NDArray]:
     The function is equivalent of SoftMax + Cross Entropy.
     The function uses the mean loss (Normalized by N). 
     Hence gradients calculation should sum the gradients over the batch.
+    For education only: small probabilities may underflow to zero before the
+    logarithm, causing infinite loss. Use a numerically stable log-softmax or
+    combined cross entropy implementation in production.
     '''
     N      = len(vY)
     mYHat   = sp.special.softmax(mZ, axis = 0)
@@ -233,12 +243,13 @@ def CrossEntropyLoss( vY: NDArray, mZ: NDArray ) -> Tuple[np.float64, NDArray]:
 def MseLoss( vY: NDArray, vZ: NDArray ) -> Tuple[np.float64, NDArray]:
     '''
     Returns both the loss and the gradient w.r.t the input (vZ).
-    The function uses the mean loss (Normalized by N). 
+    The function uses the mean loss over all output elements.
     Hence gradients calculation should sum the gradients over the batch.
     '''
 
     vDz = vZ - vY
     valLoss = np.mean(np.square(vDz))
+    vDz = 2 * vDz / vDz.size
     
     return valLoss, vDz
 
@@ -249,15 +260,15 @@ def MseLoss( vY: NDArray, vZ: NDArray ) -> Tuple[np.float64, NDArray]:
 class ModelNN():
     def __init__( self, lLayers: List, opMode: NNMode = NNMode.TRAIN ) -> None:
         
-        self.lLayers    = lLayers
-        self.opMode     = opMode
-        self.numParams  = CountModelParams(self)
+        self._lLayers    = lLayers
+        self._opMode     = opMode
+        self._numParams  = CountModelParams(self)
     
     def __repr__( self: Self ) -> str:
 
-        sLayers = [f'Layer {(ii + 1):03d}: ' + str(oLayer) for ii, oLayer in enumerate(self.lLayers)]
+        sLayers = [f'Layer {(ii + 1):03d}: ' + str(oLayer) for ii, oLayer in enumerate(self._lLayers)]
         sLayers = '\n'.join(sLayers)
-        sLayers += f'\nNumber of Parameters: {self.numParams: ,}'
+        sLayers += f'\nNumber of Parameters: {self._numParams: ,}'
         
         return f'ModelNN:\n{sLayers}'
     
@@ -267,30 +278,38 @@ class ModelNN():
     
     def Init( self ) -> None:
 
-        for oLayer in self.lLayers:
+        for oLayer in self._lLayers:
             if hasattr(oLayer, 'Init'):
                 oLayer.Init()
         
     def Forward( self: Self, mX: NDArray ) -> NDArray:
         
-        for oLayer in self.lLayers:
-            if self.opMode == NNMode.INFERENCE and hasattr(oLayer, 'Predict'):
+        for oLayer in self._lLayers:
+            if self._opMode == NNMode.INFERENCE and hasattr(oLayer, 'Predict'):
                 mX = oLayer.Predict(mX) #<! Test Time & Predict
-            if self.opMode == NNMode.TRAIN or self.opMode == NNMode.INFERENCE:
+            elif self._opMode == NNMode.TRAIN or self._opMode == NNMode.INFERENCE:
                 mX = oLayer.Forward(mX)
             else:
-                raise ValueError(f'The operation mode value {self.opMode} is not supported')
+                raise ValueError(f'The operation mode value {self._opMode} is not supported')
         
         return mX
     
     def Backward( self: Self, mDz: NDArray ) -> None:
         
-        for oLayer in reversed(self.lLayers):
+        for oLayer in reversed(self._lLayers):
             mDz = oLayer.Backward(mDz)
+
+    def SetOpMode( self: Self, opMode: NNMode ) -> None:
+        
+        self._opMode = opMode
     
     def GetNumParams( self: Self ) -> int:
         
         return self._numParams
+
+    def GetOpMode( self: Self ) -> NNMode:
+        
+        return self._opMode
 
 # Optimizers
 
@@ -367,7 +386,7 @@ class Optimizer():
         if learnRate is not None:
             self.oUpdateRule.μ = learnRate
 
-        for ii, oLayer in enumerate(oModel.lLayers):
+        for ii, oLayer in enumerate(oModel._lLayers):
             for paramKey in oLayer.dGrads:
                 # Get parameters, gradient and history
                 mP       = oLayer.dParams[paramKey]
@@ -462,6 +481,8 @@ def TrainEpoch( oModel: ModelNN, oDataSet: DataSet, learnRate: float, hL: Callab
         It should return a scalar `valScore` of the score.
     """
 
+    oModel.SetOpMode(NNMode.TRAIN)
+
     epochLoss   = 0.0
     epochScore  = 0.0
     numSamples  = 0
@@ -475,7 +496,7 @@ def TrainEpoch( oModel: ModelNN, oDataSet: DataSet, learnRate: float, hL: Callab
         oModel.Backward(mDz)
         
         # Gradient Descent (Update parameters
-        for oLayer in oModel.lLayers:
+        for oLayer in oModel._lLayers:
             for paramKey in oLayer.dGrads:
                 oLayer.dParams[paramKey] -= learnRate * oLayer.dGrads[paramKey]
         
@@ -510,6 +531,8 @@ def ScoreEpoch( oModel: ModelNN, oDataSet: DataSet, hL: Callable, hS: Callable )
       - The function does not optimize the model parameter.
     """
     
+    oModel.SetOpMode(NNMode.INFERENCE)
+
     epochLoss   = 0.0
     epochScore  = 0.0
     numSamples  = 0
@@ -549,7 +572,7 @@ def RunEpoch( oModel: ModelNN, oDataSet: DataSet, oOpt: Optimizer, hL: Callable,
         It should return a scalar `valScore` of the score.
     """
 
-    oModel.opMode = opMode
+    oModel.SetOpMode(opMode)
     
     epochLoss   = 0.0
     epochScore  = 0.0
@@ -605,7 +628,7 @@ def CountModelParams( oModel: ModelNN ) -> int:
     """
     Calculates the number of parameters of a model.  
     Input:
-        oModel      - ModelNN which supports `Forward()` and `Backward()` methods.
+        oModel      - Object of type `ModelNN` with the attribute `_lLayers` containing the layers of the model.
     Output:
         numParams   - Scalar of the number of parameters in the model.
     Remarks:
@@ -614,7 +637,7 @@ def CountModelParams( oModel: ModelNN ) -> int:
     """
 
     numParams = 0
-    for oLayer in oModel.lLayers:
+    for oLayer in oModel._lLayers:
         for paramStr in oLayer.dParams: #<! Iterating on dictionary (Keys by default)
             numParams += np.size(oLayer.dParams[paramStr])
     

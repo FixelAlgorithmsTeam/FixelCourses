@@ -359,7 +359,16 @@ def Main( folderName: str, latDim: int, recLossType: Literal['MAE', 'MSE'], β: 
     oOpt = torch.optim.AdamW(oModel.parameters(), lr = 6e-4, betas = (0.9, 0.99), weight_decay = 1e-3) #<! Define optimizer
     oSch = torch.optim.lr_scheduler.OneCycleLR(oOpt, max_lr = 2e-3, total_steps = numEpochs)
 
-    oModel, lTrainLoss, lTrainScore, lLearnRate = TrainModelDataset(oModel, dlData, oOpt, numEpochs, hL, hS, oSch = oSch)
+    _, lTrainLoss, lTrainScore, lLearnRate = TrainModelDataset(oModel, dlData, oOpt, numEpochs, hL, hS, oSch = oSch)
+
+    # Update the saved data with training history
+    dCheckPoint = torch.load('BestModel.pt', map_location = 'cpu', weights_only = True)
+    dCheckPoint.update({
+        'lTrainLoss': lTrainLoss,
+        'lTrainScore': lTrainScore,
+        'lLearnRate': lLearnRate,
+    })
+    torch.save(dCheckPoint, 'BestModel.pt')
 
 # %% Main
 
