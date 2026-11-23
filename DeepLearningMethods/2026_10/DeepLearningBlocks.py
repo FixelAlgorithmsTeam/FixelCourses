@@ -1,5 +1,4 @@
-
-# Deep LEarning Neural Network Blocks
+# Deep Learning Neural Network Blocks
 #
 # Revision History
 # | Version | Date       | User        |Content / Changes                                                   |

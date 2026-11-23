@@ -1,3 +1,9 @@
+# Data Manipulation Functions
+#
+# Revision History
+# | Version | Date       | User        |Content / Changes                                                   |
+# |---------|------------|-------------|--------------------------------------------------------------------|
+# | 1.0.000 | 27/01/2026 | Royi Avital | First release version                                              |
 
 # Python STD
 from enum import auto, Enum, unique
@@ -24,6 +30,8 @@ import skimage as ski
 import gdown
 import gzip
 import os
+import tempfile
+import urllib.error
 import urllib.request
 
 # Typing
@@ -82,19 +90,34 @@ def ParseEnvFile( fileName: str = '.env', *, filePath: str = '.', keyValSep: str
 def DownloadProgress(blockNum, blockSize, totalSize):
     # https://stackoverflow.com/a/74314365
 
-    bytesDownloaded   = blockNum * blockSize
-    relativeProgress  = blockNum * blockSize / totalSize
+    bytesDownloaded   = min(blockNum * blockSize, totalSize)
+    relativeProgress  = bytesDownloaded / totalSize
     bytesDownloadedKb = bytesDownloaded // 1024
     totalSizeKb       = totalSize // 1024
 
     print(f'Downloaded: {relativeProgress:0.2%} of the file ({bytesDownloadedKb} [Kilo Byte] / {totalSizeKb} [Kilo Byte])', end = '\r')
 
-def DownloadUrl( fileUrl: str, fileName: str ) -> str:
-    # See improvement in https://stackoverflow.com/a/63832993
-    # The `fileName` can be a full path.
-    
+def DownloadUrl( fileUrl: str, fileName: str, *, userAgent: Optional[str] = None ) -> str:
     if not os.path.exists(fileName):
-        urllib.request.urlretrieve(fileUrl, fileName, DownloadProgress)
+        request = urllib.request.Request(fileUrl)
+        if userAgent is not None:
+            request.add_header('User-Agent', userAgent)
+
+        blockSize = 1024 * 1024
+        targetFolder = os.path.dirname(os.path.abspath(fileName))
+        with urllib.request.urlopen(request) as response, tempfile.TemporaryDirectory(dir = targetFolder) as tmpFolder:
+            totalSize = int(response.headers.get('Content-Length', 0))
+            tmpFileName = os.path.join(tmpFolder, 'download')
+            with open(tmpFileName, 'wb') as hFile:
+                for blockNum, block in enumerate(iter(lambda: response.read(blockSize), b''), start = 1):
+                    hFile.write(block)
+                    if totalSize > 0:
+                        DownloadProgress(blockNum, blockSize, totalSize)
+
+                if hFile.tell() < totalSize:
+                    raise urllib.error.ContentTooShortError('Incomplete download', (fileName, response.headers))
+
+            os.replace(tmpFileName, fileName)
 
     print(f'\nDownloaded file: {fileName}')
 
@@ -109,7 +132,9 @@ def DownloadKaggleDataset( userName: str, datasetName: str, fileName: str ) -> N
 
     kaggleUrl = f'https://www.kaggle.com/api/v1/datasets/download/{userName}/{datasetName}'
 
-    DownloadUrl(kaggleUrl, fileName)
+    # Kaggle can return 404 for the default urllib User-Agent.
+    userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0'
+    DownloadUrl(kaggleUrl, fileName, userAgent = userAgent)
 
     return
 
